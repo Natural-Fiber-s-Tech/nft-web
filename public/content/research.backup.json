@@ -1,0 +1,1557 @@
+[
+  {
+    "slug": "classification-of-south-american-camelid-and-goat-fiber-samples-based-on-fourier-transform",
+    "lang": "en",
+    "title": "Classification of South American Camelid and goat fiber samples based on fourier transform infrared spectroscopy and machine learning",
+    "date": "2024-04-04",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Some animal fibers are considerably cheaper than others. Hence the existence of counterfeit products, which are detrimental to legitimate producers and consumers alike. Fourier-Transform Infrared (FTIR) spectroscopy can extract a characteristic waveform from fibers that can be later used for classification. However, visually inspecting such waveforms is imprecise. Previous research has complemented FTIR with other mathematical or physical methods to improve accuracy. In parallel, Artificial Intelligence (AI) is an emerging field that could be helpful in this domain. The objective of this work is therefore to develop and validate two machine learning models, namely, Deep Neural Networks (DNN) and Support Vector Machine (SVM) to classify spectra of fibers by species. The spectra are acquired using an FTIR spectrometer in Attenuated Total Reflectance (ATR) mode (FTIR-ATR). Camelid (alpaca: n = 51, llama: n = 50, vicuña: n = 50) and goat (mohair: n = 35 and cashmere: n = 20) samples were evaluated, from which 1236 FTIR-ATR spectra were obtained. Some visual differences were observed between the spectra of the different species. Accuracies up to 96.75% and 95.12% were obtained when evaluating the DNN and SVM models. Furthermore, an accuracy of 97.8% was obtained when evaluating the FTIR-ATR spectra of South American Camelids (SAC) fibers with DNN, and 97.2% when evaluating them with SVM. A 100% accuracy was obtained when evaluating the FTIR-ATR spectra of vicuña fibers with both models. No significant differences were found (p-value = 0.368) by comparing the number of hits against the total number of alpaca, llama, vicuña, mohair and cashmere fibers using DNN. As per the results, it seems that DNN is more accurate than SVM. In conclusion, FTIR-ATR spectrometry techniques combined with machine learning models are a reliable alternative for the identification of SAC and goats through the spectrum of their fibers.",
+    "summary_30w": "Some animal fibers are considerably cheaper than others. Hence the existence of counterfeit products, which are detrimental to legitimate producers and consumers alike. Fourier-Transform Infrared ( FTIR ) spectroscopy can extract a characteristic waveform from fibers that can be later used for classification.",
+    "keywords": [
+      "Deep learning",
+      "FTIR spectrometry",
+      "goats",
+      "machine learning",
+      "South American Camelids"
+    ],
+    "categories": [
+      "Deep learning",
+      "Ftir spectrometry",
+      "Goats",
+      "Machine learning",
+      "South american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2024/04/classification-of-south-american-camelid-and-goat-fiber-samples-based-on-fourier-transform-infrared-spectroscopy-and-machine-learning/",
+    "download_link_DOI": "https://doi.org/10.1080/00405000.2024.2324209",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/classification-of-south-american-camelid-and-goat-fiber-samples-based-on-fourier-transform.pdf",
+    "localImage": "/assets/images/investigacion/images/classification-of-south-american-camelid-and-goat-fiber-samples-based-on-fourier-transform.png",
+    "author": [
+      "Max Quispe",
+      "Jesús D. Trigo",
+      "Luis Serrano-Arriezu",
+      "Jorge Huere",
+      "Edgar Quispe",
+      "Miguel Beruete"
+    ],
+    "id": "classification-of-south-american-camelid-and-goat-fiber-samples-based-on-fourier-transform",
+    "order": 1,
+    "archived": false
+  },
+  {
+    "slug": "fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti",
+    "lang": "en",
+    "title": "Fiber density and hair ducts in the skin of alpacas: Quantification, heritability, and genetic correlations",
+    "date": "2023-08-07",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Alpaca fibers are used to create luxury garments, and simultaneous selection for optimizing fiber density and the density of hair ducts in the skin of alpacas could result in a more profitable product for breeders. The objective of this study was i) to quantify fiber density (FibDen), density of hair ducts (DenDuc), and the relationship between No. of fibers/No. of ducts (Fib/Duc) by age and sex, and ii) to estimate heritability and genetic correlation between FibDen and DenDuc. This study was conducted in the CEDAT (Centro de Desarrollo Alpaquero de Toccra) in the Department of Arequipa, Peru. A total of 1,813 alpacas of different sex and age with pedigree information were analyzed from years 2004–2018. The quantification of FibDen, DenDuc and Fib/Duc was estimated using Fiber-Den equipment in an area of 1 mm 2 in the middle rib region of the animal. The average FibDen, DenDuc and Fib/Duc was 24.75 ± 5.48, 7.83 ± 2.17 and 3.25 ± 0.55, respectively. The heritability for FibDen, DenDuc, and Fib/Duc was 0.48 ± 0.04, 0.53 ± 0.04, and 0.20 ± 0.03, respectively. The genetic correlation between FibDen and DenDuc was 0.87 ± 0.06. The estimated heritabilities of these traits in Peruvian alpaca population are moderate to high and indicate that these characteristics could be used as selection criteria in breeding programs.",
+    "summary_30w": "Alpaca fibers are used to create luxury garments, and simultaneous selection for optimizing fiber density and the density of hair ducts in the skin of alpacas could result in a more profitable product for breeders.",
+    "keywords": [
+      "Genetic parameters",
+      "Fiber quantification",
+      "Breeding program",
+      "Fiber-Den",
+      "Sex"
+    ],
+    "categories": [
+      "Genetic parameters",
+      "Fiber quantification",
+      "Breeding program",
+      "Fiber-den",
+      "Sex"
+    ],
+    "products": [
+      "Fiber Den"
+    ],
+    "href": "http://localhost:8080/2023/08/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-genetic-correlations/",
+    "download_link_DOI": "https://doi.org/10.1016/j.jssas.2023.07.003",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti.pdf",
+    "localImage": "/assets/images/investigacion/images/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti.png",
+    "author": [
+      "Veronica Flores",
+      "Ali William Canaza-Cayo",
+      "Francisco Halley Rodríguez",
+      "Emma Yovana Quina",
+      "Max David Quispe",
+      "Edgar Carlos Quispe"
+    ],
+    "id": "fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti",
+    "order": 2,
+    "archived": false
+  },
+  {
+    "slug": "fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti",
+    "lang": "en",
+    "title": "Fiber density and hair ducts in the skin of alpacas: Quantification,heritability, and genetic correlations",
+    "date": "2023-08-07",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Alpaca fibers are used to create luxury garments, and simultaneous selection for optimizing fiber density and the density of hair ducts in the skin of alpacas could result in a more profitable product for breeders. The objective of this study was i) to quantify fiber density (FibDen), density of hair ducts (DenDuc), and the relationship between No. of fibers/No. of ducts (Fib/Duc) by age and sex, and ii) to estimate heritability and genetic correlation between FibDen and DenDuc. This study was conducted in the CEDAT (Centro de Desarrollo Alpaquero de Toccra) in the Department of Arequipa, Peru. A total of 1,813 alpacas of different sex and age with pedigree information were analyzed from years 2004–2018. The quantification of FibDen, DenDuc and Fib/Duc was estimated using Fiber-Den equipment in an area of 1 mm2 in the middle rib region of the animal. The average FibDen, DenDuc and Fib/Duc was 24.75 ± 5.48, 7.83 ± 2.17 and 3.25 ± 0.55, respectively. The heritability for FibDen, DenDuc, and Fib/Duc was 0.48 ± 0.04, 0.53 ± 0.04, and 0.20 ± 0.03, respectively. The genetic correlation between FibDen and DenDuc was 0.87 ± 0.06. The estimated heritabilities of these traits in Peruvian alpaca population are moderate to high and indicate that these characteristics could be used as selection criteria in breeding programs.",
+    "summary_30w": "Alpaca fibers are used to create luxury garments, and simultaneous selection for optimizing fiber density and the density of hair ducts in the skin of alpacas could result in a more profitable product for breeders.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Fiber Den"
+    ],
+    "href": "http://localhost:8080/2023/08/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantificationheritability-and-genetic-correlations/",
+    "download_link_DOI": "https://doi.org/10.1016/j.jssas.2023.07.003",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti.pdf",
+    "localImage": "/assets/images/investigacion/images/fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti.png",
+    "author": [
+      "Veronica Flores",
+      "Ali William Canaza-Cayo",
+      "Francisco Halley Rodríguez",
+      "Emma Yovana Quina",
+      "Max David Quispe",
+      "Edgar Carlos Quispe"
+    ],
+    "id": "fiber-density-and-hair-ducts-in-the-skin-of-alpacas-quantification-heritability-and-geneti",
+    "order": 3,
+    "archived": false
+  },
+  {
+    "slug": "comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation",
+    "lang": "es",
+    "title": "Comparison of projection microscope with OFDA100 in alpaca fibers medullation",
+    "date": "2023-07-15",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El objetivo del presente trabajo fue comparar el microscopio de proyección (MicProy) y el microscopio de proyección computarizado (MicProyCom) con el analizador óptico de diámetro de fibra, denominado OFDA100, en torno a la determinación de la medulación de fibras de alpacas, expresado en porcentaje (MED). Las muestras de fibras fueron tomadas de la Estación Científica de Pacomarca. Tres experimentos fueron llevados a cabo. En el experimento 1, la MED fue determinada en 36 alpacas Huacaya machos utilizando el MicProy y el OFDA100. En el experimento 2, la MED fue determinada en 200 alpacas utilizando el MicProyCom en Arequipa; y el experimento 3, fue realizado en Huancavelica, donde la MED fue determinada en 105 muestras de fibras de alpaca con el MicProyCom y el OFDA100. En los tres experimentos llevado a cabo, la MED obtenida OFDA100 es muy bajo (entre 9.819.81±0.61 and 18.30±1.68%), comparado con la MED total obtenida mediante el MicProy (67.43±1.74%) y el MicProyCom (28.71±1.37 and 41.14±2.00%). Asimismo, la MED de fibras con medulación continuas más las fibras fuertemente meduladas obtenidas con el MicProyCom fue más alta comparada con la MED obtenida con el OFDA100. Por lo tanto, aunque el OFDA100 es un sistema para la evaluación rápida de la medulación de lanas, éste no podría ser recomendado para la evaluación de la medulación de fibras de alpaca.",
+    "summary_30w": "El objetivo del presente trabajo fue comparar el microscopio de proyección ( MicProy ) y el microscopio de proyección computarizado ( MicProyCom ) con el analizador óptico de diámetro de fibra, denominado OFDA100, en torno a la determinación de la medulación de fibras de alpacas, expresado en porcentaje ( MED ).",
+    "keywords": [
+      "Camélidos",
+      "Probador de fibra",
+      "Fibras medulares",
+      "Fibras objetables"
+    ],
+    "categories": [
+      "Camélidos",
+      "Probador de fibra",
+      "Fibras medulares",
+      "Fibras objetables"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2023/07/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation-2/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation.pdf",
+    "localImage": "/assets/images/investigacion/images/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation.png",
+    "id": "comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation",
+    "order": 4,
+    "archived": false
+  },
+  {
+    "slug": "comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation",
+    "lang": "en",
+    "title": "Comparison of projection microscope with OFDA100 in alpaca fibers medullation",
+    "date": "2023-07-15",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The aim of this research was to compare Projection Microscope (PMic) and Computerized Projection Microscope (CPMic) with Optical Fiber Diameter Analyzer (OFDA100), for the determination of the medullation in alpaca fibers expressed in percentage (MED). Fiber samples were taken from Pacomarca Scientific Station. Three experiments were carried out. At experiment 1, the MED was determined in 36 Huacaya alpaca males using PMic and OFDA100. At experiment 2, the MED was determined in 200 alpacas using CPMic and OFDA100 in Arequipa; and at experiment 3 carried out at Huancavelica, the MED was measured in 105 fiber samples with CPMic and OFDA100. OFDA medullation mean was very low in the three experiments (between 9.81±0.61 and 18.30±1.68%), compared with the total medullation obtained by the PMic (67.43±1.74%) and CPMic (between 28.71±1.37 and 41.14±2.00%).",
+    "summary_30w": "The aim of this research was to compare Projection Microscope ( PMic ) and Computerized Projection Microscope ( CPMic ) with Optical Fiber Diameter Analyzer ( OFDA100 ), for the determination of the medullation in alpaca fibers expressed in percentage ( MED ).",
+    "keywords": [
+      "Camelids",
+      "Fiber tester",
+      "Medullated fibers",
+      "Objectionable fibers"
+    ],
+    "categories": [
+      "Camelids",
+      "Fiber tester",
+      "Medullated fibers",
+      "Objectionable fibers"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2023/07/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation.pdf",
+    "localImage": "/assets/images/investigacion/images/comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation.png",
+    "id": "comparison-of-projection-microscope-with-ofda100-in-alpaca-fibers-medullation",
+    "order": 5,
+    "archived": false
+  },
+  {
+    "slug": "development-and-validation-of-a-smart-system-for-medullation-and-diameter-assessment-of-al",
+    "lang": "en",
+    "title": "Development and validation of a smart system for medullation and diameter assessment of alpaca, llama and mohair fibres",
+    "date": "2023-05-30",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Medullated fibres, due to their higher resistance to bending and pressure, constitute a problem for the textile industry. Thus, having practical instruments to identify them is essential. Therefore, the aim of this research was to develop and validate a novel, swift, automatic system (referred to as S-Fiber Med) for medullation and diameter assessment of animal fibres based on artificial intelligence. The medullation of 88 samples of alpaca, llama and mohair fibres (41, 43 and 4, respectively) was evaluated. Additionally, 269 samples of alpacas were considered for average fibre diameter (AFD) and the results were compared with the Portable Fiber Tester (PFT) and Optical Fibre Diameter Analyser (OFDA) methods (72 and 197 samples, respectively). The preparation of each sample to be analysed followed the procedure described in IWTO-8-2011. Version 5 of ‘‘You Only Look Once” and DenseNet models were used to recognise the type of medullation and diameter of the fibres, respectively. Within each image (n = 661 for alpaca), all fibres were labelled (as Non-Medullated, Fragmented Medulla, Uncontinuous Medulla, Continuous Medulla and Strongly Medullated) using the LabelImg tool. Data augmentation technique was applied to obtain 3 966 images. Such data set was divided into 3 576 and 390 images for training and test data, respectively. For mohair samples (n = 321), a similar process was carried out. The data to train the model used to infer the diameter contained 16 446 fibres labelled with his respective AFD. A complementary hardware composed of three subsystems (mechanical, electronic, and optical) was developed for evaluation purposes. T-test, Pearson and Concordance correlation, Bland-Altman plot and linear regression analyses were used to validate and compare the S-Fiber Med with other methods. Results indicate that there was no significant difference between medullation percentage obtained with the projection microscope and the S-Fiber Med. The Pearson and Concordance correlation analysis shows a strong, high and significant relationship (P-value < 0.001). The AFDs of alpaca and llama fibre samples obtained with the two methods are very similar, because no significant difference was found at the t-test (P-value > 0.172), and they have a strong, high and significant relationship between them, given the high Pearson correlation value (r 0.96 with P-value < 0.001), high Concordance coefficient and bias correction factor. Similar results were found when PFT and OFDA100 were compared with S-Fiber Med. As a conclusion, this new system provides precise, accurate measurements of medullation and AFD in an expeditious fashion (40 seconds/sample).",
+    "summary_30w": "Medullated fibres, due to their higher resistance to bending and pressure, constitute a problem for the textile industry. Thus, having practical instruments to identify them is essential. Therefore, the aim of this research was to develop and validate a novel, swift, automatic system ( referred to as S-Fiber Med ) for medullation and diameter assessment of animal fibres based on artificial intelligence.",
+    "keywords": [
+      "Artificial intelligence",
+      "Camelids",
+      "Fibre medullation",
+      "Hardware",
+      "Software"
+    ],
+    "categories": [
+      "Artificial intelligence",
+      "Camelids",
+      "Fibre medullation",
+      "Hardware",
+      "Software"
+    ],
+    "products": [
+      "Fiber Med"
+    ],
+    "href": "http://localhost:8080/2023/05/development-and-validation-of-a-smart-system-for-medullation-and-diameter-assessment-of-alpaca-llama-and-mohair-fibres/",
+    "download_link_DOI": "https://doi.org/10.1016/j.animal.2023.100800",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/development-and-validation-of-a-smart-system-for-medullation-and-diameter-assessment-of-al.pdf",
+    "localImage": "/assets/images/investigacion/images/development-and-validation-of-a-smart-system-for-medullation-and-diameter-assessment-of-al.png",
+    "author": [
+      "M.D. Quispe",
+      "C.C. Quispe",
+      "L. Serrano-Arriezu",
+      "J.D. Trigo",
+      "J.J. Bengoechea",
+      "E.C. Quispe"
+    ],
+    "id": "development-and-validation-of-a-smart-system-for-medullation-and-diameter-assessment-of-al",
+    "order": 6,
+    "archived": false
+  },
+  {
+    "slug": "densidad-de-fibras-y-densidad-de-conductos-pilosos-como-criterios-de-seleccion-para-mejora",
+    "lang": "es",
+    "title": "Densidad de fibras y densidad de conductos pilosos como criterios de selección para mejorar la calidad y el peso de vellones de alpacas",
+    "date": "2023-04-28",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Mejoras en el peso de vellón de sucio (PVe) y diámetro medio de la fibra (DMF) favorece los ingresos de los productores de alpacas; sin embargo, estas variables están relacionadas directamente, complicando el mejoramiento simultáneo de ambas características. Por tanto, se requiere buscar nuevos criterios de selección para la mejora simultánea de ambas características. El propósito del estudio fue caracterizar la densidad de fibras (DenFib), densidad de conductos pilosos (DenCond) y la relación N.° de fibras/conductos (R_Fib/Cond) como posibles criterios de selección. Asimismo, determinar el tipo de relación entre ellas y con el PVe y DMF, y construir y evaluar índices de selección formales bajo escenarios con diferentes mediciones disponibles, considerando en todos los casos PVe y DMF debidamente ponderados por sus pesos económicos, como objetivos de selección. Para ello, se tomaron muestras de fibras, imágenes de piel y se registraron el PVe de alpacas de cuatro rebaños criadas en Huancavelica y Caylloma-Arequipa (Perú) entre 2018 y 2020. Las características de densidad fueron obtenidas mediante el procedimiento denominado Fiber Den, mientras que el DMF se evaluó mediante el FIBER EC, y el PVe se registró con una balanza. En la construcción de los índices de selección para PVe y DMF se aplicó la teoría de índices de selección de Hazel, considerando los parámetros indicados en la bibliografía y en el presente trabajo. La DenFib, DenCon y R_Fib/Cond varía entre 8.8 a 60 fib/mm2, 3.8 a 21.2 cond/mm2 y 2.0 a 4.3 fib/cond, respectivamente. Se encontraron conductos pilosos de hasta 8 fibras, siendo los más frecuentes los conductos con 1, 2 o 3 fibras. Se concluye que la DenFib y DenCond tienen relación lineal y directa con el PVe e inversa con el DMF, y que la inclusión de la DenFib y DenCond como criterios de selección dentro de un índice de selección mejorarían su exactitud de 0.53 a 0.63, pudiéndose obtener mayores progresos genéticos entre 15 y 18%, con mayores beneficios económicos, que cuando solo se utiliza el PVe y DMF.",
+    "summary_30w": "Mejoras en el peso de vellón de sucio ( PVe ) y diámetro medio de la fibra ( DMF ) favorece los ingresos de los productores de alpacas; sin embargo, estas variables están relacionadas directamente, complicando el mejoramiento simultáneo de ambas características.",
+    "keywords": [
+      "densidad de fibras",
+      "diámetro de fibras",
+      "camélidos sudamericanos",
+      "mejoramiento genético animal",
+      "fibras especiales",
+      "peso de vellón"
+    ],
+    "categories": [
+      "Densidad de fibras",
+      "Diámetro de fibras",
+      "Camélidos sudamericanos",
+      "Mejoramiento genético animal",
+      "Fibras especiales",
+      "Peso de vellón"
+    ],
+    "products": [
+      "Fiber Den",
+      "Fiber EC"
+    ],
+    "href": "http://localhost:8080/2023/04/densidad-de-fibras-y-densidad-de-conductos-pilosos-como-criterios-de-seleccion-para-mejorar-la-calidad-y-el-peso-de-vellones-de-alpacas/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v34i2.25102",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/densidad-de-fibras-y-densidad-de-conductos-pilosos-como-criterios-de-seleccion-para-mejora.pdf",
+    "localImage": "/assets/images/investigacion/images/densidad-de-fibras-y-densidad-de-conductos-pilosos-como-criterios-de-seleccion-para-mejora.png",
+    "author": [
+      "Edgar Carlos Quispe Peña",
+      "Rolando Rivera Quinto",
+      "Marco Espinoza Castillo",
+      "Verónica Flores Alca",
+      "Max Quispe Bonilla",
+      "Joaquín Pablo Mueller"
+    ],
+    "id": "densidad-de-fibras-y-densidad-de-conductos-pilosos-como-criterios-de-seleccion-para-mejora",
+    "order": 7,
+    "archived": false
+  },
+  {
+    "slug": "objective-measurement-of-objectionable-medullated-fibres-in-commercial-mohair-tops-sing-an",
+    "lang": "en",
+    "title": "OBJECTIVE MEASUREMENT OF «OBJECTIONABLE» MEDULLATED FIBRES IN COMMERCIAL MOHAIR TOPS SING AN OPTICAL FIBRE DIAMETER ANALYSER (OFDA) – AN INTRODUCTORY STUDY",
+    "date": "2023-03-20",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "with comments by L. HUNTER* *CSIR Division of Textile Technology. Port Elizabeth, South Africa SUMMARY: In a quest to find an objetive measure of those medullated fibres which «stand out» as being «optically different» and «objectionable» commercial mohair tops (including good quality tops containing relatively few such fibres), researchers at Gubb & Inggs have carried out exploratory studies using Cape, Texas and Turkish mohair spanning a wide range of diameter and «objectionable» medullated fibre count. The results have indicated that there is a good statistical fit between the number of «objectionable» medullated fibres counted visually at Gubb &Inggs and the number of medullated fibres (excluding «flat» fibres) counted on the OFDA, the statistical fit passing through a peak at an opacity threshold level of approximately 92 percent. This technique of measurement could, for the first time ever, offer a rapid, practical and cot-effective means for the objective measurement of objectionable medullated fibres in mohair, even at relatively low count levels down to 0.01 percent. It is hoped the this introductory study will stimulate further work and lead to the establishment of commercially viable Test Method within the near future. Download: Measurement of Medullated Fibres in Mohair Using OFDA-Turpie",
+    "summary_30w": "with comments by L. HUNTER * * CSIR Division of Textile Technology. Port Elizabeth, South Africa SUMMARY: In a quest to find an objetive measure of those medullated fibres which « stand out » as being « optically different » and « objectionable » commercial mohair tops ( including good quality tops containing relatively few such fibres ), researchers at Gubb & Inggs have carried out exploratory studies using Cape, Texas and Turkish mohair spanning a wide range of diameter and « objectionable » medullated fibre count.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2023/03/objective-measurement-of-objectionable-medullated-fibres-in-commercial-mohair-tops-sing-an-optical-fibre-diameter-analyser-ofda-an-introductory-study/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/objective-measurement-of-objectionable-medullated-fibres-in-commercial-mohair-tops-sing-an.pdf",
+    "localImage": "/assets/images/investigacion/images/objective-measurement-of-objectionable-medullated-fibres-in-commercial-mohair-tops-sing-an.png",
+    "id": "objective-measurement-of-objectionable-medullated-fibres-in-commercial-mohair-tops-sing-an",
+    "order": 8,
+    "archived": false
+  },
+  {
+    "slug": "the-definitions-of-medullation-threshold-values-used-by-different-testing-methods-to-defin",
+    "lang": "en",
+    "title": "The Definitions of Medullation Threshold Values used by Different Testing Methods to Define an Objectionable Medullated Fibre in Merino Wool.",
+    "date": "2023-03-20",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "There is no objective definition of a contaminant medullated wool fibre that can be substantiated by published trials. The American Society of Testing Materials (ASTM) has published a definition in ASTM-D 2968-89 that uses the ratio of medulla to fibre diameter to define contaminant medullation. But we have been unable to locate references to a trial or trials that substantiate this value. Hunter et al. (1996) reported a trial in which experienced mill staff visually detected objectionable medullated fibres of samples in air. The medulla to fibre diameter ratios of the detected fibres ranged from 0% to 90%, indicating that, either the detection method was unreliable or that the medulla to fibre diameter ratio is an inappropriate parameter to define objectionable medullation. However, when testing mohair in benzyl alcohol, Smuts and Hunter (1983) appeared to support the ASTM definition, although the ratio they found was 0.55 compared to 0.60 for ASTM-D 2968-89. OFDA technology has a definition of objectionable medullated fibres based on fibre opacity and diameter, but this definition is not applicable to bulk presale core testing. Other techniques for medullation measurement such as projection microscope (pm) and the WRONZ Medullameter use the ASTM definition to directly (pm) or indirectly (Medullameter) to specify a threshold level of medullation for contamination.",
+    "summary_30w": "There is no objective definition of a contaminant medullated wool fibre that can be substantiated by published trials. The American Society of Testing Materials ( ASTM ) has published a definition in ASTM-D 2968-89 that uses the ratio of medulla to fibre diameter to define contaminant medullation.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2023/03/the-definitions-of-medullation-threshold-values-used-by-different-testing-methods-to-define-an-objectionable-medullated-fibre-in-merino-wool/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/the-definitions-of-medullation-threshold-values-used-by-different-testing-methods-to-defin.pdf",
+    "localImage": "/assets/images/investigacion/images/the-definitions-of-medullation-threshold-values-used-by-different-testing-methods-to-defin.png",
+    "id": "the-definitions-of-medullation-threshold-values-used-by-different-testing-methods-to-defin",
+    "order": 9,
+    "archived": false
+  },
+  {
+    "slug": "artificial-intelligence-as-a-potential-tool-for-micro-histological-analysis-of-herbivore-d",
+    "lang": "en",
+    "title": "Artificial intelligence as a potential tool for micro‐histological analysis of herbivore diets",
+    "date": "2022-12-22",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Diferent non-invasive techniques have been used to determine herbivore diet composition from fecal samples, including micro-histological analysis of epidermal fragments. This method can provide reliable semi-quantitative data through the identifcation of plant cell structures visualized under an optical microscope. However, this method is highly time consuming and it requires signifcant expertise in microscopic identifcation. Since micro-histological analysis is based on pattern recognition, artifcial intelligence (AI) could be used to make this method more time efcient through automated identification and counting of epidermal fragments. We developed a software application based on an AI model that, appropriately trained, could identify and count epidermal fragments from photographed microscope slides. We compared the performance of this model to that of visual identifcation by a trained observer using in vitro mixtures of fragments from two plant species, Arbutus unedo and Rubia peregrina, with very diferent epidermal characteristics. Both the human observer and the AI model estimated proportions of plant fragments very close to those of the original mixtures. In addition, once trained, the AI model was over 350 times faster in identifying and counting fragments compared to a human observer. Our study highlights the potential of AI to be applied to the study of herbivore diets for labor-intensive pattern recognition tasks.",
+    "summary_30w": "Diferent non-invasive techniques have been used to determine herbivore diet composition from fecal samples, including micro-histological analysis of epidermal fragments. This method can provide reliable semi-quantitative data through the identifcation of plant cell structures visualized under an optical microscope.",
+    "keywords": [
+      "Machine learning",
+      "Deep learning",
+      "Epidermal fragments",
+      "Fecal samples",
+      "Microscope slides",
+      "Cuticle analysis"
+    ],
+    "categories": [
+      "Machine learning",
+      "Deep learning",
+      "Epidermal fragments",
+      "Fecal samples",
+      "Microscope slides",
+      "Cuticle analysis"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2022/12/artificial-intelligence-as-a-potential-tool-for-micro%e2%80%90histological-analysis-of-herbivore-diets/",
+    "download_link_DOI": "https://doi.org/10.1007/s10344-022-01640-4",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/artificial-intelligence-as-a-potential-tool-for-micro-histological-analysis-of-herbivore-d.pdf",
+    "localImage": "/assets/images/investigacion/images/artificial-intelligence-as-a-potential-tool-for-micro-histological-analysis-of-herbivore-d.png",
+    "author": [
+      "Jordi Bartolomé Filella",
+      "Christian Carlos Quispe Bonilla",
+      "Edgar Quispe",
+      "Fredrik Dalerum"
+    ],
+    "id": "artificial-intelligence-as-a-potential-tool-for-micro-histological-analysis-of-herbivore-d",
+    "order": 10,
+    "archived": false
+  },
+  {
+    "slug": "efecto-de-raza-momento-del-dia-y-caracteristicas-del-pelo-sobre-la-frecuencia-cardiaca-y-r",
+    "lang": "es",
+    "title": "Efecto de raza, momento del día y características del pelo sobre la frecuencia cardiaca y respiratoria, y temperatura rectal y de piel en vacunos en zona de confort",
+    "date": "2022-08-31",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El estudio tuvo como objetivo evaluar el efecto de la raza, momento del día y media de la densidad de pelos (MDenP) sobre la frecuencia cardiaca (FC), frecuencia respirato- ria (FR), temperatura de piel (T°P), temperatura rectal (T°R) y diferencia T°R- T°P. Se trabajó con 10 vaquillas (4 Holstein y 6 criollas) entre 14 y 18 meses de edad, criadas al pastoreo y con temperatura ambiental (T°A) promedio de 17.6 °C y humedad relativa (H°R) promedio de 60.5%. Para el monitoreo de la FC, FR y T°P se utilizó un monitor de signos vitales llevable. Las mediciones se hicieron en la mañana, tarde y noche. La evaluación de la densidad de pelaje se realizó mediante el dispositivo FIBER DEN y el diámetro medio del pelo (DMP) con el equipo FIBER EC. Para evaluar el efecto de la raza, momento del día y MDenP sobre la FC, FR, T°R, T°P se aplicó un modelo aditivo lineal con dos covariables (T°A y H°R). Para las comparaciones múltiples se utilizó la prueba de Duncan, y para la evaluación de las relaciones entre las variables se calculó las correla- ciones de Pearson. La FC, FR, T°P y la diferencia T°R-T°P fue de 70.1±6.8 lpm, 23.6±7.2",
+    "summary_30w": "El estudio tuvo como objetivo evaluar el efecto de la raza, momento del di ́ a y media de la densidad de pelos ( MDenP ) sobre la frecuencia cardiaca ( FC ), frecuencia respirato- ria ( FR ), temperatura de piel ( T ° P ), temperatura rectal ( T ° R ) y diferencia T ° R- T ° P.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Fiber Den",
+      "Fiber EC"
+    ],
+    "href": "http://localhost:8080/2022/08/efecto-de-raza-momento-del-dia-y-caracteristicas-del-pelo-sobre-la-frecuencia-cardiaca-y-respiratoria-y-temperatura-rectal-y-de-piel-en-vacunos-en-zona-de-confort/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v33i4.21804",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/efecto-de-raza-momento-del-dia-y-caracteristicas-del-pelo-sobre-la-frecuencia-cardiaca-y-r.pdf",
+    "localImage": "/assets/images/investigacion/images/efecto-de-raza-momento-del-dia-y-caracteristicas-del-pelo-sobre-la-frecuencia-cardiaca-y-r.png",
+    "author": [
+      "Adolfo Guillermo Poma Gutiérrez",
+      "René Antonio Hinojosa Benavides",
+      "Edgar Carlos Quispe Peña"
+    ],
+    "id": "efecto-de-raza-momento-del-dia-y-caracteristicas-del-pelo-sobre-la-frecuencia-cardiaca-y-r",
+    "order": 11,
+    "archived": false
+  },
+  {
+    "slug": "variaciones-de-la-densidad-diametro-y-crecimiento-de-fibras-expansion-de-piel-y-peso-vivo-",
+    "lang": "es",
+    "title": "Variaciones de la densidad, diámetro y crecimiento de fibras, expansión de piel y peso vivo desde el nacimiento al destete en corderos Junín",
+    "date": "2022-07-15",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "A los días 0 (nacimiento), 30, 60, 90 y 120 (destete), 19 corderos de raza Junín fueron evaluados, con el objetivo de: a) conocer las variaciones de 14 características relacionadas a la densidad de fibras, conductos pilosos e incidencias de haces de fibras, al diámetro, crecimiento de fibras, a aquellos ligados a la expansión de piel y peso vivo de corderos Junín desde el nacimiento hasta el destete, y b) analizar las tendencias y relaciones existentes entre ellos. La densidad de fibras (DenFib) y de conductos pilosos (DenCon), N° de fibras y conductos pilosos por área de piel tatuada (N°Fibras/APT y N°Conductos/APT, respectivamente), incidencia de haces de una fibra (I_Haz1F), de dos fibras (I_Haz2F), de tres fibras (I_Haz3F), de cuatro fibras (I_Haz4F), media de diámetro de fibra (MDF), crecimiento de fibra (CrecFib), área de piel tatuada (APT), longitud horizontal y vertical del APT y peso vivo fueron las variables evaluadas. La DenFib, DenCon, I_Haz1F, I_Haz2F, I_Haz3F, I_Haz4F fueron determinados mediante el procedimiento y dispositivo conocido como Fiber Den en forma no invasiva, el Pvivo se evaluó con una balanza, la MDF fue evaluada con el dispositivo Fiber EC; la LH_APT, LV_APT y CrecFib fueron medidas con una regla metálica milimetrada, mientras que APT, N°Fibras/APT y N°conductos/APT fueron calculadas en base a algunas variables indicadas anteriormente. El diseño completamente al azar fue empleado para evaluar efectos de los días sobre las 14 variables, la prueba de Duncan sirvió para comparar medias, modelos de regresiones lineales y curvilíneas se utilizaron para evaluar las tendencias y la correlación de Pearson fue utilizada para evaluar las relaciones entre las variables. Los resultados encontrados fueron: Las 14 variables evaluadas variaron a lo largo de los días significativamente (p-valor<0,05). Asimismo, la DenFib, DenCon, I_Haz2F, I_Haz3F muestran oscilaciones con más incrementos que decrementos estadísticamente significativos (p-valor< 0.05), mientras que el N° de fibras y conductos/APT, I_Haz4F, MDF, CrecFib, LH_APT, LV_APT, APT y el peso vivo se incrementan continuamente, aunque la I_Haz1F también muestra oscilaciones mostrando mayormente disminuciones, con diferencias significativas entre días de evaluación. De otro lado, se encontró que la DenFib y DenCon están relacionadas en forma inversa con la MDF y el Pvivo, pero que con el CrecFib y APT no existe relación lineal significativa, mientras que la MDF tiene relación directa con el Pvivo, pero que con CrecFib y APT no tiene relación lineal alguna. Se concluye que muchas características fueron determinadas en forma inédita para la raza Junín, y también ante la evidencia que la DenFib y DenCon pueden ser evaluadas de forma práctica y no invasiva, y al estar relacionadas con la MDF y otras características, podrían ser utilizadas como criterios de selección.",
+    "summary_30w": "A los días 0 ( nacimiento ), 30, 60, 90 y 120 ( destete ), 19 corderos de raza Junín fueron evaluados, con el objetivo de: a ) conocer las variaciones de 14 características relacionadas a la densidad de fibras, conductos pilosos e incidencias de haces de fibras, al diámetro, crecimiento de fibras, a aquellos ligados a la expansión de piel y peso vivo de corderos Junín desde el nacimiento hasta el destete, y b ) analizar las tendencias y relaciones existentes entre ellos.",
+    "keywords": [
+      "Piel",
+      "Ovino",
+      "Conducto piloso",
+      "Densidad de fibras",
+      "Superficie de piel"
+    ],
+    "categories": [
+      "Piel",
+      "Ovino",
+      "Conducto piloso",
+      "Densidad de fibras",
+      "Superficie de piel"
+    ],
+    "products": [
+      "Fiber Den",
+      "Fiber EC"
+    ],
+    "href": "http://localhost:8080/2022/07/variaciones-de-la-densidad-diametro-y-crecimiento-de-fibras-expansion-de-piel-y-peso-vivo-desde-el-nacimiento-al-destete-en-corderos-junin/",
+    "download_link_DOI": "https://doi.org/10.21071/az.v71i275.5681",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/variaciones-de-la-densidad-diametro-y-crecimiento-de-fibras-expansion-de-piel-y-peso-vivo.pdf",
+    "localImage": "/assets/images/investigacion/images/variaciones-de-la-densidad-diametro-y-crecimiento-de-fibras-expansion-de-piel-y-peso-vivo.png",
+    "author": [
+      "R. Quispe",
+      "W.H. Grabiel",
+      "J. Aliaga",
+      "M.D. Quispe",
+      "E.C. Quispe"
+    ],
+    "id": "variaciones-de-la-densidad-diametro-y-crecimiento-de-fibras-expansion-de-piel-y-peso-vivo-",
+    "order": 12,
+    "archived": false
+  },
+  {
+    "slug": "estimacion-de-densidad-de-fibra-en-alpacas-del-centro-de-desarrollo-alpaquero-toccra-cedat",
+    "lang": "es",
+    "title": "ESTIMACIÓN DE DENSIDAD DE FIBRA EN ALPACAS DEL CENTRO DE DESARROLLO ALPAQUERO TOCCRA CEDAT – DESCO DEL DEPARTAMENTO DE AREQUIPA",
+    "date": "2022-06-30",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "La investigación fue ejecutada en el Centro de Desarrollo Alpaquero Toccra CEDAT– DESCO, ubicado en el Departamento de Arequipa; con el objetivo de cuantificar la densidad de fibras (DenFib), densidad de conductos pilosos (DenCP) y relación fibras/conductos (Fib/CP), así como estimar el grado de relación entre dichas características. Se evaluaron 344 alpacas de diferente edad y sexo. Para cuantificar las características indicadas se utilizó el procedimiento y equipo denominado FIBER DEN. La evaluación en cada animal se realizó en cinco lugares a nivel del costillar medio, capturando imágenes de 1mm2 de área. Los datos fueron analizados en un diseño completamente al azar con un arreglo factorial 4×2, utilizando el software SAS versión 9.4. Para evaluar las relaciones entre densidad de fibra y conductos pilosos, se determinó el coeficiente de correlación de Pearson. Los promedios ± error estándar (EE) para DenFib, DenCP y Fib/CP obtenidos fueron de 24,75±0,30 fibras/mm2 7,83±0,12 conductos pilosos/mm2 y 3,25±0,03 fibras por conducto piloso, encontrándose afectados por la edad y sexo DenFib, DenCP pero la Fib/CP es solo afectado por la edad. La correlación entre densidad de fibra y densidad de conductos pilosos fue positiva y moderadamente alta (r=0,78) pero entre DenCP y Fib/CP fue negativa (r=-0,56). Se concluye que a mayor edad la DenFib y DenCP disminuyen y que los machos tienen mayor DenFib y DenCP, existiendo una fuerte relación directa entre ellas, pero inversa entre la DenCP y Fib/CP",
+    "summary_30w": "La investigacio ́ n fue ejecutada en el Centro de Desarrollo Alpaquero Toccra CEDAT – DESCO, ubicado en el Departamento de Arequipa; con el objetivo de cuantificar la densidad de fibras ( DenFib ), densidad de conductos pilosos ( DenCP ) y relacio ́ n fibras / conductos ( Fib / CP ), asi ́ como estimar el grado de relacio ́ n entre dichas caracteri ́ sticas.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Fiber Den"
+    ],
+    "href": "http://localhost:8080/2022/06/3046/",
+    "download_link_DOI": "https://doi.org/10.26788/ri.v11i2.3635",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/estimacion-de-densidad-de-fibra-en-alpacas-del-centro-de-desarrollo-alpaquero-toccra-cedat.pdf",
+    "localImage": "/assets/images/investigacion/images/estimacion-de-densidad-de-fibra-en-alpacas-del-centro-de-desarrollo-alpaquero-toccra-cedat.png",
+    "author": [
+      "VERONICA FLORES ALCA",
+      "Ali William Canaza Cayo",
+      "Francisco Halley Rodríguez Huanca",
+      "Edgar  Carlos Quispe Peña",
+      "Julio Málaga Apaza"
+    ],
+    "id": "estimacion-de-densidad-de-fibra-en-alpacas-del-centro-de-desarrollo-alpaquero-toccra-cedat",
+    "order": 13,
+    "archived": false
+  },
+  {
+    "slug": "relationships-between-the-incidence-and-degree-of-medullation-with-the-diameter-of-alpaca-",
+    "lang": "en",
+    "title": "Relationships between the incidence and degree of medullation with the diameter of alpaca fibers evaluated using a novel device based on artificial intelligence",
+    "date": "2022-06-21",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The presence of medullated fibers affects the textile processing, comfort and appeal of alpaca apparel. Measuring the incidence of medullated fibers is slow and expensive. Previous reports of the incidence of medullated fibers are often based on small test samples. The objectives of this work were to: (1) evaluate the Fiber Med device which uses artificial intelligence technology to rapidly and accurately identify the incidence of alpaca fibers according to their type of medullation and determines average fiber diameter (AFD); and (2) to relate the incidence of medullated fibers to a range of animal and fiber characteristics including age of alpaca at shearing, sex of alpaca, breed (Huacaya, Suri), location, and AFD. This study examined fiber from two locations, using 302 alpacas from two breeds and six age groups. Over 630,000 fibers were assessed (average per sample 2112) with AFD 22.1lm (range 15.5–33.3lm). Fiber medullation was categorized as either not present (58.6%; AFD 19.6lm), frag- mented (17.1%; 23.0lm), discontinuous (7.6%; 25.6lm), continuous (15.4%; 28.6lm) or strongly medullated (1.3%; 37.8 lm). After appropriate data transformation, analysis of variance, linear and mul- tiple regression analyses were performed to determine relationships between total medullation, AFD, location, breed, sex and age at shearing. There were significant differences in total medullation between location, breed and age at shearing but not sex of alpaca. However, in multiple regression analyses, once AFD was included in models, neither sex nor age at shearing was significant. AFD alone explained over 70% of the variation in total medullation. Differences in the incidence of the degree of medullation between age groups and marketing categories determined using AFD, were associated with differences in AFD. The differences due to location were explained by genetic selection programs to reduce AFD at one location. There was a persistent small incidence of strongly medullated fibers at all age groups (mean range 0.33–1.14%), locations, breeds and sexes and a higher incidence in fiber with AFD > 26.5 lm (mean range 2.87–6.50%). Suri alpaca had a lower incidence of medullation than Huacaya alpaca. Since the Fiber Med device provided a direct, fast and low-cost measurement of the incidence of medullation it appears to be a practical option for use in programs to improve fiber qual- ity, marketing and processing of white alpaca fiber. To reduce strongly medullated fibers in all catego- ries of alpaca fiber, the measurement of the incidence of medullation should become a routine assessment in alpaca breeding programs.",
+    "summary_30w": "The presence of medullated fibers affects the textile processing, comfort and appeal of alpaca apparel. Measuring the incidence of medullated fibers is slow and expensive. Previous reports of the incidence of medullated fibers are often based on small test samples.",
+    "keywords": [
+      "South American Camelids",
+      "objectionable fibers",
+      "wool",
+      "medullation type",
+      "fiber diameter Download Articule"
+    ],
+    "categories": [
+      "South american camelids",
+      "Objectionable fibers",
+      "Wool",
+      "Medullation type",
+      "Fiber diameter download articule"
+    ],
+    "products": [
+      "Fiber Med"
+    ],
+    "href": "http://localhost:8080/2022/06/relationships-between-the-incidence-and-degree-of-medullation-with-the-diameter-of-alpaca-fibers-evaluated-using-a-novel-device-based-on-artificial-intelligence/",
+    "download_link_DOI": "https://doi.org/10.1080/00405000.2022.2105110",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/relationships-between-the-incidence-and-degree-of-medullation-with-the-diameter-of-alpaca.pdf",
+    "localImage": "/assets/images/investigacion/images/relationships-between-the-incidence-and-degree-of-medullation-with-the-diameter-of-alpaca.png",
+    "author": [
+      "Edgar Quispe",
+      "Max Quispe",
+      "Carlos Quispe",
+      "Adolfo Poma",
+      "Rufino Paucar-Chanca",
+      "Alan Cruz",
+      "Bruce A. McGregor"
+    ],
+    "id": "relationships-between-the-incidence-and-degree-of-medullation-with-the-diameter-of-alpaca-",
+    "order": 14,
+    "archived": false
+  },
+  {
+    "slug": "application-of-artificial-intelligence-and-digital-images-analysis-to-automatically-determ",
+    "lang": "en",
+    "title": "Application of artificial intelligence and digital images analysis to automatically determine the percentage of fiber medullation in alpaca fleece samples",
+    "date": "2022-05-14",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The aim of this research is to develop and validate two computer programs based on artificial intelligence (AI) and digital image analysis (DIA) in order to determine the incidence of medullation in white alpaca fibers. Two data sets were analyzed: 76 samples of Huacaya alpaca fibers obtained from Huancavelica, Peru, and 200 samples of white alpacas of two genotypes (Huacaya, n =100; Suri, n = 100), obtained from Arequipa, Peru. The preparation of each sample followed the procedure described in IWTO-8-2011. The Pytorch framework was used to generate several training models based on the You Only Look at Once (YOLO) architecture. Circa 4000 pic- tures of fibers were taken and 661 of them were selected as representative. Using the LabelImg software, the fibers present in each representative picture (approximately 10 fibers/picture) were labeled as one of these two classes: either medullated or non-medullated. Subsequently, the data augmentation technique was applied to expand the data set to 3966 photographs. Thus, 90 of them were used as initial validation data, while the reaming 3876 pictures (containing a total of 23,964 labeled fibers) were used as training data. Matlab was used to develop the DIA-based software. More specifically, algorithms of pre-processing, segmentation, smoothing, skeletonization and Hough transform were implemented to detect medullated and non-medullated fibers. Cor- relation and linear regression analyses were used to evaluate the models. The medullation percentage results show that there is no statistically significant difference between the AI-based method and the projection mi- croscope method (p-value = 0.668 and 0.672 for the t-student and Wilcoxon tests, respectively). Moreover, the correlation of each of the developed computer methods with the projection microscope method is very strong (r = 0.99 and 0.97). This confirms the software ability to perform the recognition of fibers with and without medullation. Similar results (p-value = 0.357) were obtained when comparing the projection microscope method and DIA-based software method. Finally, using the proposed framework, the average time required to analyze a sample was 19.44 s. As a result, this software allows the implementation of practical, precise, and efficient methodologies to determine the incidence of medullation of alpaca fibers.",
+    "summary_30w": "The aim of this research is to develop and validate two computer programs based on artificial intelligence ( AI ) and digital image analysis ( DIA ) in order to determine the incidence of medullation in white alpaca fibers.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2022/05/application-of-artificial-intelligence-and-digital-images-analysis-to-automatically-determine-the-percentage-of-fiber-medullation-in-alpaca-fleece-samples/",
+    "download_link_DOI": "https://doi.org/10.1016/j.smallrumres.2022.106724",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/application-of-artificial-intelligence-and-digital-images-analysis-to-automatically-determ.pdf",
+    "localImage": "/assets/images/investigacion/images/application-of-artificial-intelligence-and-digital-images-analysis-to-automatically-determ.png",
+    "author": [
+      "Max Quispe Bonilla",
+      "Luis Serrano-Arriezu",
+      "Jesús Daniel Trigo",
+      "Christian Quispe Bonilla",
+      "Adolfo Poma Gutiérrez",
+      "Edgar Quispe Peña"
+    ],
+    "id": "application-of-artificial-intelligence-and-digital-images-analysis-to-automatically-determ",
+    "order": 15,
+    "archived": false
+  },
+  {
+    "slug": "group-structure-in-vicuna-vicugna-vicugna-mensalis-subject-to-chaku-management-in-central-",
+    "lang": "en",
+    "title": "Group structure in vicuña (Vicugna vicugna mensalis) subject to chaku management in central Andes, Peru",
+    "date": "2022-02-25",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "A detailed analysis has been made of family group structure of a Peruvian vicun ̃a (Vicugna vicugna mensalis) population subject to human management to obtain their fiber through shearing (the so-called chaku procedure). Animals inhabit a fenced area of natural grassland, and without human intervention, apart from the chaku procedure, which takes place once a year. Poor management conditions could be generating several changes on the structure vicun ̃a familiar groups. Once the whole chaku procedure took place, we observed a decrease of the average size of family groups from 4.67 to 3.60 individuals and their composition suffered from a higher change rate in comparison with previous periods of observation. Territorial males did not manage to keep their original family groups, and only 27% of males maintained at least one female from their previous family group. As for the adult females, after chaku only 55% managed to join up with at least one member of their original family structure, but only 23% kept their own offspring, providing evidence that the chaku event produced disruption of the family groups and lead to a high percentage of mothers losing their offspring afterwards. These results show the acute effects that this particular chaku procedure has on vicun ̃a family group structure and composition. Finally, it is recommend urgently implementing good practices designed by the IUCN to reduce the impact of large-scale captures, including carrying out chaku procedures every two or three years, and preferably during the months of September to October, thus minimizing deleterious effects on mother-cria bonding, and where animal welfare is the main driver when making management decisions.",
+    "summary_30w": "A detailed analysis has been made of family group structure of a Peruvian vicun ̃ a ( Vicugna vicugna mensalis ) population subject to human management to obtain their fiber through shearing ( the so-called chaku procedure ).",
+    "keywords": [
+      "Animal welfare",
+      "Fiber shearing",
+      "South American camelids",
+      "Vicuña behavior",
+      "Wildlife management Download Articule"
+    ],
+    "categories": [
+      "Animal welfare",
+      "Fiber shearing",
+      "South american camelids",
+      "Vicuña behavior",
+      "Wildlife management download articule"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2022/02/group-structure-in-vicuna-vicugna-vicugna-mensalis-subject-to-chaku-management-in-central-andes-peru/",
+    "download_link_DOI": "https://doi.org/10.1016/j.smallrumres.2022.106661",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/group-structure-in-vicuna-vicugna-vicugna-mensalis-subject-to-chaku-management-in-central.pdf",
+    "localImage": "/assets/images/investigacion/images/group-structure-in-vicuna-vicugna-vicugna-mensalis-subject-to-chaku-management-in-central.png",
+    "author": [
+      "Edgar Quispe",
+      "Omar Siguas",
+      "Marco Espinoza",
+      "Wilmer Arana",
+      "José Contreras",
+      "Jorge Cassinello",
+      "Jordi Bartolomé"
+    ],
+    "id": "group-structure-in-vicuna-vicugna-vicugna-mensalis-subject-to-chaku-management-in-central-",
+    "order": 16,
+    "archived": false
+  },
+  {
+    "slug": "calibration-and-validation-of-the-mini-fiber-ec-image-analysis-instrument-mean-fiber-diame",
+    "lang": "en",
+    "title": "Calibration and validation of the Mini-fiber EC image analysis instrument mean fiber diameter through direct or primary measurements",
+    "date": "2021-12-13",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The Minifiber EC (MFEC) is a portable instrument for measuring the diameter of animal fibers. Its accuracy and precision have been estimated but by comparing its measurements with those of laboratory devices that had been calibrated on other devices in turn, not on a direct or primary measure of diameter. This work attempts to test direct measurements by gravimetry, Vernier mini caliper, microscope and the classic microprojector, using a nondeformable, high resistance synthetic fiber (Kevlar) for direct measurement. The MFEC instrument is calibrated with each mean fiber diameter obtained in direct measurements and its results are compared. The conclusions drawn are that it is possible to calibrate the MFEC instrument with direct measurements on Kevlar and measurement accuracy or tolerance of 0.28 microns is obtained. This indicates a very low biased mean fiber diameter measurement by MFEC.",
+    "summary_30w": "The Minifiber EC ( MFEC ) is a portable instrument for measuring the diameter of animal fibers. Its accuracy and precision have been estimated but by comparing its measurements with those of laboratory devices that had been calibrated on other devices in turn, not on a direct or primary measure of diameter.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Fiber EC"
+    ],
+    "href": "http://localhost:8080/2021/12/calibration-and-validation-of-the-mini-fiber-ec-image-analysis-instrument-mean-fiber-diameter-through-direct-or-primary-measurements/",
+    "download_link_DOI": "https://doi.org/10.15406/jteft.2021.07.00290",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/calibration-and-validation-of-the-mini-fiber-ec-image-analysis-instrument-mean-fiber-diame.pdf",
+    "localImage": "/assets/images/investigacion/images/calibration-and-validation-of-the-mini-fiber-ec-image-analysis-instrument-mean-fiber-diame.png",
+    "author": [
+      "Eduardo Frank",
+      "EN Hick",
+      "MVH Castillo",
+      "Gaut MC",
+      "RH Mamani-Cato"
+    ],
+    "id": "calibration-and-validation-of-the-mini-fiber-ec-image-analysis-instrument-mean-fiber-diame",
+    "order": 17,
+    "archived": false
+  },
+  {
+    "slug": "evaluacion-de-la-medulacion-de-fibras-de-lanas-y-fibras-especiales-de-algunas-especies-de-",
+    "lang": "es",
+    "title": "Evaluación de la medulación de fibras de lanas y fibras especiales de algunas especies de animales",
+    "date": "2021-10-27",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Existen argumentos a favor de la reducción de la incidencia de medulación, a fin de realizar la mejora de las fibras desde el punto de vista de la producción y procesamiento textil, por lo que se requiere reforzar el conocimiento en torno a esta característica. Por tanto, el presente trabajo tuvo como objetivo evaluar la incidencia y relación entre los tipos de medulación, así como determinar su relación con la finura en fibras de ovino, alpaca, llama, paco-vicuña y conejo Angora. Se tomaron muestras de lana y fibra (n=15 por especie animal) y adicionalmente 140 muestras de alpacas tuis macho de color blanco. Se determinó la media del diámetro de fibra (MDF) y los porcentajes de fibras meduladas (%FM) y no meduladas (%FNM), y en esta última se determinaron los porcentajes de fibras de medulación fragmentada, discontinua, continua y fuertemente medulada o tipo kemp. Los resultados obtenidos mostraron que las fibras de lana Merino presentaron pocas fibras meduladas, ocurriendo lo contrario en fibras de conejo Angora, mientras que las fibras de alpacas tuis, llamas y paco-vicuñas tuvieron porcentajes de medulación moderados (22-40%), encontrándose médulas aún en fibras muy finas. Se determinó una relación directa entre la MDF y el %FM en todos los tipos de fibras, a excepción de la lana de ovino. Se concluye que el %FM es una característica que debería disminuirse en llamas y alpacas y, por tanto, debiera ser considerado como criterio de selección en los programas de mejoramiento genético, pero solo en torno a reducir drásticamente la incidencia de fibras fuertemente meduladas.",
+    "summary_30w": "Existen argumentos a favor de la reducción de la incidencia de medulación, a fin de realizar la mejora de las fibras desde el punto de vista de la producción y procesamiento textil, por lo que se requiere reforzar el conocimiento en torno a esta característica.",
+    "keywords": [
+      "fibras",
+      "camélidos sudamericanos",
+      "pelo de conejo",
+      "kemp",
+      "medulación fragmentada",
+      "Descargar Artículo"
+    ],
+    "categories": [
+      "Fibras",
+      "Camélidos sudamericanos",
+      "Pelo de conejo",
+      "Kemp",
+      "Medulación fragmentada",
+      "Descargar artículo"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2021/10/evaluacion-de-la-medulacion-de-fibras-de-lanas-y-fibras-especiales-de-algunas-especies-de-animales/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v32i5.17639",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/evaluacion-de-la-medulacion-de-fibras-de-lanas-y-fibras-especiales-de-algunas-especies-de.pdf",
+    "localImage": "/assets/images/investigacion/images/evaluacion-de-la-medulacion-de-fibras-de-lanas-y-fibras-especiales-de-algunas-especies-de.png",
+    "author": [
+      "Giancarlo Berolatti Obando",
+      "Lusmenia Ruiz Mejía",
+      "Flor Alicia Cabrera Bustamante",
+      "Jorge Aliaga Gutiérrez",
+      "Max David Quispe Bonilla",
+      "Edgar Carlos Quispe Peña"
+    ],
+    "id": "evaluacion-de-la-medulacion-de-fibras-de-lanas-y-fibras-especiales-de-algunas-especies-de-",
+    "order": 18,
+    "archived": false
+  },
+  {
+    "slug": "potential-for-a-machine-learning-method-to-be-applied-to-the-study-of-herbivore-diets",
+    "lang": "en",
+    "title": "Potential for a machine learning method to be applied to the study of herbivore diets",
+    "date": "2021-10-19",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The software generated using artificial intelligence achieves great accuracy in the identification and counting epidermal plant fragments in microscope slides of faecal samples, improving the study of herbivore diets.",
+    "summary_30w": "The software generated using artificial intelligence achieves great accuracy in the identification and counting epidermal plant fragments in microscope slides of faecal samples, improving the study of herbivore diets.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2021/10/potential-for-a-machine-learning-method-to-be-applied-to-the-study-of-herbivore-diets/",
+    "download_link_DOI": "https://doi.org/10.1021/acs.jpca.4c04048.s001",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/potential-for-a-machine-learning-method-to-be-applied-to-the-study-of-herbivore-diets.pdf",
+    "localImage": "/assets/images/investigacion/images/potential-for-a-machine-learning-method-to-be-applied-to-the-study-of-herbivore-diets.png",
+    "id": "potential-for-a-machine-learning-method-to-be-applied-to-the-study-of-herbivore-diets",
+    "order": 19,
+    "archived": false
+  },
+  {
+    "slug": "evaluation-of-a-new-portable-device-that-measures-diameter-of-animal-fibres",
+    "lang": "en",
+    "title": "Evaluation of a new portable device that measures diameter of animal fibres",
+    "date": "2020-10-26",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Increasing production of animal fibres has increased the need for a portable instrument that measures fibre diameter and associated characteristics with precision and accuracy. This research evaluated a new portable fibre tester (PFT) by measuring the diameter and related characteristics of tops and scoured fibres of wool, alpaca, and vicuña. The PFT was constructed with integrated mechanical, optical, electronic, and informatic components. Textile tops of sheep wool, alpaca fibres, and mohair goat fibres were used as standard references to calibrate the PFT and determine its accuracy and precision. The results were compared with those from a wool industry standard instrument (OFDA2000) that uses similar technology. The PFT had high accuracy (-0.01, -0.12, and -0.01 μm) for average fibre diameter (AFD) of wool, alpaca, and mohair fibres, respectively. Deviations of standard tops (ST) were within industry-accepted tolerance ranges. Standard errors, indicating precision, were low, ranging from 0.07 to 0.25 μm, 0.02 to 0.44 μm, and 0.09 to 0.024 μm, for wool, alpaca, and mohair fibre tops, respectively. The correlations of measurements of AFD from the two instruments were 0.99 for wool, alpaca, and mohair fibres, but lower for vicuña fibres (0.82). No evidence of bias was observed. Therefore, the PFT may be used as an alternative instrument for measuring fibre diameter and quantifying variation in diameter of wool, mohair, and alpaca fibres. The PFT has appeal for use in the field for practical animal selection and fleece classification based on fibre characteristics.",
+    "summary_30w": "Increasing production of animal fibres has increased the need for a portable instrument that measures fibre diameter and associated characteristics with precision and accuracy. This research evaluated a new portable fibre tester ( PFT ) by measuring the diameter and related characteristics of tops and scoured fibres of wool, alpaca, and vicun ̃ a.",
+    "keywords": [
+      "alpaca",
+      "fibre diameter",
+      "mohair",
+      "vicuña",
+      "wool Download Articule"
+    ],
+    "categories": [
+      "Alpaca",
+      "Fibre diameter",
+      "Mohair",
+      "Vicuña",
+      "Wool download articule"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2020/10/evaluation-of-a-new-portable-device-that-measures-diameter-of-animal-fibres/",
+    "download_link_DOI": "https://doi.org/10.4314/sajas.v50i5.7",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/evaluation-of-a-new-portable-device-that-measures-diameter-of-animal-fibres.pdf",
+    "localImage": "/assets/images/investigacion/images/evaluation-of-a-new-portable-device-that-measures-diameter-of-animal-fibres.png",
+    "author": [
+      "E.C. Quispe",
+      "D. Sacchero",
+      "T. Wuliji",
+      "M.D. Quispe"
+    ],
+    "id": "evaluation-of-a-new-portable-device-that-measures-diameter-of-animal-fibres",
+    "order": 20,
+    "archived": false
+  },
+  {
+    "slug": "comparacion-de-la-precision-y-exactitud-de-cuatro-equipos-para-determinar-la-media-del-dia",
+    "lang": "es",
+    "title": "Comparación de la precisión y exactitud de cuatro equipos para determinar la media del diámetro de fibra y desviación estándar de fibra de alpaca",
+    "date": "2019-06-30",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El objetivo fue la precisión y exactitud de cuatro equipos que evalúan la Media del Diámetro de Fibra (MDF) y Desviación Estándar (DS), realizado en el Laboratorio de Fibras Textiles, Pieles y Cueros de la Facultad de Zootecnia de la Universidad Nacional Agraria la Molina. Los equipos utilizados: MiniFiber-EC, Fiber EC, Laserscan (LSN) y Microscopio de Proyección (MP). Se trabajó en un ambiente controlado, una humedad de 65 ± 3% y temperatura de 20 ± 2 o C. Se utilizaron 5 muestras de tops de alpaca con diámetros conocidos con un rango de 16,8 a 31,4 μm y 3,9 – 9,7 μm para MDF y DS respectivamente, distribuidos en dos submuestras. El Fiber-EC y MiniFiber-EC determinaron diámetros similares, respecto a los equipos referenciales LSN y MP. Sin embargo, la precisión para MDF fue mejor para diámetros finos, que para diámetros gruesos con un intervalo de confianza al 95% (IC) que osciló de ± 0,16 – ±0,82 μm y ± 0,08 – ± 0,57 μm, para MiniFiber-EC y Fiber-EC respectivamente; comparado con el LSN y MP mostraron una menor precisión para diámetros gruesos 31,4 μm con un intervalo de confianza al 95% (IC) de ± 0,90 μm y ± 0,92μm respectivamente. Respecto a la exactitud, el Fiber-EC fue mejor para fibras finas (0,04 con muestras de 16,8 μm), y fibras gruesas 0,49 en muestras de 31,4 μm; respecto al LSN tuvo menor exactitud para diámetros gruesos (1,20 en muestras de 31,4 μm); el MP tuvo mayor exactitud 0,02 μm para muestras de 18,70 μm. La precisión de la DS fue similar en los cuatro equipos; sin embargo, tuvo mayor exactitud el LSN respecto a los tres equipos evaluados. El MiniFiber-EC y Fiber-EC son equipos alternativos para determinar la MDF y DS de alpaca con buena precisión y exactitud.",
+    "summary_30w": "El objetivo fue la precisión y exactitud de cuatro equipos que evalúan la Media del Diámetro de Fibra ( MDF ) y Desviación Estándar ( DS ), realizado en el Laboratorio de Fibras Textiles, Pieles y Cueros de la Facultad de Zootecnia de la Universidad Nacional Agraria la Molina.",
+    "keywords": [
+      "Precisión",
+      "Exactitud",
+      "Diámetro de fibra",
+      "Desviación estándar"
+    ],
+    "categories": [
+      "Precisión",
+      "Exactitud",
+      "Diámetro de fibra",
+      "Desviación estándar"
+    ],
+    "products": [
+      "Fiber EC"
+    ],
+    "href": "http://localhost:8080/2019/06/comparacion-de-la-precision-y-exactitud-de-cuatro-equipos-para-determinar-la-media-del-diametro-de-fibra-y-desviacion-estandar-de-fibra-de-alpaca/",
+    "download_link_DOI": "https://doi.org/10.15381/idata.v4i2.6763",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/comparacion-de-la-precision-y-exactitud-de-cuatro-equipos-para-determinar-la-media-del-dia.pdf",
+    "localImage": "/assets/images/investigacion/images/comparacion-de-la-precision-y-exactitud-de-cuatro-equipos-para-determinar-la-media-del-dia.png",
+    "author": [
+      "Edgar Ruiz L."
+    ],
+    "id": "comparacion-de-la-precision-y-exactitud-de-cuatro-equipos-para-determinar-la-media-del-dia",
+    "order": 21,
+    "archived": false
+  },
+  {
+    "slug": "cuticle-and-cortical-cell-morphology-of-alpaca-and-other-rare-animal-fibres",
+    "lang": "en",
+    "title": "Cuticle and cortical cell morphology of alpaca and other rare animal fibres",
+    "date": "2017-08-11",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "The null hypothesis of the experiments reported is that the cuticle and cortical morphology of rare animal fibres are similar. The investigation also examined if the productivity and age of alpacas were associated with cuticle morphology and if seasonal nutritional conditions were related to cuticle scale frequency. Cuticle and cortical cell dimensions and ellipticity of the fibre cross section were investigated in 32 samples of cashmere, alpaca, mohair, bison, qiviut and vicuña from various origins. In addition, 24 Peruvian alpaca samples from animals ages 2–6 years and of varying fleece productivity were examined. Cuticle scale frequency, cuticle thickness and cortical cell dimensions (length, diameter, volume and ratio of length to diameter) and ellipticity differed between fibres and cuticle scale frequency also varied with mean fibre diameter. For Peruvian alpaca fleece samples, cuticle scale frequency varied with the age of alpaca and fleece productivity. Fibre ellipticity increased with increasing fibre diameter. Cortical cell length was strongly related to cortical cell diameter. The cuticle scale morphology of these rare animal fibres did not have fixed dimensions. Using cuticle scale morphology as a diagnostic tool to positively identify rare natural animal fibres needs to standardize measurements for fibre diameter but will still be affected by differences in animal productivity.",
+    "summary_30w": "The null hypothesis of the experiments reported is that the cuticle and cortical morphology of rare animal fibres are similar. The investigation also examined if the productivity and age of alpacas were associated with cuticle morphology and if seasonal nutritional conditions were related to cuticle scale frequency.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2017/08/cuticle-and-cortical-cell-morphology-of-alpaca-and-other-rare-animal-fibres/",
+    "download_link_DOI": "https://doi.org/10.1080/00405000.2017.1368112",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/cuticle-and-cortical-cell-morphology-of-alpaca-and-other-rare-animal-fibres.pdf",
+    "localImage": "/assets/images/investigacion/images/cuticle-and-cortical-cell-morphology-of-alpaca-and-other-rare-animal-fibres.png",
+    "author": [
+      "B. A. McGregor",
+      "E. C. Quispe Peña"
+    ],
+    "id": "cuticle-and-cortical-cell-morphology-of-alpaca-and-other-rare-animal-fibres",
+    "order": 22,
+    "archived": false
+  },
+  {
+    "slug": "development-and-preliminary-validation-of-an-automatic-digital-analysis-system-for-animal-",
+    "lang": "en",
+    "title": "Development and preliminary validation of an automatic digital analysis system for animal fibre analysis",
+    "date": "2017-08-07",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "An advanced driver assisted system (ADAS) called FIBER-EC was designed and developed. It is capable of performing AF, SDAFD, CVAFD, CF, PF and SF, derived in farm conditions, with a system of computer vision, implemented and associated with a mechanical structure for generating displacement of a sample holder in the XY plane. Environmental temperature and relative humidity can be monitored. According to the validation, FIBER-EC can be used to evaluate alpaca, llama and sheep in the laboratory and on farm because it has high precision, accuracy and repeatability. Additionally, fibre assessment between OFDA 2000 and FIBER-EC had a high correlation for on-farm conditions, but differences among measurements were found. While the measurements were being carried out, FIBER-EC showed well defined images, allowing the user to view the images of the fibres in real time.",
+    "summary_30w": "An advanced driver assisted system ( ADAS ) called FIBER-EC was designed and developed. It is capable of performing AF, SDAFD, CVAFD, CF, PF and SF, derived in farm conditions, with a system of computer vision, implemented and associated with a mechanical structure for generating displacement of a sample holder in the XY plane.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2017/08/development-and-preliminary-validation-of-an-automatic-digital-analysis-system-for-animal-fibre-analysis/",
+    "download_link_DOI": "https://doi.org/10.4314/sajas.v47i6.10",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/development-and-preliminary-validation-of-an-automatic-digital-analysis-system-for-animal.pdf",
+    "localImage": "/assets/images/investigacion/images/development-and-preliminary-validation-of-an-automatic-digital-analysis-system-for-animal.png",
+    "author": [
+      "M. D. Quispe",
+      "G. Benavidez",
+      "R. A. Sauri",
+      "J. J. Bengoechea",
+      "E. C. Quispe"
+    ],
+    "id": "development-and-preliminary-validation-of-an-automatic-digital-analysis-system-for-animal-",
+    "order": 23,
+    "archived": false
+  },
+  {
+    "slug": "determinacion-de-la-mejor-zona-de-muestreo-en-vellones-de-llamas-lama-glama-chaku-para-sei",
+    "lang": "es",
+    "title": "Determinación de la mejor zona de muestreo en vellones de llamas (Lama glama) Chaku para seis características tecnológicas",
+    "date": "2017-05-02",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "La existencia de variaciones de las diversas características tecnológicas en vellones de animales entre las diversas zonas corporales, exige el muestreo de cada zona para obtener el promedio de todo el vellón. Por tal razón en ovinos, alpacas, cabras y vicuñas se han realizado estudios a fin de determinar el punto óptimo de muestreo. En llamas aún existe poca información al respecto, razón por la cual se realizó el presente trabajo, a fin de determinar la mejor zona de muestreo para 6 características tecnológicas de vellones de llamas Chaku o Lanuda.",
+    "summary_30w": "La existencia de variaciones de las diversas características tecnológicas en vellones de animales entre las diversas zonas corporales, exige el muestreo de cada zona para obtener el promedio de todo el vellón.",
+    "keywords": [],
+    "categories": [],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2017/05/determinacion-de-la-mejor-zona-de-muestreo-en-vellones-de-llamas-lama-glama-chaku-para-seis-caracteristicas-tecnologicas/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/determinacion-de-la-mejor-zona-de-muestreo-en-vellones-de-llamas-lama-glama-chaku-para-sei.pdf",
+    "localImage": "/assets/images/investigacion/images/determinacion-de-la-mejor-zona-de-muestreo-en-vellones-de-llamas-lama-glama-chaku-para-sei.png",
+    "id": "determinacion-de-la-mejor-zona-de-muestreo-en-vellones-de-llamas-lama-glama-chaku-para-sei",
+    "order": 24,
+    "archived": false
+  },
+  {
+    "slug": "componentes-de-varianza-y-repetibilidad-de-caracteristicas-productivas-y-textiles-de-la-fi",
+    "lang": "es",
+    "title": "Componentes de varianza y repetibilidad de características productivas y textiles de la fibra en alpacas (Vicugna pacos) Huacaya criadas a nivel comunal",
+    "date": "2016-09-25",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "A fin de estimar componentes de varianza fenotípica, correlación fenotípica y repetibilidad de media de diámetro de fibra (MDF), coeficiente de variación de MDF (CVMDF), peso de vellón (PVe), índice de curvatura (IC) y longitud de mecha (LM), se realizó un ensayo con 41 alpacas (22 machos y 19 hembras) en los años 2009 y 2010, en la comunidad Santo Domingo de Cachi, Junín, Perú. Los animales que nacieron en el 2008, se esquilaron anualmente, midiendo los caracteres en estudio en cada una de las muestras de fibra, tomadas del costillar medio. Los resultados indican que las alpacas de la zona en estudio producen vellones con buen peso, de fibras que exhiben finura, de bajo CVMDF y que la LM al año está acorde a los requerimientos textiles. La edad tuvo efecto solo sobre la MDF, IC y LM; y el sexo sólo sobre el PVe y LM. Las varianzas genética + ambiente permanente (VG + VAP) de la MDF e IC fueron mayores a las varianzas del ambiente temporal (VAT), ocurriendo lo contrario para las varianzas del CVMDF, PVe y LM. Las correlaciones fenotípicas entre las cinco características estudiadas resultaron alrededor de 0.28, observándose correlaciones positivas en unas y negativas en otras, mientras que en MDF con CVMDF y CVMDF con IC no hubo relación significativa. La correlación entre MDF e IC fue la más alta y negativa. La repetibilidad para MDF fue la más alta (0.71 ± 0.08), y la más baja la de LM (0.29 ± 0.15). Palabras clave: Alpaca, Componentes de varianza, Fibra, Medio ambiente temporal, Repetibilidad.",
+    "summary_30w": "A fin de estimar componentes de varianza fenotípica, correlación fenotípica y repetibilidad de media de diámetro de fibra ( MDF ), coeficiente de variación de MDF ( CVMDF ), peso de vellón ( PVe ), índice de curvatura ( IC ) y longitud de mecha ( LM ), se realizó un ensayo con 41 alpacas ( 22 machos y 19 hembras ) en los años 2009 y 2010, en la comunidad Santo Domingo de Cachi, Junín, Perú.",
+    "keywords": [
+      "Alpaca",
+      "Componentes de varianza",
+      "Fibra",
+      "Medio ambiente temporal",
+      "Repetibilidad",
+      "Descargar Artículo"
+    ],
+    "categories": [
+      "Alpaca",
+      "Componentes de varianza",
+      "Fibra",
+      "Medio ambiente temporal",
+      "Repetibilidad",
+      "Descargar artículo"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2016/09/componentes-de-varianza-y-repetibilidad-de-caracteristicas-productivas-y-textiles-de-la-fibra-en-alpacas-vicugna-pacos-huacaya-criadas-a-nivel-comunal-2/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v29i4.14117",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/componentes-de-varianza-y-repetibilidad-de-caracteristicas-productivas-y-textiles-de-la-fi.pdf",
+    "localImage": "/assets/images/investigacion/images/componentes-de-varianza-y-repetibilidad-de-caracteristicas-productivas-y-textiles-de-la-fi.png",
+    "author": [
+      "Lorenzo A. Roque Gonzales",
+      "Edwin Ormachea Valdez"
+    ],
+    "id": "componentes-de-varianza-y-repetibilidad-de-caracteristicas-productivas-y-textiles-de-la-fi",
+    "order": 25,
+    "archived": false
+  },
+  {
+    "slug": "comparacion-de-la-dieta-de-rebanos-mixtos-en-pajonales-altoandinos",
+    "lang": "es",
+    "title": "Comparación de la dieta de rebaños mixtos en pajonales altoandinos",
+    "date": "2015-10-28",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El objetivo de este trabajo fue comparar la composición de la dieta de distintas especies ganaderas bajo pastoreo mixto en la puna. Se cercaron cuatro parcelas en dos zonal de pajonal que fueron pastoreadas por rebaños mixtos de alpaca-llama, ovino-bovinos, alpaca-ovino y alpaca-bovino. Mediante análisis microhistológico de las heces se determinaron los porcentajes de los principales componentes de la dieta. Las gramíneas fueron más abundantes en la dieta del ganado mayor y las herbáceas en la del menor. El consumo de gramíneas altas no varió entre las estaciones del año para ningún tipo de rebaño. Se concluye que el pastoreo mixto entre alpaca y ovino, con una dieta similar, sería el menos apropiado debido a la competencia potencial por los recursos forrajeros. En los otros rebaños, las diferencias de tamaño más que el carácter autóctono de los animales permitirían un cuerto reparto de los mismos.",
+    "summary_30w": "El objetivo de este trabajo fue comparar la composición de la dieta de distintas especies ganaderas bajo pastoreo mixto en la puna. Se cercaron cuatro parcelas en dos zonal de pajonal que fueron pastoreadas por rebaños mixtos de alpaca-llama, ovino-bovinos, alpaca-ovino y alpaca-bovino.",
+    "keywords": [
+      "Análisis microhistológico",
+      "camélidos",
+      "competencia",
+      "puna",
+      "reparto de recursos",
+      "Descargar SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Análisis microhistológico",
+      "Camélidos",
+      "Competencia",
+      "Puna",
+      "Reparto de recursos",
+      "Descargar south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2015/10/comparacion-de-la-dieta-de-rebanos-mixtos-en-pajonales-altoandinos/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/comparacion-de-la-dieta-de-rebanos-mixtos-en-pajonales-altoandinos.pdf",
+    "localImage": "/assets/images/investigacion/images/comparacion-de-la-dieta-de-rebanos-mixtos-en-pajonales-altoandinos.png",
+    "id": "comparacion-de-la-dieta-de-rebanos-mixtos-en-pajonales-altoandinos",
+    "order": 26,
+    "archived": false
+  },
+  {
+    "slug": "caracteristicas-tecnologicas-de-la-fibra-de-llama-lama-glama-chaku-antes-y-despues-de-desc",
+    "lang": "es",
+    "title": "Características tecnológicas de la fibra de llama (Lama glama) Chaku antes y después de descerdar",
+    "date": "2015-10-02",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Se evaluaron cinco características tecnológicas de la fibra de llama: diámetro medio de fibra (MDF), coeficiente de variación de MDF (CVMDF), factor de confort (FC), índice de curvatura (IC) y finura al hilado (FH) antes y después de descerdar. Se tomaron muestras de 10 g de fibra de vellones de 227 llamas Chaku de la región Apurímac, Perú. Las fibras sin descerdar y descerdadas fueron analizadas con el equipo OFDA 2000 (Optical Fibre Diameter Analyser). Se consideraron las variables sexo y edad (1-2, >2 años) en el análisis estadístico a través de un diseño completamente al azar con arreglo factorial. Los resultados indican que la fibra descerdada es de mejor calidad, disminuyendo la MDF (0.70 μm), el CVMDF (1.8%) y la FH (1.06 μm) e incrementando el FC (2.74%) y el IC (4.66°/mm). Asimismo, el sexo no tuvo un efecto significativo en las características tecnológicas de la fibra pero las llamas juveniles presentaron mejor calidad de fibra. Se concluye que el descerdado y la edad de la llama tienen efectos significativos sobre la finura y su variación, el factor de confort, el índice de curvatura y la finura al hilado.",
+    "summary_30w": "Se evaluaron cinco características tecnológicas de la fibra de llama: diámetro medio de fibra ( MDF ), coeficiente de variación de MDF ( CVMDF ), factor de confort ( FC ), índice de curvatura ( IC ) y finura al hilado ( FH ) antes y después de descerdar.",
+    "keywords": [
+      "calidad textil",
+      "fibra fina",
+      "fibra gruesa",
+      "2022 Hi there",
+      "just became alert to your blog through Google",
+      "and found that its really informative",
+      "I’m gonna watch out for brussels",
+      "I will appreciate if you continue this in future",
+      "Numerous people will be benefited from your writing",
+      "Cheers! Tomasz Jerzy Michałowski abril 20",
+      "2022 Thank you for that wise critique",
+      "Comments are closed"
+    ],
+    "categories": [
+      "Calidad textil",
+      "Fibra fina",
+      "Fibra gruesa",
+      "2022 hi there",
+      "Just became alert to your blog through google",
+      "And found that its really informative",
+      "I’m gonna watch out for brussels",
+      "I will appreciate if you continue this in future",
+      "Numerous people will be benefited from your writing",
+      "Cheers! tomasz jerzy michałowski abril 20",
+      "2022 thank you for that wise critique",
+      "Comments are closed"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2015/10/caracteristicas-tecnologicas-de-la-fibra-de-llama-lama-glama-chaku-antes-y-despues-de-descerdar-2/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v27i2.11643",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/caracteristicas-tecnologicas-de-la-fibra-de-llama-lama-glama-chaku-antes-y-despues-de-desc.pdf",
+    "localImage": "/assets/images/investigacion/images/caracteristicas-tecnologicas-de-la-fibra-de-llama-lama-glama-chaku-antes-y-despues-de-desc.jpg",
+    "author": [
+      "Flor de María Laime Huarcaya",
+      "Rubén Pinares Huamaní",
+      "Valeriano Paucara Ocsa",
+      "Virgilio Machaca Machaca",
+      "Edgar Carlos Quispe Peña"
+    ],
+    "id": "caracteristicas-tecnologicas-de-la-fibra-de-llama-lama-glama-chaku-antes-y-despues-de-desc",
+    "order": 27,
+    "archived": false
+  },
+  {
+    "slug": "analisis-economico-y-de-la-produccion-del-descerdado-manual-de-la-fibra-de-llamas-lama-gla",
+    "lang": "es",
+    "title": "Análisis económico y de la producción del descerdado manual de la fibra de llamas (Lama glama) Chaku",
+    "date": "2015-05-13",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Con el objetivo de evaluar el efecto de las diferentes zonas del vellón de llama sobre el rendimiento al descerdado manual, así como para realizar una evaluación económica de dicho proceso, se esquilaron 15 llamas de tipo Chaku o lanudo (7 juveniles y 8 adultas, que corresponden a la primera esquila) de un Centro de Investigación ubicado en Huancavelica, Perú. Cada vellón fue extendido y dividido dos lados y en 7 zonas corporales. Posterior- mente en el laboratorio, previo pesado de cada zona, las muestras fueron descerdadas manualmente obteniéndose tres componentes: Fibra fina, fibra gruesa e impureza, los cuales también fueron pesadas. Asimismo 7 personas previamente entrenadas, realizaron el des- cerdado de muestras de 7 zonas corporales de 10 vellones previo control del tiempo, a fin de obtener el rendimiento de fibra fina/h. Los datos fueron procesados mediante un diseño completamente al azar y un diseño en bloque completamente al azar con arreglo factorial de 7×2 y para comparar medias se utilizaron pruebas de Tukey y Duncan. Los resultados muestran que al descerdado manual de la fibra de llama se obtiene un alto rendimiento de fibra fina (68,60 ± 2.54 %), y que el estrato etáreo no tiene efecto sobre el rendimiento porcentual, pero si sobre el rendimiento de producción, mientras que las zonas de donde se puede obtener mayor cantidad de fibra fina son las que corresponden a las tres zonas del manto (anterior, central y posterior) y al cuello. También se ha encontrado que no existe efecto de la zona corporal sobre al rendimiento/persona/h y que dicha eficiencia por los descerdadores no es buena (9,9 ± 1,1 g/persona/h), por lo que al análisis económico resulta que la producción de 1 kg de fibra fina al descerdado manual tendría un costo en mano de obra de 141,45 USD $, y que considerando los costos variables, 1 kg de fibra fina de llama costaría 145,92 USD $, lo que contrasta con el precio de fibra fina de llama que se paga en el mercado, lo cual apenas llega a los 7,14 USD $, lo que permite concluir que el descerdado manual de fibra de llama tiene un alto costo económico..",
+    "summary_30w": "Con el objetivo de evaluar el efecto de las diferentes zonas del vellón de llama sobre el rendimiento al descerdado manual, así como para realizar una evaluación económica de dicho proceso, se esquilaron 15 llamas de tipo Chaku o lanudo ( 7 juveniles y 8 adultas, que corresponden a la primera esquila ) de un Centro de Investigación ubicado en Huancavelica, Perú.",
+    "keywords": [
+      "descerdado",
+      "fibra fina",
+      "camélido sudamericano Texto completo: Archivos de zootecnia",
+      "ISSN 0004-0592",
+      "Vol",
+      "Nº 246",
+      "págs",
+      "191-198 SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Descerdado",
+      "Fibra fina",
+      "Camélido sudamericano texto completo: archivos de zootecnia",
+      "Issn 0004-0592",
+      "Vol",
+      "Nº 246",
+      "Págs",
+      "191-198 south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2015/05/analisis-economico-y-de-la-produccion-del-descerdado-manual-de-la-fibra-de-llamas-lama-glama-chaku/",
+    "download_link_DOI": "https://doi.org/10.21071/az.v64i246.397",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/analisis-economico-y-de-la-produccion-del-descerdado-manual-de-la-fibra-de-llamas-lama-gla.pdf",
+    "localImage": null,
+    "author": [
+      "E. C. Quispe",
+      "L. Chipa",
+      "R. Pinares"
+    ],
+    "id": "analisis-economico-y-de-la-produccion-del-descerdado-manual-de-la-fibra-de-llamas-lama-gla",
+    "order": 28,
+    "archived": false
+  },
+  {
+    "slug": "adaptation-strategies-of-andean-pastoralist-households-to-both-climate-and-non-climate-cha",
+    "lang": "en",
+    "title": "Adaptation Strategies of Andean Pastoralist Households to Both Climate and Non-Climate Changes",
+    "date": "2015-02-07",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Pastoralist households in the Andes have always had to cope with climate uncertainty. Recently, however, due to a combination of a weak asset base, large inequalities in land and livestock access, and the prevalence of multiple nonclimate- related stressors, they are being pushed beyond their range of adaptability. However, the complex, forward-looking and site-specific features of these adaptation strategies remain insufficiently addressed. This article identifies the diverse adaptation trajectories pursued by pastoralist households in the Central Andes. Accumulation of livestock and adherence to the traditional economy are the strategies most often followed by wealthier households, while less well-off households seek further integration into the market economy and asset diversification. Measures aimed at promoting textile manufacturing, favouring the preservation of certain grassland areas, and reducing land fragmentation, seem particularly appropriate for enhancing the livelihoods of Andean pastoralist households.",
+    "summary_30w": "Pastoralist households in the Andes have always had to cope with climate uncertainty. Recently, however, due to a combination of a weak asset base, large inequalities in land and livestock access, and the prevalence of multiple nonclimate- related stressors, they are being pushed beyond their range of adaptability.",
+    "keywords": [
+      "Pastoralism",
+      "Peruvian Andes",
+      "Global environmental change",
+      "2021 Hello It’s an interesting article Comments are closed"
+    ],
+    "categories": [
+      "Pastoralism",
+      "Peruvian andes",
+      "Global environmental change",
+      "2021 hello it’s an interesting article comments are closed"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2015/02/adaptation-strategies-of-andean-pastoralist-households-to-both-climate-and-non-climate-changes/",
+    "download_link_DOI": "https://doi.org/10.1007/s10745-015-9731-7",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/adaptation-strategies-of-andean-pastoralist-households-to-both-climate-and-non-climate-cha.pdf",
+    "localImage": "/assets/images/investigacion/images/adaptation-strategies-of-andean-pastoralist-households-to-both-climate-and-non-climate-cha.png",
+    "author": [
+      "F. López-i-Gelats",
+      "J. L. Contreras Paco",
+      "R. Huilcas Huayra",
+      "O. D. Siguas Robles",
+      "E. C. Quispe Peña",
+      "J. Bartolomé Filella"
+    ],
+    "id": "adaptation-strategies-of-andean-pastoralist-households-to-both-climate-and-non-climate-cha",
+    "order": 29,
+    "archived": false
+  },
+  {
+    "slug": "caracteristicas-tecnologicas-de-la-fibra-blanca-de-alpaca-huacaya-en-la-zona-altoandina-de",
+    "lang": "es",
+    "title": "Características tecnológicas de la fibra blanca de alpaca Huacaya en la zona altoandina de Apurímac",
+    "date": "2015-01-15",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Con el objeto de estimar cinco características tecnológicas de la fibra de alpaca Huacaya color blanco en una comunida, de la zona altoandina de Apurímac, Perú, se evaluaron 405 muestras tomadas de la zona media del costillar, antes de la esquila. Las variables estudiadas fueron: media del diámetro de fibra (MDF), coeficiente de variación del diámetro de la fibra (CVDF), índice de confort (IC), índice de curvatura (ICur) y finura al hilado (FiHi), según sexo y grupo etario de acuerdo a la dentadura (DL=Dientes de leche, 2D=2 dientes, 4D=4 dientes, BLL=boca llena). La MDF para machos y hembras fue de 19.6 y 20.1 μm, respectivamente (p<0.05), donde los valores aumentaron con la edad (p<0.05). No hubo diferencias en el CVDF por sexos ni entre grupos etarios. El IC fue de 96.8% en machos y 95.5% en hembras (p<0.05), disminuyendo conforme aumenta la edad (p<0.05). El ICur fue similar entre sexos y la diferencia entre edades solo se aprecia entre DL con 4D y BLL (p<0.05). La FiHi fue diferente entre sexos (p<0.05) y entre los grupos etarios DL y BLL (p<0.05). Se encontraron relaciones significativas positivas entre MDF con FiHi e IC con ICur y negativas entre MDF con IC, MDF con ICur, IC con FiHi, ICur con FiHi e ICur con CVDF. Los resultados indican que en esta zona del país existen alpacas con buen potencial en calidad de fibra.",
+    "summary_30w": "Con el objeto de estimar cinco características tecnológicas de la fibra de alpaca Huacaya color blanco en una comunida, de la zona altoandina de Apurímac, Perú, se evaluaron 405 muestras tomadas de la zona media del costillar, antes de la esquila.",
+    "keywords": [
+      "camélidos",
+      "textiles",
+      "Andes",
+      "finura DOI: Revista De Investigaciones Veterinarias Del Perú",
+      "26(2)",
+      "213–222",
+      "SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Camélidos",
+      "Textiles",
+      "Andes",
+      "Finura doi: revista de investigaciones veterinarias del perú",
+      "26(2)",
+      "213–222",
+      "South american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2015/01/caracteristicas-tecnologicas-de-la-fibra-blanca-de-alpaca-huacaya-en-la-zona-altoandina-de-apurimac/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v26i2.11020",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/caracteristicas-tecnologicas-de-la-fibra-blanca-de-alpaca-huacaya-en-la-zona-altoandina-de.pdf",
+    "localImage": "/assets/images/investigacion/images/caracteristicas-tecnologicas-de-la-fibra-blanca-de-alpaca-huacaya-en-la-zona-altoandina-de.png",
+    "author": [
+      "Rutnis Vásquez O.",
+      "Oscar Gómez-Quispe",
+      "Edgar Quispe P."
+    ],
+    "id": "caracteristicas-tecnologicas-de-la-fibra-blanca-de-alpaca-huacaya-en-la-zona-altoandina-de",
+    "order": 30,
+    "archived": false
+  },
+  {
+    "slug": "estudio-de-la-diferencia-post-y-pre-descerdado-de-cinco-caracteristicas-textiles-de-la-fib",
+    "lang": "es",
+    "title": "Estudio de la diferencia post y pre descerdado de cinco características textiles de la fibra de llama (Lama glama) Cha’ku",
+    "date": "2014-12-21",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Se tomaron muestras de 10 g de 7 regiones corporales (Cuello, Vellón anterior, Vellón central, Vellón posterior, Miembro anterior, Miembro posterior y Barriga), de lado izquierdo y derecho de 15 llamas Ch’aku adultas del Centro de Investigación y Desarrollo de Camélidos Sudamericanos – Lachocc de la Universidad Nacional de Huancavelica, ubicado entre 4100 y 4900 msnm. Las muestras fueron descerdadas manualmente y analizadas con el equipo OFDA 2000, con el objetivo de evaluar las variaciones al descerdado del diámetro medio de fibra (MDF), coeficiente de variación de MDF (CVMDF), factor de confort (FC), índice de curvatura (IC) y finura al hilado (FIHI). Para evaluar el efecto de las regiones se utilizó un diseño jerárquico, mientras que para determinar las relaciones de las variaciones de las variables en estudio se calcularon coeficientes de correlación de Pearson. Se encontraron variaciones negativas de MDF, CVMDF, FIHI y variaciones positivas de FC e IC; el rango de variación de FC fue de 1.43 a 38.01%, seguido por FIHI de -0.37 a -11.17um y CVMDF de -0.01 a -8.11%, los cuales demuestran la mejora de la calidad de la fibra. No se encontraron suficientes evidencias del efecto de regiones corporales del vellón sobre las variaciones absolutas y relativas de MDF, CVMDF, FC, IC y FIHI, debido probablemente a la distribución proporcional de las cerdas y fibras finas en todo el vellón. Finalmente, la variación de MDF tiene alta relación negativa con las variaciones de FC e IC; la variación de FIHI tiene alta relación positiva con las variaciones de MDF y CVMDF, pero negativa con la variación de FC; entre las variaciones de IC y FC hay alta relación positiva. Es necesario realizar descerdado manual para mejorar las características textiles de fibra de llama.",
+    "summary_30w": "Se tomaron muestras de 10 g de 7 regiones corporales ( Cuello, Vellón anterior, Vellón central, Vellón posterior, Miembro anterior, Miembro posterior y Barriga ), de lado izquierdo y derecho de 15 llamas Ch ’ aku adultas del Centro de Investigación y Desarrollo de Camélidos Sudamericanos – Lachocc de la Universidad Nacional de Huancavelica, ubicado entre 4100 y 4900 msnm.",
+    "keywords": [
+      "Llama",
+      "variación",
+      "descerdado",
+      "región corporal",
+      "vellón"
+    ],
+    "categories": [
+      "Llama",
+      "Variación",
+      "Descerdado",
+      "Región corporal",
+      "Vellón"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2014/12/estudio-de-la-diferencia-post-y-pre-descerdado-de-cinco-caracteristicas-textiles-de-la-fibra-de-llama-lama-glama-chaku/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v27i2.11643",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/estudio-de-la-diferencia-post-y-pre-descerdado-de-cinco-caracteristicas-textiles-de-la-fib.pdf",
+    "localImage": "/assets/images/investigacion/images/estudio-de-la-diferencia-post-y-pre-descerdado-de-cinco-caracteristicas-textiles-de-la-fib.png",
+    "author": [
+      "Flor de María Laime Huarcaya",
+      "Rubén Pinares Huamaní",
+      "Valeriano Paucara Ocsa",
+      "Virgilio Machaca Machaca",
+      "Edgar Carlos Quispe Peña"
+    ],
+    "id": "estudio-de-la-diferencia-post-y-pre-descerdado-de-cinco-caracteristicas-textiles-de-la-fib",
+    "order": 31,
+    "archived": false
+  },
+  {
+    "slug": "effect-of-genotype-and-sex-on-fiber-growth-rate-of-alpacas-for-their-first-year-of-fleece-",
+    "lang": "es",
+    "title": "Effect of genotype and sex on fiber growth rate of alpacas for their first year of fleece production",
+    "date": "2014-08-28",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "La venta de la fibra de alpaca constituye el principal ingreso económico para miles de familias que viven en la zona altoandina de Perú. Por otro lado, la fibra que crece durante el primer año de vida de los animales resulta ser la más valorada, sin embargo en la actualidad, existe muy poca información acerca de la tasa de crecimiento de la fibra (TCF) durante este periodo. Por estas consideraciones en la zona altoandina de Perú (Huancavelica) se realizó el presente trabajo a fin de determinar la TCF, para lo cual se utilizaron 22 crías de alpacas de dos genotipos (10 Suri, 12 Huacaya) considerando diferencias entre sexos (10 hembras, 12 machos). La técnica del “teñido de banda” fue utilizada para determinar la TCF. Para evaluar el efecto del sexo, mes y genotipo se utilizó un modelo aditivo lineal de efectos principales. Adicionalmente para evaluar el efecto del sexo y genotipo sobre la TCF a lo largo del año se utilizó un modelo de medidas repetidas con dos factores: genotipo y sexo. Los resultados mostraron que la TCF es afectada por el genotipo y el mes pero no por el sexo. De este modo la fibra de Alpacas Suri crece un 20% más que fibras de alpacas Huacaya (1,34 contra 1,10 cm/mes, P < 0,001). Asimismo se encontró que la TCF se incrementa significativamente durante los primeros tres meses (P < 0,05), pero que luego se mantiene casa constante. En función a la TCF, se concluye que es posible la esquila de animales desde los 8 meses de edad, pues dichas fibras tendrían el largo suficiente para el requerimiento del proceso textil.",
+    "summary_30w": "La venta de la fibra de alpaca constituye el principal ingreso económico para miles de familias que viven en la zona altoandina de Perú. Por otro lado, la fibra que crece durante el primer año de vida de los animales resulta ser la más valorada, sin embargo en la actualidad, existe muy poca información acerca de la tasa de crecimiento de la fibra ( TCF ) durante este periodo.",
+    "keywords": [
+      "alpaca",
+      "longitud de fibra",
+      "tasa de crecimiento",
+      "esquila"
+    ],
+    "categories": [
+      "Alpaca",
+      "Longitud de fibra",
+      "Tasa de crecimiento",
+      "Esquila"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2014/08/effect-of-genotype-and-sex-on-fiber-growth-rate-of-alpacas-for-their-first-year-of-fleece-production/",
+    "download_link_DOI": "https://doi.org/10.4067/s0301-732x2014000100021",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/effect-of-genotype-and-sex-on-fiber-growth-rate-of-alpacas-for-their-first-year-of-fleece.pdf",
+    "localImage": "/assets/images/investigacion/images/effect-of-genotype-and-sex-on-fiber-growth-rate-of-alpacas-for-their-first-year-of-fleece.png",
+    "author": [
+      "EC Quispe-Peña",
+      "AG Poma-Gutiérrez",
+      "BA McGregor",
+      "J Bartolomé-Filella"
+    ],
+    "id": "effect-of-genotype-and-sex-on-fiber-growth-rate-of-alpacas-for-their-first-year-of-fleece-",
+    "order": 32,
+    "archived": false
+  },
+  {
+    "slug": "prediction-of-alpaca-fibre-quality-by-near-infrared-reflectance-spectroscopy",
+    "lang": "en",
+    "title": "Prediction of alpaca fibre quality by near-infrared reflectance spectroscopy",
+    "date": "2013-01-29",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Rapid and efficient methods to evaluate variables associated with fibre quality are essential in animal breeding programs and fibre trade. Near-infrared reflectance spectroscopy (NIRS) combined with multivariate analysis was evaluated to predict textile quality attributes of alpaca fibre. Raw samples of fibres taken from male and female Huacaya alpacas (n5291) of different ages and colours were scanned and their visible–near-infrared (NIR; 400 to 2500 nm) reflectance spectra were collected and analysed. Reference analysis of the samples included mean fibre diameter (MFD), standard deviation of fibre diameter (SDFD), coefficient of variation of fibre diameter (CVFD), mean fibre curvature (MFC), standard deviation of fibre curvature (SDFC), comfort factor (CF), spinning fineness (SF) and staple length (SL). Patterns of spectral variation (loadings) were explored by principal component analysis (PCA), where the first four PC’s explained 99.97% and the first PC alone 95.58% of spectral variability. Calibration models were developed by modified partial least squares regression, testing different mathematical treatments (derivative order, subtraction gap, smoothing segment) of the spectra, with or without applying spectral correction algorithms (standard normal variate and detrend). Equations were selected through one-out cross-validation according to the proportion of explained variance (R2CV), root mean square error in cross-validation (RMSECV) and the residual predictive deviation (RPD), which relates the standard deviation of the reference data to RMSECV. The best calibration models were accomplished when using the NIR region (1100 to 2500 nm) for the prediction of MFD and SF, with R2CV50.90 and 0.87; RMSECV51.01 and 1.08mm and RPD53.13 and 2.73, respectively. Models for SDFD, CVFD, MFC, SDFC, CF and SL had lower predictive quality with R2CV,0.65 and RPD,1.5. External validation performed for MFD and SF on 91 samples was slightly poorer than cross-validation, with R2 of 0.86 and 0.82, and standard error of prediction of 1.21 and 1.33mm, for MFD and SF, respectively. It is concluded that NIRS can be used as an effective technique to select alpacas according to some important textile quality traits such as MFD and SF.",
+    "summary_30w": "Rapid and efficient methods to evaluate variables associated with fibre quality are essential in animal breeding programs and fibre trade. Near-infrared reflectance spectroscopy ( NIRS ) combined with multivariate analysis was evaluated to predict textile quality attributes of alpaca fibre.",
+    "keywords": [
+      "alpaca",
+      "fibre quality",
+      "diameter",
+      "near-infrared spectroscopy",
+      "NIRS DOI: Animal Volume 7",
+      "Issue 7",
+      "Pages 1219-1225 Descargar"
+    ],
+    "categories": [
+      "Alpaca",
+      "Fibre quality",
+      "Diameter",
+      "Near-infrared spectroscopy",
+      "Nirs doi: animal volume 7",
+      "Issue 7",
+      "Pages 1219-1225 descargar"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2013/01/prediction-of-alpaca-fibre-quality-by-near-infrared-reflectance-spectroscopy/",
+    "download_link_DOI": "https://doi.org/10.1017/s1751731113000505",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/prediction-of-alpaca-fibre-quality-by-near-infrared-reflectance-spectroscopy.pdf",
+    "localImage": "/assets/images/investigacion/images/prediction-of-alpaca-fibre-quality-by-near-infrared-reflectance-spectroscopy.png",
+    "author": [
+      "A.W. Canaza-Cayo",
+      "D. Alomar",
+      "E. Quispe"
+    ],
+    "id": "prediction-of-alpaca-fibre-quality-by-near-infrared-reflectance-spectroscopy",
+    "order": 33,
+    "archived": false
+  },
+  {
+    "slug": "efecto-del-pastoreo-por-diferentes-especies-ganaderas-sobre-la-estructura-vegetal-de-pajon",
+    "lang": "es",
+    "title": "Efecto del pastoreo por diferentes especies ganaderas sobre la estructura vegetal de pajonales en los Andes centrales del Perú",
+    "date": "2012-12-28",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "En la puna andina, Calamagrostis antoniana (Griseb.) y Festuca dolichophylla J. Presl, suelen dominar en el estrato alto de la vegetación. En este trabajo se han determinado las variaciones estructurales causadas por el pastoreo de llama, alpaca, bovino y ovino. Para ello se instalaron dos series de 4 parcelas de 50 m x 50 m en dos pajonales de la finca experimental CIDCS-Lachocc de la Universidad Nacional de Huancavelica, situada a 4.500 msnm. Cada una de ellas fue sometida a pastoreo por una única especie animal durante siete días en la época de lluvias y otros siete en la época seca. La carga ganadera de cada parcela fue equivalente a 1,4 alpacas/ha/año. Se tomaron medidas pareadas de altura y diámetro de 10 macollas de cada especie antes y después del pastoreo en cada parcela. Se concluye que la mayor reducción en los parámetros estructurales de Festuca dolichophylla podría explicarse por su mayor palatabilidad y por una mejor adaptación de los camélidos respecto a las especies introducidas (bovino y ovino). También se deduce que, con excepción de las llamas, durante la época seca los animales centrarían más su actividad pastadora en el estrato bajo de la vegetación.",
+    "summary_30w": "En la puna andina, Calamagrostis antoniana ( Griseb. ) y Festuca dolichophylla J. Presl, suelen dominar en el estrato alto de la vegetación. En este trabajo se han determinado las variaciones estructurales causadas por el pastoreo de llama, alpaca, bovino y ovino.",
+    "keywords": [
+      "puna",
+      "camélidos",
+      "bovino",
+      "ovino",
+      "gramíneas"
+    ],
+    "categories": [
+      "Puna",
+      "Camélidos",
+      "Bovino",
+      "Ovino",
+      "Gramíneas"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2012/12/efecto-del-pastoreo-por-diferentes-especies-ganaderas-sobre-la-estructura-vegetal-de-pajonales-en-los-andes-centrales-del-peru/",
+    "download_link_DOI": "https://doi.org/10.26439/ulima.tesis/8063",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/efecto-del-pastoreo-por-diferentes-especies-ganaderas-sobre-la-estructura-vegetal-de-pajon.pdf",
+    "localImage": "/assets/images/investigacion/images/efecto-del-pastoreo-por-diferentes-especies-ganaderas-sobre-la-estructura-vegetal-de-pajon.png",
+    "author": [
+      "Gloria María Cárcamo Valencia"
+    ],
+    "id": "efecto-del-pastoreo-por-diferentes-especies-ganaderas-sobre-la-estructura-vegetal-de-pajon",
+    "order": 34,
+    "archived": false
+  },
+  {
+    "slug": "comparison-of-different-breeding-strategies-to-improve-alpaca-fibre-production-in-a-low-in",
+    "lang": "en",
+    "title": "Comparison of different breeding strategies to improve alpaca fibre production in a low-input production system",
+    "date": "2012-06-05",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Abstract Alpaca production in Huancavelica (Peru) is a low-input production system characterised by a high number of small herds with feeding based on the use of natural resources. Producer’s income depends basically on the quantity (unwashed fleece weight, UFW) and the quality (fibre diameter, FDM) of the fibre commercialised. Productive and genealogical information is difficult and expensive to record because of the geographical characteristics (altitude > 3,800 m) and the lack of effective communication between communities of alpaca’s owners. The aim of this study was to analyse different breeding schemes in terms of genetic response and inbreeding level, but also considering cost and participation of farmers. A genotypic aggregate value defined as a linear function of UFW and FDM was considered as breeding goal. Six different strategies were considered, involving different numbers of selected males in a similar way to Wurzinger et al. (2009) in Bolivian llamas: three considering one central nucleus with artificial insemination (15 males -NAI-) or natural mating (50 males -NM50-, 33 males -NM33- ), two considering a communal nucleus involving 23 herds (79 males -C79-, 113 males -C113-) and a combination of both on the basis of natural mating, one central nucleus and a communal nucleus involving 12 herds (81 males -NC-). SelAction software (Rutten et al., 2002) was used to derive genetic response and inbreeding level assuming different values for phenotypic and genetic parameters of UFW and FDM, and different amounts of phenotypic information. With respect to the C113 scheme, NAI increases the genetic response in a 50%, NM33 in a 30%, NM50 in a 20%, and C79 and NC in a 10%. In average, the increase of inbreeding was 0.90 % per generation for NAI, 0.35% for NM33, 0.20% for NM50, 0.10% for C79 and NC, and 0.05% for C113. Communal nucleus schemes, alone or combined with a central nucleus, showed a low rate of genetic response but they could be useful to start a breeding programme in Huancavelica. That is because of the lower inbreeding level, the lower economic costs, and the higher level of participation of farmers as opposed to central nucleus schemes only, especially when they make use of artificial insemination.",
+    "summary_30w": "Abstract Alpaca production in Huancavelica ( Peru ) is a low-input production system characterised by a high number of small herds with feeding based on the use of natural resources. Producer ’ s income depends basically on the quantity ( unwashed fleece weight, UFW ) and the quality ( fibre diameter, FDM ) of the fibre commercialised.",
+    "keywords": [
+      "Alpaca",
+      "breeding",
+      "scheme",
+      "response",
+      "inbreeding SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Alpaca",
+      "Breeding",
+      "Scheme",
+      "Response",
+      "Inbreeding south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2012/06/comparison-of-different-breeding-strategies-to-improve-alpaca-fibre-production-in-a-low-input-production-system/",
+    "download_link_DOI": "https://doi.org/10.3920/9789086867271_015",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/comparison-of-different-breeding-strategies-to-improve-alpaca-fibre-production-in-a-low-in.pdf",
+    "localImage": null,
+    "author": [
+      "E.C. Quispe",
+      "R. Paúcar",
+      "A. Poma",
+      "A. Flores",
+      "L. Alfonso"
+    ],
+    "id": "comparison-of-different-breeding-strategies-to-improve-alpaca-fibre-production-in-a-low-in",
+    "order": 35,
+    "archived": false
+  },
+  {
+    "slug": "estudio-de-la-carcasa-de-alpacas-vicugna-pacos-en-relacion-al-peso-y-clasificacion-carnica",
+    "lang": "es",
+    "title": "Estudio de la carcasa de alpacas (Vicugna Pacos) en relación al peso y clasificación cárnica",
+    "date": "2012-01-01",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El presente trabajo se realizó en el Camal Municipal de Huancavelica, Perú, ubicado a 3680 msnm. Se tomaron datos de 200 alpacas Huacaya con el objetivo de caracterizar las carcasas en función a peso vivo (PV), peso de la carcasa caliente (PCC), peso de carcasa fría (PCF) y grados de clasificación cárnica. Las medias de PV fueron de 49.5 y 55.6 kg para machos y hembras, y 51.3 y 53.1 kg para animales de 4 dientes y boca llena, respectivamente. Las medias de PCC fueron de 27.3 y 30.0 kg para machos y hembras, y 28.1 y 28.8 kg para animales de 4 dientes y boca llena, respectivamente. Las medias de PCF fueron de 26.9 y 29.6 kg para machos y hembras, y de 27.7 y 28.4 kg para alpacas de 4 dientes y boca llena, respectivamente. La mayor parte de las carcasas correspondieron a clasificaciones de segundo grado y tipo industrial (38.0 y 36.5%, respectivamente), no encontrándose carcasas de tipo extra. Ecuaciones lineales simples para predecir el PCC y PCF a partir del PV resultaron con coeficientes de determinación del 68.5 y 68.3%, respectivamente. Además, se encontraron correlaciones positivas y altamente significativas (p<0.01) entre las variables en estudio con valores no menores a 0.8, obteniéndose una relación casi perfecta entre PCC y PCF.",
+    "summary_30w": "El presente trabajo se realizó en el Camal Municipal de Huancavelica, Perú, ubicado a 3680 msnm. Se tomaron datos de 200 alpacas Huacaya con el objetivo de caracterizar las carcasas en función a peso vivo ( PV ), peso de la carcasa caliente ( PCC ), peso de carcasa fría ( PCF ) y grados de clasificación cárnica.",
+    "keywords": [
+      "alpaca",
+      "peso",
+      "carcasa",
+      "clasificación Texto completo: Rev Inv Vet Perú 2012",
+      "23(1): 43-51 SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Alpaca",
+      "Peso",
+      "Carcasa",
+      "Clasificación texto completo: rev inv vet perú 2012",
+      "23(1): 43-51 south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2012/01/2632/",
+    "download_link_DOI": "https://doi.org/10.15381/rivep.v23i1.880",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/estudio-de-la-carcasa-de-alpacas-vicugna-pacos-en-relacion-al-peso-y-clasificacion-carnica.pdf",
+    "localImage": null,
+    "author": [
+      "Edgar Quispe P.",
+      "Adolfo Poma G.",
+      "Omar Siguas R.",
+      "Mª José Berain A.",
+      "Antonio Purroy U."
+    ],
+    "id": "estudio-de-la-carcasa-de-alpacas-vicugna-pacos-en-relacion-al-peso-y-clasificacion-carnica",
+    "order": 36,
+    "archived": false
+  },
+  {
+    "slug": "adaptaciones-hematologicas-de-los-camelidos-sudamericanos-que-viven-en-zonas-de-elevadas-a",
+    "lang": "es",
+    "title": "Adaptaciones hematológicas de los camélidos sudamericanos que viven en zonas de elevadas altitudes",
+    "date": "2011-01-01",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Los Camélidos Sudamericanos (CSA) no siempre vivieron en altitud. Diversos investigadores han demostrado que en la época precolombina existían gran cantidad de camélidos que vivían en la costa.",
+    "summary_30w": "Los Camélidos Sudamericanos ( CSA ) no siempre vivieron en altitud. Diversos investigadores han demostrado que en la época precolombina existían gran cantidad de camélidos que vivían en la costa.",
+    "keywords": [
+      "CSA",
+      "adaptabilidad",
+      "hipoxia",
+      "glóbulos rojos",
+      "hemoglobina",
+      "oxígeno",
+      "Texto completo: Revista complutense de ciencias veterinarias",
+      "ISSN 1988-2688",
+      "Vol",
+      "Nº",
+      "2011 SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Csa",
+      "Adaptabilidad",
+      "Hipoxia",
+      "Glóbulos rojos",
+      "Hemoglobina",
+      "Oxígeno",
+      "Texto completo: revista complutense de ciencias veterinarias",
+      "Issn 1988-2688",
+      "Vol",
+      "Nº",
+      "2011 south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2011/01/adaptaciones-hematologicas-de-los-camelidos-sudamericanos-que-viven-en-zonas-de-elevadas-altitudes/",
+    "download_link_DOI": "",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/adaptaciones-hematologicas-de-los-camelidos-sudamericanos-que-viven-en-zonas-de-elevadas-a.pdf",
+    "localImage": null,
+    "id": "adaptaciones-hematologicas-de-los-camelidos-sudamericanos-que-viven-en-zonas-de-elevadas-a",
+    "order": 37,
+    "archived": false
+  },
+  {
+    "slug": "differences-in-fibre-diameter-profile-between-shearing-periods-in-white-huacaya-alpacas-vi",
+    "lang": "en",
+    "title": "Differences in fibre diameter profile between shearing periods in white Huacaya Alpacas (Vicugna pacos)",
+    "date": "2010-09-22",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Abstract A total of 153 midside fibre samples, one per animal at left side, were obtained in two shearing periods (I Period: December 2009, n=109; II Period: March 2010, n=44) from white Huacaya alpacas belonging to CIPCS – Lachocc herd of National University of Huancavelica. Fibre diameter profiles (FDP) were obtained using the OFDA 2000 instrument, measuring fibre diameter every 5 mm along the entire length of staples (Brims et al., 1999), in a subsample of between 400-800 fibres per animal. Different fibre diameter profile variables were calculated and compared between shearing periods taking into account differences due to sex and age. The variables were the following: average fibre diameter (AFD), maximum and minimum fibre diameter (FDMax, FDMin), its respective positions (PMax, PMin), fibre diameter change along the staple (TACA, calculated as the absolute value of (FDMax – FDMin), and fine ends (FE; calculated as the difference between the mean diameter of fibres in the first (f) and last (l) 5mm of the staple, and FD: FE=[(f+l)/2]-FD). Results show different FDP for the two shearing periods, being significantly different PMax PMin and FE (P<0.05). No differences for sex were observed, but age affected AF, FDMax, FDMin, PMax, PMin, TACA and FE (P<0.05). These results showed, in terms of the needs of textile industry in processing performance, a better quality of fibre obtained during the shearing of December 2009.",
+    "summary_30w": "Abstract A total of 153 midside fibre samples, one per animal at left side, were obtained in two shearing periods ( I Period: December 2009, n = 109; II Period: March 2010, n = 44 ) from white Huacaya alpacas belonging to CIPCS – Lachocc herd of National University of Huancavelica.",
+    "keywords": [
+      "alpaca",
+      "fibre diameter",
+      "shearing Download Article"
+    ],
+    "categories": [
+      "Alpaca",
+      "Fibre diameter",
+      "Shearing download article"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2010/09/differences-in-fibre-diameter-profile-between-shearing-periods-in-white-huacaya-alpacas-vicugna-pacos/",
+    "download_link_DOI": "https://doi.org/10.3920/9789086867271_007",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/differences-in-fibre-diameter-profile-between-shearing-periods-in-white-huacaya-alpacas-vi.pdf",
+    "localImage": "/assets/images/investigacion/images/differences-in-fibre-diameter-profile-between-shearing-periods-in-white-huacaya-alpacas-vi.png",
+    "author": [
+      "P. Mayhua",
+      "E.C. Quispe",
+      "M. Montes",
+      "L. Alfonso"
+    ],
+    "id": "differences-in-fibre-diameter-profile-between-shearing-periods-in-white-huacaya-alpacas-vi",
+    "order": 38,
+    "archived": false
+  },
+  {
+    "slug": "fibre-characteristics-of-vicuna-vicugna-vicugna-mensalis",
+    "lang": "en",
+    "title": "Fibre characteristics of vicuna (Vicugna vicugna mensalis)",
+    "date": "2010-03-31",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Characteristics of body and fleece weight, and fleece and fibre quality were evaluated in vicunas ( Vicugna vicugna mensalis ) captured for live shearing in Huancavelica, Peru. A total of 305 animals were weighted and shorn between 2003 and 2008. Fibre samples from 104 animals shorn in 2008 were analysed using optical fibre diameter analyser (OFDA) and fibre length measured in a subsample of 68 animals. Mean values for body weight, fleece weight, fibre length and fibre diameter were 37.8 kg, 189.7 g, 30.9 mm and 13.2 m respectively. Differences due to age were significant for body weight, fleece weight and fibre diameter, but no differences were attributable to sex. The average coefficient of variation of mean fibre diameter was 19.5% showing a higher homogeneity than other luxury animal fibre producers. Mean fibre curvature was medium (79.9º/mm) showing a low relationship with fibre diameter.",
+    "summary_30w": "Characteristics of body and fleece weight, and fleece and fibre quality were evaluated in vicunas ( Vicugna vicugna mensalis ) captured for live shearing in Huancavelica, Peru. A total of 305 animals were weighted and shorn between 2003 and 2008.",
+    "keywords": [
+      "Camelids Fibre quality Fleece weight"
+    ],
+    "categories": [
+      "Camelids fibre quality fleece weight"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2010/03/fibre-characteristics-of-vicuna-vicugna-vicugna-mensalis/",
+    "download_link_DOI": "https://doi.org/10.1016/j.smallrumres.2010.03.019",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/fibre-characteristics-of-vicuna-vicugna-vicugna-mensalis.pdf",
+    "localImage": "/assets/images/investigacion/images/fibre-characteristics-of-vicuna-vicugna-vicugna-mensalis.png",
+    "author": [
+      "E.C. Quispe",
+      "H. Ramos",
+      "P. Mayhua",
+      "L. Alfonso"
+    ],
+    "id": "fibre-characteristics-of-vicuna-vicugna-vicugna-mensalis",
+    "order": 39,
+    "archived": false
+  },
+  {
+    "slug": "variabilidad-del-color-de-la-fibra-de-alpaca-en-la-zona-altoandina-de-huancavelica-peru",
+    "lang": "es",
+    "title": "Variabilidad del color de la fibra de alpaca en la zona altoandina de Huancavelica-Perú",
+    "date": "2009-10-13",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "Resumen En este trabajo se describe la variabilidad de colores de fibra existente en las poblaciones de alpacas de la región de Huancavelica, Perú. También se analiza la estructura poblacional, la incidencia de defectos y la calidad de la fibra. Se caracterizaron 2341 animales de 22 rebaños de siete comunidades con alpacas de color, y se analizó la calidad de fibra de una pequeña submuestra (121 alpacas). Un 10% de los animales fueron Huarizos y sobre un 20% de color manchado. De los animales de color sólido, un 96% fueron de raza Huacaya y sólo un 4% de raza Suri. El 66% de las alpacas eran de color blanco. Los colores crema y café están bien representados, no así los negro y gris. Para la raza Suri, el problema de conservación va más allá de su coloración, estando en riesgo la propia raza. La estructura de población y la presencia de defectos parecen indicar una menor atención en el manejo de las alpacas de color que en el de las blancas. También la calidad de la fibra de los animales de color fue menor que la de los blancos, decreciendo a medida que aumentaba el tono oscuro de la fibra.",
+    "summary_30w": "Resumen En este trabajo se describe la variabilidad de colores de fibra existente en las poblaciones de alpacas de la región de Huancavelica, Perú. También se analiza la estructura poblacional, la incidencia de defectos y la calidad de la fibra.",
+    "keywords": [
+      "fibra",
+      "color",
+      "alpaca",
+      "camélidos",
+      "conservación Descargar SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Fibra",
+      "Color",
+      "Alpaca",
+      "Camélidos",
+      "Conservación descargar south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2009/10/variabilidad-del-color-de-la-fibra-de-alpaca-en-la-zona-altoandina-de-huancavelica-peru/",
+    "download_link_DOI": "https://doi.org/10.1017/s101423390999037x",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/variabilidad-del-color-de-la-fibra-de-alpaca-en-la-zona-altoandina-de-huancavelica-peru.pdf",
+    "localImage": "/assets/images/investigacion/images/variabilidad-del-color-de-la-fibra-de-alpaca-en-la-zona-altoandina-de-huancavelica-peru.png",
+    "author": [
+      "I. Oria",
+      "I. Quicaño",
+      "E. Quispe",
+      "L. Alfonso"
+    ],
+    "id": "variabilidad-del-color-de-la-fibra-de-alpaca-en-la-zona-altoandina-de-huancavelica-peru",
+    "order": 40,
+    "archived": false
+  },
+  {
+    "slug": "bases-para-un-programa-de-mejora-de-alpacas-en-la-region-altoandina-de-huancavelica-peru",
+    "lang": "es",
+    "title": "Bases para un programa de mejora de alpacas en la región altoandina de Huancavelica-Perú",
+    "date": "2008-11-17",
+    "journal": "SOUTH AMERICAN CAMELIDS",
+    "abstract": "El estudio se desarrolló en 544 alpacas Huacaya de color blanco localizadas en 19 centros de producción de la Región de Huancavelica, ubicadas un rango de altitud entre 4000 y 4800 msnm. Antes de la esquila se tomaron muestras del vellón de aproximadamente 20 g de la zona del costillar y posterior a ella se registró el peso de vellón grasiento (PVG), sexo, edad y unidad productiva de cada animal. El diámetro de fibra (DF), coeficiente de variación del diámetro de fibra (CVDF) y el factor de picazón (FP) fue determinado utilizando el Sirolan-Laserscan. En función a los datos obtenidos se realizó el planteamiento de un esquema de mejora y sobre ello se estimó la respuesta a la selección bajo distintos escenarios. Los promedios ±E.E. del PVG, DF, CVDF y FP fueron de 2300±39 g, 21,56±0,12 μm, 22,82±0,12% y 6,33 ± 0,30% respectivamente. El PVG y el DF muestran variaciones significativas (p<0,01) para sexo, edad y unidad productiva, mientras que el FP tiene variaciones significativas (p<0,01) para edad y unidad de producción y el CVDF sólo muestra variaciones para unidad productiva (p<0,01). Cuando fueron analizadas las relaciones entre las cuatro variables de la fibra, sólo se encontró significancia entre DF y FP, DF y PVG, CVDF y FP, y CVDF y DF. Bajo estas consideraciones el esquema de mejora planteado conduce a una formación de un núcleo élite de reproductores formados por 50 machos que podrían empadrar a las mejores 1100 hembras de los animales con registros. La predicción del progreso genético anual, en una selección masal se encuentra entre 57 y 78 g para PVG y entre -0,17 y -0,23 μm para DF; mientras que, en términos económicos el progreso genético anual usando un índice combinado se sitúa entre $0,83 y $1,14.",
+    "summary_30w": "El estudio se desarrolló en 544 alpacas Huacaya de color blanco localizadas en 19 centros de producción de la Región de Huancavelica, ubicadas un rango de altitud entre 4000 y 4800 msnm.",
+    "keywords": [
+      "Lama pacos",
+      "Huacaya",
+      "Fibra",
+      "Esquema de mejora",
+      "Progreso genético DOI: Arch",
+      "zootec",
+      "vol.58 n.224 Córdoba Dec",
+      "2009 SOUTH AMERICAN CAMELIDS"
+    ],
+    "categories": [
+      "Lama pacos",
+      "Huacaya",
+      "Fibra",
+      "Esquema de mejora",
+      "Progreso genético doi: arch",
+      "Zootec",
+      "Vol.58 n.224 córdoba dec",
+      "2009 south american camelids"
+    ],
+    "products": [
+      "Otros"
+    ],
+    "href": "http://localhost:8080/2008/11/bases-para-un-programa-de-mejora-de-alpacas-en-la-region-altoandina-de-huancavelica-peru/",
+    "download_link_DOI": "https://doi.org/10.4321/s0004-05922009000400008",
+    "download_link_google_drive": "",
+    "pdf_source_url": "https://fiberstech.com/wp-content/uploads/2024/07/Catalogo_NFT_2024.-v2.pdf",
+    "download_link_pdf": "/assets/images/investigacion/pdf/bases-para-un-programa-de-mejora-de-alpacas-en-la-region-altoandina-de-huancavelica-peru.pdf",
+    "localImage": "/assets/images/investigacion/images/bases-para-un-programa-de-mejora-de-alpacas-en-la-region-altoandina-de-huancavelica-peru.png",
+    "author": [
+      "E.C. Quispe",
+      "L. Alfonso",
+      "A. Flores",
+      "H. Guillén",
+      "Y. Ramos"
+    ],
+    "id": "bases-para-un-programa-de-mejora-de-alpacas-en-la-region-altoandina-de-huancavelica-peru",
+    "order": 41,
+    "archived": false
+  }
+]

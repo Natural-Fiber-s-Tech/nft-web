@@ -1,0 +1,20 @@
+# Ignore backup and disabled API files so Vercel doesn't count them as functions
+
+api/backups/
+disabled_api/
+
+# Defensive: ignore any files named with 'copy' (created during development)
+
+api/_copy_
+api/_copy_.\*
+
+# Ignore legacy auth folder (we provide a top-level api/auth.js wrapper)
+
+api/auth/
+!api/auth.js
+
+# Node modules and build artifacts
+
+node_modules/
+dist/
+build/

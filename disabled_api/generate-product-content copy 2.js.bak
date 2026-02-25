@@ -1,0 +1,14 @@
+// duplicate backup 2 - same content
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import formidable from "formidable";
+import fs from "fs";
+import pdf from "pdf-parse";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+export default async function handler(req, res) {
+  // (content omitted for brevity - backup copy)
+  res.status(200).json({ ok: true, note: "backup placeholder" });
+}
+
+export const config = { api: { bodyParser: false } };

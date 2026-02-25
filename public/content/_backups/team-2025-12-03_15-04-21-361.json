@@ -1,0 +1,464 @@
+[
+  {
+    "id": "team-jundmc",
+    "name": {
+      "es": "Max Quispe Bonilla",
+      "en": "Max Quispe Bonilla"
+    },
+    "role": {
+      "es": "CTO",
+      "en": "CTO"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/max-quispe.jpg",
+    "skills": {
+      "es": [
+        "PhD (c)",
+        "Ing. Electrónico",
+        "Inventor",
+        "Experto en instrumentación electrónica",
+        "Especialista en automatización"
+      ],
+      "en": [
+        "PhD (c)",
+        "Electronic Engineer",
+        "Inventor",
+        "Expert in electronic instrumentation",
+        "Automation specialist"
+      ]
+    },
+    "order": 2,
+    "archived": false
+  },
+  {
+    "id": "team-n7myad",
+    "name": {
+      "es": "Henry Chico",
+      "en": "Henry Chico"
+    },
+    "role": {
+      "es": "CRO",
+      "en": "CRO"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/henry-chico.jpg",
+    "skills": {
+      "es": [
+        "Magister en Agronegocios",
+        "Experto en desarrollo de negocios",
+        "Gestión de operaciones",
+        "Desarrollo comercial"
+      ],
+      "en": [
+        "Master in Agribusiness",
+        "Expert in business development",
+        "Operations management",
+        "Commercial development"
+      ]
+    },
+    "order": 4,
+    "archived": false
+  },
+  {
+    "id": "team-7zc8ve",
+    "name": {
+      "es": "Christian Quispe Bonilla",
+      "en": "Christian Quispe Bonilla"
+    },
+    "role": {
+      "es": "Data Scientist",
+      "en": "Data Scientist"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/carlos-quispe3.png",
+    "skills": {
+      "es": [
+        "Ingeniero Físico",
+        "Especialista en IA",
+        "Arquitecto y desarrollador de software",
+        "Automatización de procesos"
+      ],
+      "en": [
+        "Physicist Engineer",
+        "AI Specialist",
+        "Software architect and developer",
+        "Process automation"
+      ]
+    },
+    "order": 3,
+    "archived": false
+  },
+  {
+    "id": "team-z57q5i",
+    "name": {
+      "es": "Edgar Quispe Peña",
+      "en": "Edgar Quispe Peña"
+    },
+    "role": {
+      "es": "CEO",
+      "en": "CEO"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/edgar-quispe-2.jpg",
+    "skills": {
+      "es": [
+        "PhD",
+        "Ingeniero Zootecnista",
+        "Inventor e investigador RENACYT (Categoría Carlos Monge - Nivel II)",
+        "Experto en mejoramiento genético",
+        "Consultor y docente internacional"
+      ],
+      "en": [
+        "PhD",
+        "Zootechnical Engineer",
+        "RENACYT Inventor and Researcher (Carlos Monge Category - Level II)",
+        "Expert in genetic improvement",
+        "International consultant and lecturer"
+      ]
+    },
+    "order": 1,
+    "archived": false
+  },
+  {
+    "id": "team-47ti0o",
+    "name": {
+      "es": "Adolfo Poma",
+      "en": "Adolfo Poma"
+    },
+    "role": {
+      "es": "Especialista Técnico",
+      "en": "Technical Specialist"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/adolfo-poma.jpg",
+    "skills": {
+      "es": [
+        "Ingeniero Zootecnista",
+        "Investigador RENACYT",
+        "Análisis de fibras"
+      ],
+      "en": [
+        "Zootechnical Engineer",
+        "RENACYT Researcher",
+        "Fiber analysis"
+      ]
+    },
+    "order": 6,
+    "archived": true
+  },
+  {
+    "id": "team-cqr3bh",
+    "name": {
+      "es": "Pepito",
+      "en": "Pepito"
+    },
+    "role": {
+      "es": "Músico",
+      "en": "Musician"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/acerca_de1-1759521875238.png",
+    "skills": {
+      "es": [
+        "Guitarra",
+        "Tacos",
+        "Video",
+        "Escritura con partituras"
+      ],
+      "en": [
+        "Guitar",
+        "Tacos",
+        "Video",
+        "Writing with sheet music"
+      ]
+    },
+    "order": 7,
+    "archived": true
+  },
+  {
+    "id": "team-usk7r1",
+    "name": {
+      "es": "Xtian C.QB",
+      "en": "Xtian C.QB"
+    },
+    "role": {
+      "es": "Arquitecto de Software",
+      "en": "Software Architect"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Xtian.jpg",
+    "skills": {
+      "es": [
+        "Ahora si",
+        "Viaja en el tiempo"
+      ],
+      "en": [
+        "Now yes",
+        "travel in time"
+      ]
+    },
+    "order": 11,
+    "archived": true
+  },
+  {
+    "id": "team-j28ccm",
+    "name": {
+      "es": "Jesus Trigo",
+      "en": "Jesus Trigo"
+    },
+    "role": {
+      "es": "Científico",
+      "en": "Scientist"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/jesus-trigo.jpg",
+    "skills": {
+      "es": [
+        "Científico"
+      ],
+      "en": [
+        "Scientist"
+      ]
+    },
+    "order": 10,
+    "archived": true
+  },
+  {
+    "id": "team-ezk493",
+    "name": {
+      "es": "Sherysh Cunyas",
+      "en": "Sherysh Cunyas"
+    },
+    "role": {
+      "es": "Secretaria",
+      "en": "Secretary"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/sherysh_cunyas.png",
+    "skills": {
+      "es": [
+        "Secretaria administrativa",
+        "Bilingüe Español-Inglés",
+        "Licitaciones y contratos",
+        "Atención al cliente"
+      ],
+      "en": [
+        "Administrative secretary",
+        "Bilingual Spanish-English",
+        "Tenders and contracts",
+        "Customer service"
+      ]
+    },
+    "order": 5,
+    "archived": false
+  },
+  {
+    "id": "team-nplgc9",
+    "name": {
+      "es": "Efraín",
+      "en": "Efraín"
+    },
+    "role": {
+      "es": "Asistente de Investigación",
+      "en": "Intern"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/efrain.jpg",
+    "skills": {
+      "es": [
+        "Ing. Zootecnista"
+      ],
+      "en": [
+        "Zootechnical Engineer"
+      ]
+    },
+    "order": 6,
+    "archived": false
+  },
+  {
+    "id": "team-lihr02",
+    "name": {
+      "es": "Fidel Moreno",
+      "en": "Fidel Moreno"
+    },
+    "role": {
+      "es": "Ingeniero Mecatrónico",
+      "en": "Mechatronics Engineer"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Fidel-Moreno_Ingeniero-Mecatr-nico.jpeg",
+    "skills": {
+      "es": [
+        "Diseño de piezas: simulación y creación en físico"
+      ],
+      "en": [
+        "Parts design: simulation and physical creation"
+      ]
+    },
+    "order": 7,
+    "archived": false
+  },
+  {
+    "id": "team-socz5a",
+    "name": {
+      "es": "Freddy Marrero",
+      "en": "Freddy Marrero"
+    },
+    "role": {
+      "es": "PhD. Ing. Industrial",
+      "en": "PhD. Ing. Industrial"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Freddy-Marrero_Investigador-Asociado.jpg",
+    "skills": {
+      "es": [
+        "Automatización de procesos"
+      ],
+      "en": [
+        "Automatización de procesos"
+      ]
+    },
+    "order": 8,
+    "archived": false
+  },
+  {
+    "id": "team-gh1td3",
+    "name": {
+      "es": "Katherine Arias",
+      "en": "Katherine Arias"
+    },
+    "role": {
+      "es": "Investigadora",
+      "en": "Investigadora"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Katherine-Arias_Investigadora.jpeg",
+    "skills": {
+      "es": [
+        "UCM - España"
+      ],
+      "en": [
+        "UCM - España"
+      ]
+    },
+    "order": 9,
+    "archived": false
+  },
+  {
+    "id": "team-e22v0g",
+    "name": {
+      "es": "Daniel Allain",
+      "en": "Daniel Allain"
+    },
+    "role": {
+      "es": "Investigador Asociado",
+      "en": "Investigador Asociado"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Daniel-Allain_Investigador-Asociado.jpg",
+    "skills": {
+      "es": [
+        "Investigador"
+      ],
+      "en": [
+        "Investigador"
+      ]
+    },
+    "order": 10,
+    "archived": false
+  },
+  {
+    "id": "team-uyzznu",
+    "name": {
+      "es": "Lawrance Hunter",
+      "en": "Lawrance Hunter"
+    },
+    "role": {
+      "es": "Investigador Asociado",
+      "en": "Investigador Asociado"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Lawrance-Hunter_Investigador-Asociado.jpg",
+    "skills": {
+      "es": [
+        "Investigador"
+      ],
+      "en": [
+        "Investigador"
+      ]
+    },
+    "order": 11,
+    "archived": false
+  },
+  {
+    "id": "team-w7l9k0",
+    "name": {
+      "es": "Ysai Paúcar",
+      "en": "Ysai Paúcar"
+    },
+    "role": {
+      "es": "Investigador Asociado",
+      "en": "Investigador Asociado"
+    },
+    "bio": {
+      "es": "",
+      "en": ""
+    },
+    "photo": "/assets/images/team/Ysai-Pa-car_Investigador-Asociado.jpg",
+    "skills": {
+      "es": [
+        "Investigador"
+      ],
+      "en": [
+        "Investigador"
+      ]
+    },
+    "order": 12,
+    "archived": false
+  }
+]

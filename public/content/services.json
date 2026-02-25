@@ -1,0 +1,201 @@
+[
+  {
+    "id": "analisis-laboratorio",
+    "icon": "BarChart3",
+    "title": {
+      "es": "Análisis de Laboratorio",
+      "en": "Laboratory Analysis"
+    },
+    "description": {
+      "es": "Servicios especializados de caracterización de fibras con precisión científica.",
+      "en": "Specialized fiber characterization services with scientific precision."
+    },
+    "features": {
+      "es": [
+        "MDF, CVMDF, DEMDF",
+        "Factores de confort",
+        "Protocolos validados",
+        "Reportes técnicos"
+      ],
+      "en": [
+        "MDF, CVMDF, DEMDF",
+        "Comfort factors",
+        "Validated protocols",
+        "Technical reports"
+      ]
+    },
+    "order": 1,
+    "whatsapp": "51988496839",
+    "archived": false
+  },
+  {
+    "id": "id-colaborativo",
+    "icon": "Lightbulb",
+    "title": {
+      "es": "I+D Colaborativo",
+      "en": "Collaborative R&D"
+    },
+    "description": {
+      "es": "Investigación aplicada junto a universidades e instituciones para crear nuevas soluciones.",
+      "en": "Applied research with universities and institutions to create new solutions."
+    },
+    "features": {
+      "es": [
+        "Publicaciones y patentes",
+        "Desarrollo conjunto",
+        "Transferencia tecnológica",
+        "Prototipado"
+      ],
+      "en": [
+        "Publications and patents",
+        "Joint development",
+        "Technology transfer",
+        "Prototyping"
+      ]
+    },
+    "order": 2,
+    "whatsapp": "51988496839",
+    "archived": false
+  },
+  {
+    "id": "proyectos-medida",
+    "icon": "Users",
+    "title": {
+      "es": "Proyectos a Medida",
+      "en": "Custom Projects"
+    },
+    "description": {
+      "es": "Desarrollo de soluciones tecnológicas personalizadas según tus necesidades.",
+      "en": "Development of tailor-made technological solutions according to your needs."
+    },
+    "features": {
+      "es": [
+        "Integración de sistemas",
+        "Automatización",
+        "Paneles e informes a medida",
+        "Escalabilidad"
+      ],
+      "en": [
+        "Systems integration",
+        "Automation",
+        "Custom dashboards and reports",
+        "Scalability"
+      ]
+    },
+    "order": 3,
+    "whatsapp": "51988496839",
+    "archived": false
+  },
+  {
+    "id": "implementacion-soporte",
+    "icon": "Settings",
+    "title": {
+      "es": "Implementación y Soporte",
+      "en": "Implementation & Support"
+    },
+    "description": {
+      "es": "Instalación, puesta en marcha y mantenimiento de equipos con soporte técnico dedicado.",
+      "en": "Installation, commissioning, and maintenance with dedicated technical support."
+    },
+    "features": {
+      "es": [
+        "Instalación y calibración",
+        "Mantenimiento preventivo",
+        "Soporte remoto y onsite",
+        "Actualizaciones de software"
+      ],
+      "en": [
+        "Installation and calibration",
+        "Preventive maintenance",
+        "Remote and onsite support",
+        "Software updates"
+      ]
+    },
+    "order": 4,
+    "whatsapp": "51988496839"
+  },
+  {
+    "id": "capacitacion-entrenamiento",
+    "icon": "BookOpen",
+    "title": {
+      "es": "Capacitación y Entrenamiento",
+      "en": "Training & Workshops"
+    },
+    "description": {
+      "es": "Programas de formación para el uso de equipos, protocolos y análisis de resultados.",
+      "en": "Training programs for equipment usage, protocols, and results analysis."
+    },
+    "features": {
+      "es": [
+        "Cursos presenciales y online",
+        "Material didáctico",
+        "Certificación",
+        "Workshops prácticos"
+      ],
+      "en": [
+        "In-person and online courses",
+        "Didactic materials",
+        "Certification",
+        "Hands-on workshops"
+      ]
+    },
+    "order": 5,
+    "whatsapp": "51988496839"
+  },
+  {
+    "id": "consultoria-tecnica",
+    "icon": "Brain",
+    "title": {
+      "es": "Consultoría Técnica",
+      "en": "Technical Consulting"
+    },
+    "description": {
+      "es": "Acompañamiento experto para optimizar procesos, interpretar resultados y elevar la calidad de tus análisis.",
+      "en": "Expert guidance to optimize processes, interpret results, and raise the quality of your analyses."
+    },
+    "features": {
+      "es": [
+        "Optimización de procesos",
+        "Interpretación de resultados",
+        "Buenas prácticas y normativas",
+        "Diagnóstico y roadmap"
+      ],
+      "en": [
+        "Process optimization",
+        "Results interpretation",
+        "Best practices and standards",
+        "Diagnosis and roadmap"
+      ]
+    },
+    "order": 6,
+    "whatsapp": "51988496839",
+    "archived": false
+  },
+  {
+    "id": "service-r1uxhr",
+    "icon": "Lightbulb",
+    "title": {
+      "es": "Servicio de Estadística II",
+      "en": "Statistics Service II"
+    },
+    "description": {
+      "es": "Servicios de estadística para tesis y redacción. temas de búsqueda.",
+      "en": "Statistics services for thesis and writing. search topics."
+    },
+    "features": {
+      "es": [
+        "Estadística",
+        "teoría de campo",
+        "teoría de la relatividad"
+      ],
+      "en": [
+        "Statistics",
+        "field theory",
+        "theory of relativity"
+      ]
+    },
+    "order": 1,
+    "whatsapp": "51988496839",
+    "archived": true
+  }
+]

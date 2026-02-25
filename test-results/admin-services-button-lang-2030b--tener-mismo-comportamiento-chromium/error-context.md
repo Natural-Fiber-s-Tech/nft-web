@@ -1,0 +1,43 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - navigation [ref=e5]:
+    - generic [ref=e7]:
+      - link "Fiberstech Logo" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img "Fiberstech Logo" [ref=e10]
+      - generic [ref=e11]:
+        - link "Home" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "Products" [ref=e14] [cursor=pointer]:
+          - /url: /productos
+          - text: Products
+          - img [ref=e15]
+        - link "Services" [ref=e17] [cursor=pointer]:
+          - /url: /servicios
+        - link "Research" [ref=e18] [cursor=pointer]:
+          - /url: /investigation
+        - link "About" [ref=e19] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Contact" [ref=e20] [cursor=pointer]:
+          - /url: /contacto
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - button "ES" [ref=e23]
+          - button "EN" [ref=e24]
+        - button [ref=e25]:
+          - img [ref=e26]
+        - button "Mostrar grid" [ref=e28]:
+          - img [ref=e29]
+  - main [ref=e34]:
+    - generic [ref=e35]:
+      - heading "Admin Login" [level=1] [ref=e36]
+      - generic [ref=e37]:
+        - textbox "Usuario" [ref=e38]
+        - generic [ref=e39]:
+          - textbox "Contraseña" [ref=e40]
+          - button "Ver contraseña" [ref=e41]:
+            - img [ref=e42]
+        - button "Entrar" [ref=e45]
+```
