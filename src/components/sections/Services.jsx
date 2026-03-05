@@ -133,11 +133,23 @@ const Services = ({ limit }) => {
     let cancelled = false;
     const load = async () => {
       try {
-        const res = await fetch("/content/services.json", {
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("../../config/firebase");
+        const querySnapshot = await getDocs(collection(db, "services"));
+
+        let data = [];
+        if (!querySnapshot.empty) {
+          data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } else {
+          const res = await fetch("/content/services.json", {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          data = await res.json();
+        }
         if (cancelled) return;
         // Normalize and sort by optional "order"
         const normalized = (Array.isArray(data) ? data : [])

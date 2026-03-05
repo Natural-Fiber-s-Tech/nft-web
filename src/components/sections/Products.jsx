@@ -7,29 +7,14 @@ import { messages } from "../../config/i18n";
 
 export const ProductCard = ({
   product,
-  lang, // ✅ NEW: Idioma explícito para admin preview
-  disabled = false,
-  editable = false,
-  onEdit,
-  invalid,
-  showHints,
-  previewMode = false, // Nuevo: si es true, usa directamente product sin buscar traducciones
+  lang, // Idioma explícito opcional
 }) => {
   const { t, lang: contextLang } = useLanguage();
-  // Usar lang prop si está disponible, sino usar contexto
   const currentLang = lang || contextLang;
 
-  // Overlay from i18n kept optional; canonical data provides defaults
-  // En modo preview del admin, no buscar traducciones adicionales
-  const raw =
-    editable || previewMode ? null : t(`products.cards.${product.id}`);
-  const cardT = raw && typeof raw === "object" ? raw : {};
-
-  // Helper para obtener texto en idioma correcto
+  // Helper para obtener texto en idioma actual del esquema plano
   const getText = (field) => {
-    if (!product[field]) return "";
-    if (typeof product[field] === "string") return product[field];
-    return product[field][currentLang] || product[field].es || "";
+    return product[`${field}_${currentLang}`] || product[`${field}_es`] || "";
   };
 
   // Button text with lang prop support
@@ -37,11 +22,6 @@ export const ProductCard = ({
     ? messages[lang]?.products?.viewDetails ||
     (lang === "es" ? "Ver Detalles" : "View Details")
     : t("products.viewDetails");
-
-  // Helper para placeholders dinámicos (admin)
-  const getPlaceholder = (key) => {
-    return messages[currentLang]?.admin?.products?.placeholders?.[key] || "";
-  };
 
   return (
     <div className="bg-white rounded-2xl shadow hover:shadow-xl transition-all duration-500 group">
@@ -51,7 +31,7 @@ export const ProductCard = ({
         <div className="h-52 bg-gradient-to-r from-transparent via-white to-transparent rounded-2xl overflow-hidden pb-4 pt-2">
           <div className="w-full h-full flex items-center justify-center transform transition-transform duration-700 ease-out group-hover:scale-120">
             <img
-              src={product.image || "/assets/images/logo/logo_NFT.png"}
+              src={product.photos || "/assets/images/logo/logo_NFT.png"}
               alt={getText("name")}
               className="h-full w-auto object-contain"
               onError={(e) => {
@@ -64,105 +44,32 @@ export const ProductCard = ({
         {/* Content Section */}
         <div className="flex flex-col flex-grow px-3">
           {/* Header - Fixed height */}
-          <div className="h-32">
-            {editable ? (
-              <div className="relative">
-                <input
-                  className={`text-lg font-bold text-gray-900 mb-3 w-full border rounded px-2 py-1 ${invalid?.name ? "border-red-500 ring-1 ring-red-300" : ""
-                    }`}
-                  value={product.name || ""}
-                  onChange={(e) => onEdit?.(["name"], e.target.value)}
-                  placeholder={getPlaceholder("name")}
-                  data-field="name"
-                />
-                {showHints && invalid?.name && (
-                  <div className="absolute -top-5 left-0 bg-red-600 text-white text-[11px] rounded px-2 py-0.5 shadow">
-                    Campo obligatorio
-                  </div>
-                )}
-              </div>
-            ) : (
-              <h3 className="text-lg font-bold text-gray-900 mb-3">
-                {previewMode ? getText("name") : cardT.name || getText("name")}
-              </h3>
-            )}
-            {editable ? (
-              <div className="relative">
-                <textarea
-                  className={`text-sm text-gray-700 leading-relaxed w-full border rounded px-2 py-1 ${invalid?.description
-                    ? "border-red-500 ring-1 ring-red-300"
-                    : ""
-                    }`}
-                  rows={3}
-                  value={product.description || ""}
-                  onChange={(e) => onEdit?.(["description"], e.target.value)}
-                  placeholder={getPlaceholder("description")}
-                  data-field="description"
-                />
-                {showHints && invalid?.description && (
-                  <div className="absolute -top-5 left-0 bg-red-600 text-white text-[11px] rounded px-2 py-0.5 shadow">
-                    Campo obligatorio
-                  </div>
-                )}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                {previewMode
-                  ? getText("description")
-                  : cardT.description || getText("description")}
-              </p>
-            )}
+          <div className="h-28">
+            <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+              {getText("name")}
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+              {getText("description")}
+            </p>
           </div>
 
-          {/* Features List - Fixed height */}
-          <div className="h-36 overflow-hidden relative pb-6">
-            <ul className="space-y-1">
-              {(editable || previewMode
-                ? product.features
-                : cardT.features || product.features
-              ).map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex items-start text-sm text-gray-600 min-w-0"
-                >
-                  <span className="w-1.5 h-1.5 bg-red-600 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
-                  {editable ? (
-                    <input
-                      className={`flex-1 border rounded px-2 py-1 text-sm ${showHints && invalid?.features && !feature?.trim()
-                        ? "border-red-500 ring-1 ring-red-300"
-                        : ""
-                        }`}
-                      value={feature || ""}
-                      onChange={(e) =>
-                        onEdit?.(["features", index], e.target.value)
-                      }
-                      placeholder={getPlaceholder("characteristic")}
-                      data-field={index === 0 ? "features" : undefined}
-                    />
-                  ) : (
-                    <span className="flex-1 line-clamp-2">{feature}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-            {/* Fade overlay para ocultar la zona recortada con gradiente */}
-            <div className="product-fade-overlay" />
+          {/* Banner Tag (Replacement for features) */}
+          <div className="h-10 mt-2 mb-4">
+            {getText("tag") && (
+              <span className="inline-block bg-red-50 text-red-600 text-xs font-medium px-2.5 py-1 rounded border border-red-200">
+                {getText("tag")}
+              </span>
+            )}
           </div>
 
           {/* Button Section - Fixed position at bottom */}
           <div className="mt-auto">
-            {disabled ? (
-              <div className="block w-full text-center btn-cta py-2 px-4 text-sm font-medium opacity-60 cursor-default select-none">
-                {buttonText}
-              </div>
-            ) : (
-              <Link
-                to={`/productos/${product.id}`}
-                className="block w-full text-center btn-cta py-2 px-4 text-sm font-medium cursor-pointer"
-              >
-                {buttonText}
-              </Link>
-            )}
+            <Link
+              to={`/productos/${product.id}`}
+              className="block w-full text-center bg-[#e83d38] hover:bg-[#d63430] text-white py-2 px-4 text-sm font-medium rounded-lg transition-colors shadow-sm"
+            >
+              {buttonText}
+            </Link>
           </div>
         </div>
       </div>
@@ -180,11 +87,24 @@ const Products = ({ limit }) => {
     let cancelled = false;
     const load = async () => {
       try {
-        const res = await fetch("/content/products.json", {
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("../../config/firebase");
+        const querySnapshot = await getDocs(collection(db, "products"));
+
+        let data = [];
+        if (!querySnapshot.empty) {
+          data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } else {
+          const res = await fetch("/content/products.json", {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          data = await res.json();
+        }
+
         if (!cancelled) {
           setJsonProducts(Array.isArray(data) ? data : null);
           setLoadedFromJson(true);

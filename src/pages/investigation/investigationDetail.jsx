@@ -32,23 +32,33 @@ const InvestigationDetail = ({
 
     const load = async () => {
       try {
-        // Cambiado de /assets/images/investigation/posts.json a /content/research.json
-        // para usar la misma fuente que el CMS y la landing
-        const res = await fetch("/content/research.json");
-        const data = await res.json();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("../../config/firebase");
+        const querySnapshot = await getDocs(collection(db, "research"));
+
+        let data = [];
+        if (!querySnapshot.empty) {
+          data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } else {
+          const res = await fetch("/content/research.json");
+          data = await res.json();
+        }
 
         // Filtrar solo artículos activos (no archivados)
         const activeArticles = data.filter((article) => !article.archived);
 
         setArticles(activeArticles);
 
-        console.log("📄 [InvestigationDetail] Loaded articles:", {
+        console.log("📄 [InvestigationDetail] Loaded articles from Firestore:", {
           total: data.length,
           active: activeArticles.length,
           archived: data.length - activeArticles.length,
         });
       } catch (e) {
-        console.error("Error cargando research.json", e);
+        console.error("Error cargando research desde Firestore", e);
         setError("No se pudo cargar la base de publicaciones.");
       } finally {
         setLoading(false);

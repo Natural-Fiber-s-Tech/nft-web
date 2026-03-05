@@ -19,44 +19,51 @@ export default function TeamView() {
     }, []);
 
     async function loadTeam() {
-        const tryPublicFallback = async () => {
-            try {
-                const r = await fetch("/content/team.json");
-                if (!r.ok) return;
-                const raw = await r.json();
-                const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-                if (data?.length) {
-                    const normalized = normalizeTeamOrder(data.map((m) => normalizeTeamMember(m)));
-                    setRows(normalized);
-                    try {
-                        await persistRows(normalized, "seed team from public content");
-                    } catch { }
-                }
-            } catch { }
-        };
         try {
-            const d = await fetchJson("/api/team/list");
-            if (d.ok) {
-                let data = Array.isArray(d.data) ? d.data : [];
+            const { collection, getDocs } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const querySnapshot = await getDocs(collection(db, "team"));
+
+            if (!querySnapshot.empty) {
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                // Firestore devuelve el objeto, lo normalizamos
                 setRows(normalizeTeamOrder(data.map(normalizeTeamMember)));
+            } else {
+                const r = await fetch("/content/team.json");
+                if (r.ok) {
+                    const raw = await r.json();
+                    const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+                    if (data.length) {
+                        const normalized = normalizeTeamOrder(data.map(normalizeTeamMember));
+                        setRows(normalized);
+                        await persistRows(normalized, "seed team from public content");
+                    }
+                } else {
+                    setRows([]);
+                }
             }
-        } catch {
-            tryPublicFallback();
+        } catch (error) {
+            console.error("Error cargando equipo desde Firestore:", error);
+            setRows([]);
         }
     }
 
     async function persistRows(nextRows, reason = "auto-save") {
         try {
-            await fetchJson("/api/team/save", {
-                method: "POST",
-                body: JSON.stringify({
-                    data: nextRows, // assuming already normalized
-                    message: reason,
-                }),
+            const { doc, writeBatch } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const batch = writeBatch(db);
+            nextRows.forEach((item) => {
+                const itemRef = doc(db, "team", item.id);
+                batch.set(itemRef, item, { merge: true });
             });
+            await batch.commit();
             return true;
         } catch (e) {
-            console.warn("Auto-persist team failed:", e);
+            console.warn("Auto-persist team failed in Firestore:", e);
             return false;
         }
     }

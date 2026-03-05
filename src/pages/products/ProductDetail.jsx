@@ -75,10 +75,10 @@ const ProductMediaCarousel = ({ product }) => {
     const items = [];
 
     // Add YouTube video if available
-    if (product.youtubeVideo) {
+    if (product.video) {
       items.push({
         type: "video",
-        url: product.youtubeVideo,
+        url: product.video,
         title: `Video de ${product.name}`,
       });
     }
@@ -86,22 +86,10 @@ const ProductMediaCarousel = ({ product }) => {
     // Add main product image
     items.push({
       type: "image",
-      url: product.image,
+      url: product.photos,
       title: product.name,
       alt: product.name,
     });
-
-    // Add additional images if available
-    if (product.additionalImages) {
-      product.additionalImages.forEach((img, index) => {
-        items.push({
-          type: "image",
-          url: img,
-          title: `${product.name} - Vista ${index + 2}`,
-          alt: `${product.name} vista ${index + 2}`,
-        });
-      });
-    }
 
     return items;
   };
@@ -234,13 +222,27 @@ const ProductDetail = () => {
     let cancelled = false;
     const load = async () => {
       try {
-        const res = await fetch("/content/products.json", {
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("../../config/firebase");
+        const querySnapshot = await getDocs(collection(db, "products"));
+
+        let data = [];
+        if (!querySnapshot.empty) {
+          data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } else {
+          const res = await fetch("/content/products.json", {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          data = await res.json();
+        }
+
         if (!cancelled) setJsonProducts(Array.isArray(data) ? data : null);
-      } catch {
+      } catch (err) {
+        console.error("Error loading products:", err);
         if (!cancelled) setJsonProducts(null);
       }
     };
@@ -253,85 +255,29 @@ const ProductDetail = () => {
   const jsonItem = Array.isArray(jsonProducts)
     ? jsonProducts.find((p) => p.id === productId)
     : null;
+
+  // Parsea el jsonItem basándose en el lenguaje actual usando la convención del schema (Flat Schema)
   const product = jsonItem
     ? {
       id: productId,
-      name: (jsonItem.name && jsonItem.name[language]) || productId,
-      tagline: (jsonItem.tagline && jsonItem.tagline[language]) || "",
-      image: jsonItem.image,
-      category: jsonItem.category,
-      description:
-        (jsonItem.description && jsonItem.description[language]) || "",
-      youtubeVideo: jsonItem.youtubeVideo || "",
-      additionalImages: jsonItem.additionalImages || [],
-      technicalSheets: jsonItem.technicalSheets || {},
-      // Preferir featuresDetail si existe; si no, mapear features simples
-      features_detail: Array.isArray(jsonItem.featuresDetail)
-        ? jsonItem.featuresDetail.map((fd) => ({
-          icon: fd.icon || "BarChart3",
-          title:
-            (fd.title &&
-              (fd.title[language] || fd.title.es || fd.title.en)) ||
-            "",
-          description:
-            (fd.description &&
-              (fd.description[language] ||
-                fd.description.es ||
-                fd.description.en)) ||
-            "",
-        }))
-        : Array.isArray(jsonItem.features) && jsonItem.features[language]
-          ? jsonItem.features[language].map((f) => ({
-            icon: "BarChart3",
-            title: f,
-            description: f,
-          }))
-          : [],
-      specifications:
-        jsonItem.specifications &&
-          typeof jsonItem.specifications === "object" &&
-          jsonItem.specifications[language]
-          ? jsonItem.specifications[language]
-          : jsonItem.specifications || {},
-      capabilities: Array.isArray(jsonItem.capabilities?.[language])
-        ? jsonItem.capabilities[language]
-        : Array.isArray(jsonItem.capabilities)
-          ? jsonItem.capabilities
-          : [],
+      name: jsonItem[`name_${language}`] || jsonItem.name_es || productId,
+      description: jsonItem[`description_${language}`] || jsonItem.description_es || "",
+      photos: jsonItem.photos || "",
+      video: jsonItem.video || "",
+      technicalSheets: {
+        es: jsonItem.technical_sheet_es || "",
+        en: jsonItem.technical_sheet_en || "",
+      },
+      tag: jsonItem[`tag_${language}`] || jsonItem.tag_es || "",
+      // Mantenemos listas vacías si ya no se usan a nivel template para evitar errores:
+      features: [],
+      specifications: {},
+      capabilities: []
     }
     : null;
-
-  // Merge translations for product content (category, tagline, description, feature titles/descriptions)
-  const overlayText = (key) => {
-    const fullKey = `productContent.${productId}.${key}`;
-    const val = t(fullKey);
-    // Ignore when t() returns the key path itself
-    return typeof val === "string" && val !== fullKey ? val : null;
-  };
-  const overlayArray = (key) => {
-    const fullKey = `productContent.${productId}.${key}`;
-    const val = t(fullKey);
-    return Array.isArray(val) ? val : null;
-  };
 
   // Build localized product view
-  const localized = product
-    ? {
-      ...product,
-      category: overlayText("category") || product.category,
-      tagline: overlayText("tagline") || product.tagline,
-      description: overlayText("description") || product.description,
-      features:
-        overlayArray("features")?.map((f, i) => ({
-          icon: product.features_detail?.[i]?.icon || BarChart3,
-          title: f.title || product.features_detail?.[i]?.title,
-          description:
-            f.description || product.features_detail?.[i]?.description,
-        })) || product.features_detail,
-    }
-    : null;
-
-  // Handle product not found
+  const localized = product;
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -386,8 +332,7 @@ const ProductDetail = () => {
           product={{
             ...product,
             name: localized.name,
-            category: localized.category,
-            tagline: localized.tagline,
+            tagline: localized.tag,
             description: localized.description,
             features: localized.features,
           }}

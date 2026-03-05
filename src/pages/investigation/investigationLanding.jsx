@@ -23,14 +23,23 @@ const InvestigationLanding = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Cargar datos del JSON
   useEffect(() => {
     const loadArticles = async () => {
       try {
-        // Cambiado de /assets/images/investigation/posts.json a /content/research.json
-        // para usar la misma fuente que el CMS
-        const response = await fetch("/content/research.json");
-        const data = await response.json();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("../../config/firebase");
+        const querySnapshot = await getDocs(collection(db, "research"));
+
+        let data = [];
+        if (!querySnapshot.empty) {
+          data = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } else {
+          const response = await fetch("/content/research.json");
+          data = await response.json();
+        }
 
         // Filtrar solo artículos activos (no archivados)
         const activeArticles = data.filter((article) => !article.archived);
@@ -39,13 +48,13 @@ const InvestigationLanding = () => {
         setFilteredArticles(activeArticles);
         setLoading(false);
 
-        console.log("📚 [InvestigationLanding] Loaded articles:", {
+        console.log("📚 [InvestigationLanding] Loaded articles from Firestore:", {
           total: data.length,
           active: activeArticles.length,
           archived: data.length - activeArticles.length,
         });
       } catch (error) {
-        console.error("Error loading articles:", error);
+        console.error("Error loading articles from Firestore:", error);
         setLoading(false);
       }
     };
@@ -66,9 +75,9 @@ const InvestigationLanding = () => {
   const journalsCount = new Set(articles.map((a) => a.journal)).size;
   const yearsRange = articles.length
     ? {
-        min: Math.min(...articles.map((a) => new Date(a.date).getFullYear())),
-        max: Math.max(...articles.map((a) => new Date(a.date).getFullYear())),
-      }
+      min: Math.min(...articles.map((a) => new Date(a.date).getFullYear())),
+      max: Math.max(...articles.map((a) => new Date(a.date).getFullYear())),
+    }
     : { min: 0, max: 0 };
   const yearsOfResearch = articles.length
     ? yearsRange.max - yearsRange.min + 1
@@ -273,9 +282,8 @@ const InvestigationLanding = () => {
                   <Filter className="h-5 w-5" />
                   {t("research.landing.filters")}
                   <ChevronDown
-                    className={`h-4 w-4 transition-transform ${
-                      showFilters ? "rotate-180" : ""
-                    }`}
+                    className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
                 {(searchTerm || selectedJournal || selectedYear) && (
@@ -291,9 +299,8 @@ const InvestigationLanding = () => {
 
               {/* Filtros */}
               <div
-                className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${
-                  showFilters ? "block" : "hidden md:grid"
-                }`}
+                className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${showFilters ? "block" : "hidden md:grid"
+                  }`}
               >
                 <select
                   value={selectedJournal}

@@ -20,48 +20,52 @@ export default function ServicesView() {
     }, []);
 
     async function loadServices() {
-        const tryPublicFallback = async () => {
-            try {
-                const r = await fetch("/content/services.json");
-                if (!r.ok) return;
-                const raw = await r.json();
-                const data = Array.isArray(raw)
-                    ? raw
-                    : Array.isArray(raw?.data)
-                        ? raw.data
-                        : [];
-                if (data?.length) {
-                    const normalized = normalizeOrder(data);
-                    setRows(normalized);
-                    try {
-                        await persistRows(normalized, "seed services from public content");
-                    } catch { }
-                }
-            } catch { }
-        };
         try {
-            const d = await fetchJson("/api/services/list");
-            if (d.ok) {
-                const data = Array.isArray(d.data) ? d.data : [];
+            const { collection, getDocs } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const querySnapshot = await getDocs(collection(db, "services"));
+
+            if (!querySnapshot.empty) {
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
                 setRows(normalizeOrder(data));
+            } else {
+                // Si la colección de Firestore está vacía, intentar fallback a JSON y migrar
+                const r = await fetch("/content/services.json");
+                if (r.ok) {
+                    const raw = await r.json();
+                    const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+                    if (data.length) {
+                        const normalized = normalizeOrder(data);
+                        setRows(normalized);
+                        await persistRows(normalized, "seed services from public content");
+                    }
+                } else {
+                    setRows([]);
+                }
             }
-        } catch {
-            tryPublicFallback();
+        } catch (error) {
+            console.error("Error cargando servicios desde Firestore:", error);
+            setRows([]);
         }
     }
 
     async function persistRows(nextRows, reason = "auto-save") {
         try {
-            await fetchJson("/api/services/save", {
-                method: "POST",
-                body: JSON.stringify({
-                    data: nextRows,
-                    message: reason,
-                }),
+            const { doc, writeBatch } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const batch = writeBatch(db);
+            nextRows.forEach((item) => {
+                const itemRef = doc(db, "services", item.id);
+                batch.set(itemRef, item, { merge: true });
             });
+            await batch.commit();
+
             return true;
         } catch (e) {
-            console.warn("Auto-persist failed:", e?.message || e);
+            console.warn("Auto-persist failed in Firestore:", e?.message || e);
             return false;
         }
     }

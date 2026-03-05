@@ -7,26 +7,56 @@ import { fetchJson } from "../../../lib/api";
 import { normalizeOrder } from "../../../lib/crud";
 import { useProducts } from "../../../context/hooks/useProducts";
 
-// Helper to migrate legacy producst
+// Helper to migrate legacy products to new flat schema with suffixes (Option 1)
 function migrateProduct(product) {
     const migrated = { ...product };
-    if (typeof migrated.category === "string") {
-        migrated.category = { es: migrated.category, en: "" };
+    // Flatten names
+    if (typeof migrated.name === "object") {
+        migrated.name_es = migrated.name.es || "";
+        migrated.name_en = migrated.name.en || "";
+        delete migrated.name;
     }
-    if (Array.isArray(migrated.features)) {
-        migrated.features = { es: migrated.features, en: [] };
+    // Flatten descriptions
+    const oldDesc = migrated.descriptionDetail || migrated.description;
+    if (typeof oldDesc === "object") {
+        migrated.description_es = oldDesc.es || "";
+        migrated.description_en = oldDesc.en || "";
+    } else if (typeof migrated.description === "string") {
+        migrated.description_es = migrated.description;
+        migrated.description_en = "";
     }
-    if (
-        migrated.specifications &&
-        typeof migrated.specifications === "object" &&
-        !migrated.specifications.es &&
-        !migrated.specifications.en
-    ) {
-        migrated.specifications = { es: migrated.specifications, en: {} };
+    delete migrated.description;
+    delete migrated.descriptionDetail;
+
+    // Transform category/features to tag
+    if (typeof migrated.category === "object") {
+        migrated.tag_es = migrated.category.es || "";
+        migrated.tag_en = migrated.category.en || "";
+    } else if (typeof migrated.category === "string") {
+        migrated.tag_es = migrated.category;
+        migrated.tag_en = "";
     }
-    if (Array.isArray(migrated.capabilities)) {
-        migrated.capabilities = { es: migrated.capabilities, en: [] };
+    delete migrated.category;
+    delete migrated.features;
+    delete migrated.featuresDetail;
+
+    // Technical Sheets
+    if (typeof migrated.technicalSheets === "object") {
+        migrated.technical_sheet_es = migrated.technicalSheets.es || "";
+        migrated.technical_sheet_en = migrated.technicalSheets.en || "";
     }
+    delete migrated.technicalSheets;
+
+    // Photos and Video
+    migrated.photos = migrated.image || "";
+    migrated.video = migrated.youtubeVideo || "";
+    delete migrated.image;
+    delete migrated.additionalImages;
+    delete migrated.youtubeVideo;
+    delete migrated.capabilities;
+    delete migrated.specifications;
+    delete migrated.tagline;
+
     return migrated;
 }
 
@@ -43,47 +73,39 @@ export default function ProductsView() {
         loadProducts();
     }, []);
 
-    function loadProducts() {
-        fetchJson("/api/products/list")
-            .then((d) => {
-                if (d.ok) {
-                    let data = Array.isArray(d.data) ? d.data : [];
-                    data = data.map(migrateProduct);
-                    setRows(normalizeOrder(data));
-                }
-            })
-            .catch(() => {
-                fetchJson("/content/products.json")
-                    .then((d) => {
-                        const data = Array.isArray(d)
-                            ? d
-                            : Array.isArray(d?.data)
-                                ? d.data
-                                : [];
-                        const migrated = data.map(migrateProduct);
-                        setRows(normalizeOrder(migrated));
-                    })
-                    .catch(() => setRows([]));
-            });
+    async function loadProducts() {
+        try {
+            const { collection, getDocs } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const querySnapshot = await getDocs(collection(db, "products"));
+            let data = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            data = data.map(migrateProduct);
+            setRows(normalizeOrder(data));
+        } catch (error) {
+            console.error("Error cargando productos de Firestore:", error);
+            setRows([]);
+        }
     }
 
     async function persistRows(nextRows, reason = "auto-save") {
         try {
-            // Local cache
-            try {
-                localStorage.setItem("admin_products", JSON.stringify(nextRows));
-            } catch { }
+            const { doc, writeBatch } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
 
-            await fetchJson("/api/products/save", {
-                method: "POST",
-                body: JSON.stringify({
-                    data: nextRows,
-                    message: reason,
-                }),
+            const batch = writeBatch(db);
+            nextRows.forEach((item) => {
+                const itemRef = doc(db, "products", item.id);
+                // Asegurarnos de limpiar cualquier key antigua antes de guardar
+                const cleanedItem = migrateProduct(item);
+                batch.set(itemRef, cleanedItem, { merge: true }); // merge: true preserves other unexpected fields, but we overwrite known bad ones with cleanedItem in future writes
             });
+            await batch.commit();
             return true;
         } catch (e) {
-            console.warn("Auto-persist products failed:", e?.message || e);
+            console.warn("Auto-persist products failed in Firestore:", e?.message || e);
             return false;
         }
     }
@@ -96,19 +118,16 @@ export default function ProductsView() {
                     onClick={() => {
                         const blank = {
                             id: "product-" + Math.random().toString(36).slice(2, 8),
-                            name: { es: "", en: "" },
-                            tagline: { es: "", en: "" },
-                            description: { es: "", en: "" },
-                            descriptionDetail: { es: "", en: "" },
-                            image: "",
-                            category: "",
-                            technicalSheets: { es: "", en: "" },
-                            features: { es: [""], en: [""] },
-                            featuresDetail: [],
-                            specifications: {},
-                            capabilities: [],
-                            youtubeVideo: "",
-                            additionalImages: [],
+                            name_es: "",
+                            name_en: "",
+                            description_es: "",
+                            description_en: "",
+                            photos: "",
+                            video: "",
+                            technical_sheet_es: "",
+                            technical_sheet_en: "",
+                            tag_es: "",
+                            tag_en: "",
                             order: (rows?.filter((x) => !x.archived).length || 0) + 1,
                             archived: false,
                         };

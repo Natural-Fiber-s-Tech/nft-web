@@ -29,6 +29,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@tailwindcss/vite": "^4.1.13",
+    "firebase": "^12.10.0",
     "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.575.0",

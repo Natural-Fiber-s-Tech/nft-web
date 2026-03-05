@@ -17,43 +17,61 @@ export default function ResearchView() {
     useEffect(() => {
         loadResearch();
     }, []);
+    async function loadResearch() {
+        try {
+            const { collection, getDocs } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const querySnapshot = await getDocs(collection(db, "research"));
 
-    function loadResearch() {
-        const fetchWithFallback = (url, fallbackUrl) => {
-            fetchJson(url)
-                .then((d) => {
-                    if (d.ok) processData(d.data);
-                })
-                .catch(() => {
-                    fetchJson(fallbackUrl).then(processData).catch(() => setRows([]));
-                });
-        };
-
-        const processData = (raw) => {
-            let data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-            const uniqueData = data.reduce((acc, item) => {
-                if (!acc.some((existing) => existing.slug === item.slug)) {
-                    acc.push(item);
+            if (!querySnapshot.empty) {
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                const uniqueData = data.reduce((acc, item) => {
+                    if (!acc.some((existing) => existing.slug === item.slug)) {
+                        acc.push(item);
+                    }
+                    return acc;
+                }, []);
+                setRows(normalizeOrder(uniqueData));
+            } else {
+                const r = await fetch("/content/research.json");
+                if (r.ok) {
+                    const raw = await r.json();
+                    const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+                    if (data.length) {
+                        const uniqueData = data.reduce((acc, item) => {
+                            if (!acc.some((existing) => existing.slug === item.slug)) acc.push(item);
+                            return acc;
+                        }, []);
+                        const normalized = normalizeOrder(uniqueData);
+                        setRows(normalized);
+                        await persistRows(normalized, "seed research from public content");
+                    }
+                } else {
+                    setRows([]);
                 }
-                return acc;
-            }, []);
-            setRows(normalizeOrder(uniqueData));
+            }
+        } catch (error) {
+            console.error("Error cargando investigación desde Firestore:", error);
+            setRows([]);
         }
-        fetchWithFallback("/api/research/list", "/content/research.json");
     }
 
     async function persistRows(nextRows, reason = "auto-save") {
         try {
-            await fetchJson("/api/research/save", {
-                method: "POST",
-                body: JSON.stringify({
-                    data: nextRows,
-                    message: reason,
-                }),
+            const { doc, writeBatch } = await import("firebase/firestore");
+            const { db } = await import("../../../config/firebase");
+            const batch = writeBatch(db);
+            nextRows.forEach((item) => {
+                const itemRef = doc(db, "research", item.id);
+                batch.set(itemRef, item, { merge: true });
             });
+            await batch.commit();
             return true;
         } catch (e) {
-            console.warn("Auto-persist research failed:", e);
+            console.warn("Auto-persist research failed in Firestore:", e);
             return false;
         }
     }

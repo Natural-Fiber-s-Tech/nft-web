@@ -1,68 +1,58 @@
 import { useState, useEffect } from "react";
-import { fetchJson } from "../lib/api";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth as firebaseAuth } from "../config/firebase";
 
 /**
- * 🔐 useAuth: Hook that checks if the user is authenticated.
- *
- * Refactored action-based system:
- * - GET /api/auth?action=me
+ * 🔐 useAuth: Hook para manejar la autenticación con Firebase.
  */
 export function useAuth() {
-    const [auth, setAuth] = useState({ loading: true, ok: false });
+    const [auth, setAuth] = useState({ loading: true, ok: false, user: null });
+
     useEffect(() => {
-        (async () => {
-            try {
-                const d = await fetchJson("/api/auth?action=me");
-                setAuth({ loading: false, ok: !!d.authenticated });
-            } catch {
-                setAuth({ loading: false, ok: false });
+        // Suscribirse a los cambios de estado de autenticación (sesión persistente)
+        const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+            if (user) {
+                setAuth({ loading: false, ok: true, user });
+            } else {
+                setAuth({ loading: false, ok: false, user: null });
             }
-        })();
+        });
+
+        // Limpiar suscripción al desmontar
+        return () => unsubscribe();
     }, []);
 
-    async function login(username, password) {
+    const login = async (email, password) => {
         try {
-            const payload = {
-                action: "login",
-                username: (username || "").trim(),
-                password: (password || "").trim(),
-            };
-            const d = await fetchJson("/api/auth", {
-                method: "POST",
-                body: JSON.stringify(payload),
-            });
+            // trim parameters
+            const cleanEmail = (email || "").trim();
+            const cleanPassword = (password || "").trim();
 
-            if (d?.ok) {
-                window.location.reload();
-                return { success: true };
-            } else {
-                return { success: false, error: "Credenciales inválidas" };
+            await signInWithEmailAndPassword(firebaseAuth, cleanEmail, cleanPassword);
+            // onAuthStateChanged se disparará automáticamente actualizando el estado
+            return { success: true };
+        } catch (error) {
+            console.error("Login con Firebase fallido:", error);
+            let errorMessage = "Credenciales inválidas";
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                errorMessage = "Correo electrónico o contraseña incorrectos.";
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = "El formato del correo electrónico es inválido.";
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = "Demasiados intentos. Inténtalo más tarde.";
             }
-        } catch (err) {
-            const msg = String(err?.message || err);
-            if (msg.includes("404")) {
-                return {
-                    success: false,
-                    error:
-                        "API no disponible (404). ¿Iniciaste `vercel dev` en el puerto 3000?",
-                };
-            }
-            return { success: false, error: "No se pudo iniciar sesión: " + msg };
+            return { success: false, error: errorMessage };
         }
-    }
+    };
 
-    async function logout() {
+    const logout = async () => {
         try {
-            await fetchJson("/api/auth", {
-                method: "POST",
-                body: JSON.stringify({ action: "logout" }),
-            });
-        } catch (err) {
-            console.warn("Logout API error:", err);
-        } finally {
-            window.location.reload();
+            await signOut(firebaseAuth);
+            // Redirigir o recargar si es necesario
+        } catch (error) {
+            console.warn("Error cerrando sesión en Firebase:", error);
         }
-    }
+    };
 
     return { ...auth, login, logout };
 }

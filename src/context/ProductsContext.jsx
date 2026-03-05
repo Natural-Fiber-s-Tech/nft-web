@@ -8,15 +8,20 @@ export const ProductsProvider = ({ children }) => {
 
   const loadProducts = useCallback(async () => {
     try {
-      const res = await fetch("/content/products.json");
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setProducts(data);
-      }
-      setLoading(false);
+      setLoading(true);
+      const { collection, getDocs } = await import("firebase/firestore");
+      const { db } = await import("../config/firebase");
+
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const data = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setProducts(data);
     } catch (err) {
-      console.warn("Failed to load products:", err);
+      console.warn("Failed to load products from Firestore:", err);
       setProducts([]);
+    } finally {
       setLoading(false);
     }
   }, []);
@@ -28,7 +33,7 @@ export const ProductsProvider = ({ children }) => {
 
   // Function to refresh products (called from admin after save)
   const refreshProducts = useCallback(() => {
-    console.log("🔄 Refreshing products...");
+    console.log("🔄 Refreshing products from Firestore...");
     loadProducts();
   }, [loadProducts]);
 
