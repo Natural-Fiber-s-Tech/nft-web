@@ -47,13 +47,22 @@ function migrateProduct(product) {
     }
     delete migrated.technicalSheets;
 
+    // Capabilities
+    if (typeof migrated.capabilities === "object" && !Array.isArray(migrated.capabilities)) {
+        migrated.capabilities_es = migrated.capabilities.es || [];
+        migrated.capabilities_en = migrated.capabilities.en || [];
+    } else if (Array.isArray(migrated.capabilities)) {
+        migrated.capabilities_es = migrated.capabilities;
+        migrated.capabilities_en = migrated.capabilities;
+    }
+    delete migrated.capabilities;
+
     // Photos and Video
     migrated.photos = migrated.image || "";
     migrated.video = migrated.youtubeVideo || "";
     delete migrated.image;
     delete migrated.additionalImages;
     delete migrated.youtubeVideo;
-    delete migrated.capabilities;
     delete migrated.specifications;
     delete migrated.tagline;
 

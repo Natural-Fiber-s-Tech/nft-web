@@ -104,7 +104,7 @@ const App = () => {
               }
             />
             <Route
-              path="/productos/:productId"
+              path="/productos/:productSlug"
               element={
                 <>
                   <main className="pt-16">

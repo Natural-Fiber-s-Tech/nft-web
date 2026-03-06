@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Brain, Clock, Award, Microscope } from "lucide-react";
+import { icons } from "lucide-react";
+
+const RenderIcon = ({ iconName, className = "w-4 h-4 text-gray-500" }) => {
+  const IconCmp = icons[iconName] || icons.Settings;
+  return <IconCmp className={className} />;
+};
 import { useLanguage } from "../../context/hooks/useLanguage";
 import { messages } from "../../config/i18n";
 // Eliminado: catálogo fallback en src/data. Usamos exclusivamente /content/products.json
@@ -9,12 +14,19 @@ export const ProductCard = ({
   product,
   lang, // Idioma explícito opcional
 }) => {
-  const { t, lang: contextLang } = useLanguage();
+  const { t, language: contextLang } = useLanguage();
   const currentLang = lang || contextLang;
 
-  // Helper para obtener texto en idioma actual del esquema plano
+  // Helper para obtener texto en idioma actual (compatible con esquema plano y anidado)
   const getText = (field) => {
-    return product[`${field}_${currentLang}`] || product[`${field}_es`] || "";
+    // Primero, intentar esquema plano (ej. name_es, description_es)
+    const flatValue = product[`${field}_${currentLang}`];
+    if (flatValue) return flatValue;
+
+    // Fallback al esquema anidado/string
+    if (!product[field]) return "";
+    if (typeof product[field] === "string") return product[field];
+    return product[field][currentLang] || product[field].es || "";
   };
 
   // Button text with lang prop support
@@ -44,7 +56,7 @@ export const ProductCard = ({
         {/* Content Section */}
         <div className="flex flex-col flex-grow px-3">
           {/* Header - Fixed height */}
-          <div className="h-28">
+          <div className="h-28 mb-1">
             <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
               {getText("name")}
             </h3>
@@ -53,19 +65,31 @@ export const ProductCard = ({
             </p>
           </div>
 
-          {/* Banner Tag (Replacement for features) */}
-          <div className="h-10 mt-2 mb-4">
-            {getText("tag") && (
-              <span className="inline-block bg-red-50 text-red-600 text-xs font-medium px-2.5 py-1 rounded border border-red-200">
-                {getText("tag")}
-              </span>
-            )}
+          {/* Features Previews - Old design */}
+          <div className="flex-1 overflow-hidden relative pb-4">
+            <ul className="space-y-1">
+              {(product.main_features || []).slice(0, 3).map((feat, index) => {
+                const fTitle = feat[`title_${currentLang}`] || feat.title_es;
+                if (!fTitle) return null;
+                return (
+                  <li
+                    key={index}
+                    className="flex items-start text-sm text-gray-600 min-w-0"
+                  >
+                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                    <span className="flex-1 line-clamp-2">{fTitle}</span>
+                  </li>
+                );
+              })}
+            </ul>
+            {/* Fade overlay para ocultar la zona recortada con gradiente */}
+            <div className="product-fade-overlay" />
           </div>
 
           {/* Button Section - Fixed position at bottom */}
           <div className="mt-auto">
             <Link
-              to={`/productos/${product.id}`}
+              to={`/productos/${product.slug || product.id}`}
               className="block w-full text-center bg-[#e83d38] hover:bg-[#d63430] text-white py-2 px-4 text-sm font-medium rounded-lg transition-colors shadow-sm"
             >
               {buttonText}
@@ -127,24 +151,8 @@ const Products = ({ limit }) => {
     const data = Array.isArray(jsonProducts) ? jsonProducts : [];
     return data
       .filter((p) => !p.archived)
-      .sort((a, b) => (a.order || 999) - (b.order || 999))
-      .map((p) => {
-        const overlay = t(`products.cards.${p.id}`);
-        const o = overlay && typeof overlay === "object" ? overlay : {};
-        const name = (p.name && p.name[language]) || p.name || "";
-        const description =
-          o.description || (p.description && p.description[language]) || "";
-        const features =
-          o.features || (p.features && p.features[language]) || [];
-        return {
-          id: p.id,
-          name,
-          image: p.image,
-          description,
-          features,
-        };
-      });
-  }, [jsonProducts, language, t]);
+      .sort((a, b) => (a.order || 999) - (b.order || 999));
+  }, [jsonProducts]);
 
   return (
     <section id="productos" className="py-8 bg-gray-0 rounded-3xl shadow-lg">
@@ -164,10 +172,10 @@ const Products = ({ limit }) => {
         {/* Insights / Highlights - stacked layout */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 ">
           {[
-            { icon: Brain, ...t("products.highlights.0") },
-            { icon: Clock, ...t("products.highlights.1") },
-            { icon: Award, ...t("products.highlights.2") },
-            { icon: Microscope, ...t("products.highlights.3") },
+            { icon: icons.Brain, ...t("products.highlights.0") },
+            { icon: icons.Clock, ...t("products.highlights.1") },
+            { icon: icons.Award, ...t("products.highlights.2") },
+            { icon: icons.Microscope, ...t("products.highlights.3") },
           ].map(({ icon: Icon, title, description }, i) => (
             <div
               key={i}
