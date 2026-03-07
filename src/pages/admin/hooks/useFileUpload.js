@@ -166,68 +166,30 @@ export function useFileUpload(options = {}) {
           return;
         }
 
-        // Opción 2: Subir a servidor vía /api/upload
-        setUploadMessage(`⏳ Subiendo ${file.name}...`);
+        // Opción 2: MOCK temporal en lugar de subir al servidor (ya que Firestore Storage se pospuso)
+        setUploadMessage(`⏳ Subiendo ${file.name} (MOCK)...`);
 
-        // Intentar multipart primero
-        const formData = new FormData();
-        formData.append("file", file, file.name);
-        formData.append("path", uploadPath);
+        // Simular delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        console.log(
-          "[useFileUpload] Uploading to:",
-          uploadPath,
-          "file:",
-          file.name
-        );
-
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.ok) {
-          const fileUrl = result.url || result.path;
-          console.log("[useFileUpload] Upload success:", fileUrl);
-          onSuccess?.(fileUrl, file);
-          setUploadMessage(`✓ Archivo guardado: ${file.name}`);
+        let fileUrl = "";
+        if (file.type.startsWith("image/")) {
+          // Si es imagen, generar un string largo de DataURL para que se vea previsualizado y se guarde en Firestore,
+          // o podemos usar un placeholder externo. Debido a requerimientos visuales del panel, vamos a usar un placeholder 
+          // que permita observar nombre del archivo.
+          fileUrl = `https://via.placeholder.com/640x360.png?text=${encodeURIComponent(file.name.substring(0, 15))}`;
         } else {
-          // Fallback a base64 JSON
-          console.warn(
-            "[useFileUpload] Multipart failed, trying base64...",
-            result
-          );
-          const base64 = await fileToDataURL(file);
-          const base64Data = base64.split(",")[1]; // Remover "data:...;base64,"
-
-          const response2 = await fetch("/api/upload", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: file.name,
-              path: uploadPath,
-              data: base64Data,
-            }),
-          });
-
-          const result2 = await response2.json();
-
-          if (response2.ok && result2.ok) {
-            const fileUrl = result2.url || result2.path;
-            console.log("[useFileUpload] Upload success (base64):", fileUrl);
-            onSuccess?.(fileUrl, file);
-            setUploadMessage(`✓ Archivo guardado: ${file.name}`);
-          } else {
-            throw new Error(result2.error || "Upload failed");
-          }
+          // Si es PDF u otro
+          fileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
         }
+
+        console.log("[useFileUpload] Upload success (MOCK):", fileUrl);
+        onSuccess?.(fileUrl, file);
+        setUploadMessage(`✓ Archivo guardado (MOCK): ${file.name}`);
       } catch (error) {
         console.error("[useFileUpload] Error:", error);
-        const message = `Error al subir archivo: ${
-          error.message || "Error desconocido"
-        }`;
+        const message = `Error al subir archivo: ${error.message || "Error desconocido"
+          }`;
         setUploadMessage(message);
         onError?.(error);
       } finally {

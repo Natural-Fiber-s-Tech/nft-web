@@ -68,7 +68,7 @@ export const ProductCard = ({
           {/* Features Previews - Old design */}
           <div className="flex-1 overflow-hidden relative pb-4">
             <ul className="space-y-1">
-              {(product.main_features || []).slice(0, 3).map((feat, index) => {
+              {(product.main_features || []).slice(0, 4).map((feat, index) => {
                 const fTitle = feat[`title_${currentLang}`] || feat.title_es;
                 if (!fTitle) return null;
                 return (

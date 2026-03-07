@@ -143,7 +143,7 @@ export default function ProductFormModal({
             }
 
             setLocal(updated);
-            alert("Traducción a Inglés completada exitosamente.");
+            alert("Traducción a Inglés completada exitosamente. Recuerde revisar los campos antes de guardar debido a que las traducciones pueden no ser muy precisas.");
         } catch (error) {
             console.error("Translation error:", error);
             alert("Hubo un error al traducir algunos campos.");
@@ -545,7 +545,7 @@ export default function ProductFormModal({
                                 disabled={translating}
                                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors disabled:opacity-50"
                             >
-                                {translating ? "Traduciendo..." : "✨ Auto Traducir (ES → EN)"}
+                                {translating ? "Traduciendo..." : "Traducir a ingles (ES → EN)"}
                             </button>
                             <div className="w-px h-6 bg-gray-200 hidden sm:block"></div>
                             <span className="text-sm text-gray-500 font-medium">Idioma a modificar:</span>

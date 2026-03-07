@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Eye, Pencil, Archive, RotateCcw, Columns } from "lucide-react";
+import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
@@ -9,6 +9,8 @@ export default function ProductsTable({
   onView,
   onEdit,
   onArchiveToggle,
+  onDelete,
+  onOrderChange,
 }) {
   const columns = useMemo(
     () => [
@@ -53,6 +55,10 @@ export default function ProductsTable({
     return {};
   };
 
+  // Determine the top 3 items for highlighting (only active non-archived items contribute to rank)
+  // Products is already sorted by order, we just need to count active items
+  let activeRank = 0;
+
   return (
     <>
       <div
@@ -90,91 +96,136 @@ export default function ProductsTable({
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
-            {products.map((p) => (
-              <tr key={p.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50/50">
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
-                  title={p.id}
-                  style={{ width: columnWidths.id || "auto" }}
-                >
-                  <span className="font-mono text-xs text-gray-400">{p.id}</span>
-                </td>
+            {products.map((p) => {
+              const isActive = !p.archived;
+              let isTop3 = false;
+              if (isActive) {
+                activeRank++;
+                isTop3 = activeRank <= 3;
+              }
 
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.order || "auto" }}
+              return (
+                <tr
+                  key={p.id}
+                  className={`border-b transition-colors hover:bg-gray-50/75 ${isTop3 ? "bg-amber-50/40 border-amber-100" : "border-gray-100"
+                    }`}
                 >
-                  {p.archived ? <span className="text-gray-300">-</span> : p.order ?? "-"}
-                </td>
+                  <td
+                    className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
+                    title={p.id}
+                    style={{ width: columnWidths.id || "auto" }}
+                  >
+                    <span className="font-mono text-xs text-gray-400">{p.id}</span>
+                  </td>
 
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("image") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.image || "auto" }}
-                >
-                  <div className="flex items-center justify-center">
-                    {p.image ? (
-                      <img
-                        src={p.image}
-                        alt={p.name?.es || "Producto"}
-                        className="w-10 h-10 object-cover rounded border border-gray-200"
-                      />
+                  <td
+                    className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
+                    style={{ width: columnWidths.order || "auto" }}
+                  >
+                    {p.archived ? (
+                      <span className="text-gray-300">-</span>
                     ) : (
-                      <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-[10px]">
-                        N/A
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <input
+                          type="number"
+                          min="1"
+                          value={p.order || ""}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            if (!isNaN(val) && val > 0) {
+                              onOrderChange?.(p, val);
+                            }
+                          }}
+                          className="w-16 h-8 text-center border border-gray-200 rounded text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                        />
+                        {isTop3 && (
+                          <span className="text-[10px] font-bold text-amber-600 tracking-wider">
+                            ★ INICIO
+                          </span>
+                        )}
                       </div>
                     )}
-                  </div>
-                </td>
+                  </td>
 
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis font-medium text-gray-900 ${!isColumnVisible("name") ? "hidden" : ""
-                    }`}
-                  title={p.name?.es}
-                  style={{ width: columnWidths.name || "auto" }}
-                >
-                  {p.name?.es}
-                </td>
+                  <td
+                    className={`p-4 align-middle text-center ${!isColumnVisible("image") ? "hidden" : ""}`}
+                    style={{ width: columnWidths.image || "auto" }}
+                  >
+                    <div className="flex items-center justify-center">
+                      {(p.photos || p.image) ? (
+                        <img
+                          src={p.photos || p.image}
+                          alt={p.name_es || p.name?.es || "Producto"}
+                          className="w-10 h-10 object-cover rounded border border-gray-200"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-[10px]">
+                          N/A
+                        </div>
+                      )}
+                    </div>
+                  </td>
 
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("category") ? "hidden" : ""
-                    }`}
-                  style={{ width: columnWidths.category || "auto" }}
-                >
-                  {typeof p.category === "string" ? p.category : p.category?.es || "-"}
-                </td>
+                  <td
+                    className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis font-medium text-gray-900 ${!isColumnVisible("name") ? "hidden" : ""
+                      }`}
+                    title={p.name_es || p.name?.es}
+                    style={{ width: columnWidths.name || "auto" }}
+                  >
+                    {p.name_es || p.name?.es || "Sin Nombre"}
+                  </td>
 
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("status") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.status || "auto", ...getStickyStyle("status") }}
-                >
-                  <Badge variant={p.archived ? "warning" : "success"}>
-                    {p.archived ? "Archivado" : "Activo"}
-                  </Badge>
-                </td>
+                  <td
+                    className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("category") ? "hidden" : ""
+                      }`}
+                    style={{ width: columnWidths.category || "auto" }}
+                  >
+                    {p.tag_es || p.category?.es || p.category || "-"}
+                  </td>
 
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(p)}>
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => onEdit(p)}>
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={`h-8 w-8 ${p.archived ? "text-green-600 hover:bg-green-50" : "text-red-600 hover:bg-red-50"}`}
-                      onClick={() => onArchiveToggle(p)}
-                    >
-                      {p.archived ? <RotateCcw className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td
+                    className={`p-4 align-middle text-center ${!isColumnVisible("status") ? "hidden" : ""}`}
+                    style={{ width: columnWidths.status || "auto", ...getStickyStyle("status") }}
+                  >
+                    <Badge variant={p.archived ? "warning" : "success"}>
+                      {p.archived ? "Archivado" : "Activo"}
+                    </Badge>
+                  </td>
+
+                  <td
+                    className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
+                    style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(p)} title="Ver Detalle">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => onEdit(p)} title="Editar Producto">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className={`h-8 w-8 ${p.archived ? "text-green-600 hover:bg-green-50" : "text-amber-600 hover:bg-amber-50"}`}
+                        onClick={() => onArchiveToggle(p)}
+                        title={p.archived ? "Restaurar Producto" : "Archivar Producto"}
+                      >
+                        {p.archived ? <RotateCcw className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => onDelete?.(p)}
+                        title="Eliminar Permanentemente"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

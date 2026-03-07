@@ -58,8 +58,8 @@ function migrateProduct(product) {
     delete migrated.capabilities;
 
     // Photos and Video
-    migrated.photos = migrated.image || "";
-    migrated.video = migrated.youtubeVideo || "";
+    migrated.photos = migrated.photos || migrated.image || "";
+    migrated.video = migrated.video || migrated.youtubeVideo || "";
     delete migrated.image;
     delete migrated.additionalImages;
     delete migrated.youtubeVideo;
@@ -208,6 +208,50 @@ export default function ProductsView() {
                 onArchiveToggle={(row) => {
                     setConfirmRow(row);
                     setShowConfirm(true);
+                }}
+                onOrderChange={async (product, newOrder) => {
+                    const prev = rows;
+                    const others = prev.filter((r) => r.id !== product.id);
+                    const compact = normalizeOrder(others);
+                    const active = compact.filter((x) => !x.archived);
+                    const activeCount = active.length;
+                    const req = typeof newOrder === "number" ? newOrder : activeCount + 1;
+                    const target = Math.max(1, Math.min(req, activeCount + 1));
+                    const shifted = compact.map((r) => {
+                        if (!r.archived && Number(r.order) >= target) {
+                            return { ...r, order: Number(r.order) + 1 };
+                        }
+                        return r;
+                    });
+                    const next = [
+                        ...shifted,
+                        { ...product, order: target },
+                    ];
+                    const nextComputed = normalizeOrder(next);
+                    setRows(nextComputed);
+                    const ok = await persistRows(nextComputed, "auto-save: onOrderChange");
+                    if (!ok) alert("No se pudo guardar el nuevo orden.");
+                    else loadProducts();
+                }}
+                onDelete={async (product) => {
+                    if (window.confirm(`¿Seguro que deseas eliminar permanentemente el producto "${product.name_es || product.name?.es || product.id}"?\n\nEsta acción no se puede deshacer.`)) {
+                        try {
+                            const { doc, deleteDoc } = await import("firebase/firestore");
+                            const { db } = await import("../../../config/firebase");
+
+                            await deleteDoc(doc(db, "products", product.id));
+
+                            const nextRows = rows.filter(r => r.id !== product.id);
+                            const normalized = normalizeOrder(nextRows);
+                            setRows(normalized);
+                            await persistRows(normalized, "auto-save: after delete");
+
+                            loadProducts();
+                            refreshProducts();
+                        } catch (e) {
+                            alert("Error al eliminar el producto: " + (e?.message || e));
+                        }
+                    }
                 }}
             />
 

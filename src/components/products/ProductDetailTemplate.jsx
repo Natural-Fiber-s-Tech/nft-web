@@ -217,10 +217,31 @@ const PublicMediaCarousel = ({ product, getText }) => {
 
     // Get YouTube video ID from URL
     const getYouTubeVideoId = (url) => {
-        const regex =
-            /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-        const match = (url || "").match(regex);
-        return match ? match[1] : null;
+        if (!url) return null;
+        try {
+            // Manejo de youtu.be
+            if (url.includes('youtu.be/')) {
+                return url.split('youtu.be/')[1].split('?')[0];
+            }
+            // Manejo de watch?v=
+            if (url.includes('watch?v=')) {
+                return url.split('watch?v=')[1].split('&')[0];
+            }
+            // Manejo de embed/
+            if (url.includes('embed/')) {
+                return url.split('embed/')[1].split('?')[0];
+            }
+            // Manejo de shorts/
+            if (url.includes('shorts/')) {
+                return url.split('shorts/')[1].split('?')[0];
+            }
+            // Fallback con regex si es otro caso
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        } catch (e) {
+            return null;
+        }
     };
 
     const currentItem = mediaItems[currentIndex] || {};
