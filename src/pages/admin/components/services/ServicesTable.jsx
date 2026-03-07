@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { RenderIcon } from "../common/IconUtils";
-import { Eye, Pencil, Archive, RotateCcw, Columns } from "lucide-react";
+import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
@@ -10,6 +10,8 @@ export default function ServicesTable({
   onView,
   onEdit,
   onArchiveToggle,
+  onOrderChange,
+  onDelete,
 }) {
   const columns = useMemo(
     () => [
@@ -116,97 +118,145 @@ export default function ServicesTable({
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
-            {services.map((s) => (
-              <tr key={s.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50/50">
-                {/* ID */}
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
-                  title={s.id}
-                  style={{ width: columnWidths.id || "auto" }}
-                >
-                  <span className="font-mono text-xs text-gray-400">{s.id}</span>
-                </td>
+            {(() => {
+              let activeRank = 0;
+              return services.map((s) => {
+                const isActive = !s.archived;
+                let isTop3 = false;
+                if (isActive) {
+                  activeRank++;
+                  isTop3 = activeRank <= 3;
+                }
 
-                {/* Orden */}
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.order || "auto" }}
-                >
-                  {s.archived ? <span className="text-gray-300">-</span> : s.order ?? "-"}
-                </td>
-
-                {/* Icono */}
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("icon") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.icon || "auto" }}
-                >
-                  <div className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600">
-                    <RenderIcon iconName={s.icon} className="w-4 h-4" />
-                  </div>
-                </td>
-
-                {/* Título */}
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis font-medium text-gray-900 ${!isColumnVisible("title") ? "hidden" : ""
-                    }`}
-                  title={s.title?.es}
-                  style={{ width: columnWidths.title || "auto" }}
-                >
-                  {s.title?.es}
-                </td>
-
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("features") ? "hidden" : ""
-                    }`}
-                  title={s.features?.es}
-                  style={{ width: columnWidths.features || "auto" }}
-                >
-                  {s.features?.es || "-"}
-                </td>
-
-                <td
-                  className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("description") ? "hidden" : ""
-                    }`}
-                  title={s.description?.es}
-                  style={{ width: columnWidths.description || "auto" }}
-                >
-                  {s.description?.es}
-                </td>
-
-                {/* Estado */}
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("status") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.status || "auto", ...getStickyStyle("status") }}
-                >
-                  <Badge variant={s.archived ? "warning" : "success"}>
-                    {s.archived ? "Archivado" : "Activo"}
-                  </Badge>
-                </td>
-
-                {/* Acciones */}
-                <td
-                  className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
-                  style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(s)}>
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => onEdit(s)}>
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={`h-8 w-8 ${s.archived ? "text-green-600 hover:bg-green-50" : "text-red-600 hover:bg-red-50"}`}
-                      onClick={() => onArchiveToggle(s)}
+                return (
+                  <tr
+                    key={s.id}
+                    className={`border-b transition-colors hover:bg-gray-50/75 ${isTop3 ? "bg-amber-50/40 border-amber-100" : "border-gray-100"
+                      }`}
+                  >
+                    {/* ID */}
+                    <td
+                      className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
+                      title={s.id}
+                      style={{ width: columnWidths.id || "auto" }}
                     >
-                      {s.archived ? <RotateCcw className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      <span className="font-mono text-xs text-gray-400">{s.id}</span>
+                    </td>
+
+                    {/* Orden */}
+                    <td
+                      className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
+                      style={{ width: columnWidths.order || "auto" }}
+                    >
+                      {s.archived ? (
+                        <span className="text-gray-300">-</span>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <input
+                            type="number"
+                            min="1"
+                            value={s.order || ""}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value, 10);
+                              if (!isNaN(val) && val > 0) {
+                                onOrderChange?.(s, val);
+                              }
+                            }}
+                            className="w-16 h-8 text-center border border-gray-200 rounded text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                          />
+                          {isTop3 && (
+                            <span className="text-[10px] font-bold text-amber-600 tracking-wider">
+                              ★ INICIO
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Icono */}
+                    <td
+                      className={`p-4 align-middle text-center ${!isColumnVisible("icon") ? "hidden" : ""}`}
+                      style={{ width: columnWidths.icon || "auto" }}
+                    >
+                      <div className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600">
+                        <RenderIcon iconName={s.icon} className="w-4 h-4" />
+                      </div>
+                    </td>
+
+                    {/* Título */}
+                    <td
+                      className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis font-medium text-gray-900 ${!isColumnVisible("title") ? "hidden" : ""
+                        }`}
+                      title={s.title?.es}
+                      style={{ width: columnWidths.title || "auto" }}
+                    >
+                      {s.title?.es}
+                    </td>
+
+                    <td
+                      className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("features") ? "hidden" : ""
+                        }`}
+                      title={s.features?.es}
+                      style={{ width: columnWidths.features || "auto" }}
+                    >
+                      {s.features?.es || "-"}
+                    </td>
+
+                    <td
+                      className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 ${!isColumnVisible("description") ? "hidden" : ""
+                        }`}
+                      title={s.description?.es}
+                      style={{ width: columnWidths.description || "auto" }}
+                    >
+                      {s.description?.es}
+                    </td>
+
+                    {/* Estado */}
+                    <td
+                      className={`p-4 align-middle text-center ${!isColumnVisible("status") ? "hidden" : ""}`}
+                      style={{ width: columnWidths.status || "auto", ...getStickyStyle("status") }}
+                    >
+                      <Badge variant={s.archived ? "warning" : "success"}>
+                        {s.archived ? "Archivado" : "Activo"}
+                      </Badge>
+                    </td>
+
+                    {/* Acciones */}
+                    <td
+                      className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
+                      style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(s)} title="Ver Detalle">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => onEdit(s)} title="Editar Servicio">
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={`h-8 w-8 ${s.archived ? "text-green-600 hover:bg-green-50" : "text-amber-600 hover:bg-amber-50"}`}
+                          onClick={() => onArchiveToggle(s)}
+                          title={s.archived ? "Restaurar Servicio" : "Archivar Servicio"}
+                        >
+                          {s.archived ? <RotateCcw className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => onDelete?.(s)}
+                          title="Eliminar Permanentemente"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              });
+            })()}
           </tbody>
         </table>
       </div>

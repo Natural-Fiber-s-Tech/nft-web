@@ -7,6 +7,7 @@ import {
 import { ServiceCard } from "../../../../components/sections/Services";
 import { useAutoTranslate } from "../../hooks/useAutoTranslate";
 import ConfirmModal from "../common/ConfirmModal";
+import ServiceFormComponent from "./ServiceFormComponent";
 
 export default function ServiceFormModal({
   open,
@@ -174,8 +175,7 @@ export default function ServiceFormModal({
       showModal(
         "info",
         "Campos incompletos",
-        `Primero completa los campos en ${
-          sourceLang === "es" ? "Español" : "Inglés"
+        `Primero completa los campos en ${sourceLang === "es" ? "Español" : "Inglés"
         } antes de traducir.`,
         null,
         null,
@@ -351,22 +351,20 @@ export default function ServiceFormModal({
           <div className="w-full max-w-sm mx-auto mb-4 flex justify-center gap-2">
             <button
               type="button"
-              className={`px-3 py-1.5 rounded-lg border text-sm ${
-                activeLang === "es"
-                  ? "bg-red-600 text-white border-red-600"
-                  : "bg-white"
-              }`}
+              className={`px-3 py-1.5 rounded-lg border text-sm ${activeLang === "es"
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-white"
+                }`}
               onClick={() => setActiveLang("es")}
             >
               Español (ES)
             </button>
             <button
               type="button"
-              className={`px-3 py-1.5 rounded-lg border text-sm ${
-                activeLang === "en"
-                  ? "bg-red-600 text-white border-red-600"
-                  : "bg-white"
-              }`}
+              className={`px-3 py-1.5 rounded-lg border text-sm ${activeLang === "en"
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-white"
+                }`}
               onClick={() => setActiveLang("en")}
             >
               Inglés (EN)
@@ -398,289 +396,128 @@ export default function ServiceFormModal({
         className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-10">
-          <h3 className="text-xl font-semibold">
-            {mode === "create"
-              ? "Crear Servicio"
-              : mode === "edit"
-              ? "Editar Servicio"
-              : "Ver Servicio"}
-          </h3>
-
-          {/* Botones de idioma inline con el título */}
-          <div className="flex items-center gap-3">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className={`px-3 py-1.5 rounded-lg border text-sm ${
-                  activeLang === "es"
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-white"
-                }`}
-                onClick={() => setActiveLang("es")}
-              >
-                Español (ES)
-              </button>
-              <button
-                type="button"
-                className={`px-3 py-1.5 rounded-lg border text-sm ${
-                  activeLang === "en"
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-white"
-                }`}
-                onClick={() => setActiveLang("en")}
-              >
-                Inglés (EN)
-              </button>
-            </div>
-
-            {/* ✅ Botones de traducción - Dinámicos con dirección bidireccional */}
-            {!isView &&
-              (() => {
-                // const missingTranslations = detectMissing();
-                // const hasMissingTranslations = missingTranslations.length > 0;
-                const targetLang = activeLang === "es" ? "EN" : "ES";
-
-                return (
-                  <div className="flex gap-2">
-                    {/* Badge desactivado temporalmente (no funciona al 100%)
-                    {hasMissingTranslations && (
-                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded border border-yellow-300 font-medium">
-                        {missingTranslations.length} campo
-                        {missingTranslations.length > 1 ? "s" : ""} →{" "}
-                        {targetLang}
-                      </span>
-                    )}
-                    */}
-
-                    <button
-                      type="button"
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium ${
-                        translating
-                          ? "bg-gray-300 text-gray-600 cursor-wait"
-                          : "bg-blue-500 text-white border-blue-500 hover:bg-blue-600"
-                      }`}
-                      onClick={handleAutoTranslate}
-                      disabled={translating}
-                      title={`Traducir automáticamente ${activeLang.toUpperCase()} → ${targetLang}`}
-                    >
-                      {translating ? (
-                        <>
-                          <span className="inline-block animate-spin mr-1">
-                            ⟳
-                          </span>
-                          Traduciendo...
-                        </>
-                      ) : (
-                        `🌐 Traducir a ${targetLang}`
-                      )}
-                    </button>
-                  </div>
-                );
-              })()}
-
-            <button
-              className="text-gray-500 text-2xl"
-              onClick={() =>
-                isView || !hasChanges ? onClose() : setConfirmClose(true)
-              }
-            >
-              ×
-            </button>
+        <div className="px-6 py-4 bg-gray-50 flex items-center justify-between border-b sticky top-0 z-10">
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-bold text-gray-900">
+              {mode === "create" ? "Nuevo Servicio" : isView ? "Ver Servicio" : "Editar Servicio"}
+            </h2>
           </div>
-        </div>
-        <div className="grid md:grid-cols-2 gap-0">
-          <form onSubmit={submit} className="p-6 space-y-4">
-            {/* ✅ Contenedor compacto de ID y Orden - Layout inline */}
-            <div className="bg-gray-50 rounded-lg px-4 py-2.5 border border-gray-200">
-              <div className="flex items-center gap-6">
-                {/* ID - flex-1 con label inline */}
-                <div className="flex-1 min-w-0 flex items-center gap-3">
-                  <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                    ID
-                  </label>
-                  <div
-                    className="flex-1 px-3 py-1.5 bg-gray-100 border border-gray-300 rounded text-gray-700 font-mono text-sm truncate"
-                    title={data.id}
-                  >
-                    {data.id || "Generando..."}
-                  </div>
-                </div>
-
-                {/* Orden - Ancho fijo con label inline */}
-                <div className="relative flex items-center gap-3">
-                  <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                    Orden *
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    disabled={isView}
-                    className={`w-20 px-3 py-1.5 border rounded text-sm ${
-                      submitAttempted &&
-                      (data.order === "" || Number(data.order) < 1)
-                        ? "border-red-500 bg-white"
-                        : "border-gray-300 bg-white"
-                    }`}
-                    placeholder="Orden"
-                    value={data.order}
-                    onChange={(e) => updateField("order", e.target.value)}
-                  />
-                  {visibleTooltips.order && (
-                    <div className="absolute left-0 top-full mt-1 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg z-10">
-                      Campo Obligatorio
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>{" "}
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">Icono</label>
-              <div className="flex items-center gap-3">
-                <div className="flex-grow flex items-center gap-3 bg-gray-50 border rounded p-2">
-                  <RenderIcon
-                    iconName={data.icon}
-                    className="w-6 h-6 text-red-600"
-                  />
-                  <span className="text-sm text-gray-700 truncate">
-                    {data.icon}
-                  </span>
-                </div>
-                {!isView && (
-                  <button
-                    type="button"
-                    className="px-3 py-2 rounded border bg-red-600/10 text-red-700 border-red-300"
-                    onClick={() => setShowIconPicker(true)}
-                  >
-                    Buscar
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="relative">
-              <label className="block text-xs text-gray-600 mb-1">
-                Título ({activeLang.toUpperCase()})
-              </label>
-              <input
-                disabled={isView}
-                className={`border px-2 py-2 rounded w-full ${
-                  submitAttempted &&
-                  (data.title?.es || "").trim() === "" &&
-                  activeLang === "es"
-                    ? "border-red-500"
-                    : ""
-                }`}
-                value={data.title?.[activeLang] || ""}
-                onChange={(e) => updateLangField("title", e.target.value)}
-              />
-              {visibleTooltips.title && activeLang === "es" && (
-                <div className="absolute left-0 top-full mt-1 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg z-10">
-                  Campo Obligatorio
-                </div>
-              )}
-            </div>
-            <div className="relative">
-              <label className="block text-xs text-gray-600 mb-1">
-                Descripción ({activeLang.toUpperCase()})
-              </label>
-              <textarea
-                disabled={isView}
-                className={`border px-2 py-2 rounded w-full h-24 ${
-                  submitAttempted &&
-                  activeLang === "es" &&
-                  (data.description?.es || "").trim() === ""
-                    ? "border-red-500"
-                    : ""
-                }`}
-                value={data.description?.[activeLang] || ""}
-                onChange={(e) => updateLangField("description", e.target.value)}
-              />
-              {visibleTooltips.description && activeLang === "es" && (
-                <div className="absolute left-0 top-full mt-1 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg z-10">
-                  Campo Obligatorio
-                </div>
-              )}
-            </div>
-            <div className="relative">
-              <label className="block text-xs text-gray-600 mb-1">
-                Características ({activeLang.toUpperCase()}) — una por línea
-              </label>
-              <textarea
-                disabled={isView}
-                className={`border px-2 py-2 rounded w-full h-28 ${
-                  submitAttempted &&
-                  activeLang === "es" &&
-                  (data.features?.es || [])
-                    .map((x) => (x || "").trim())
-                    .filter(Boolean).length === 0
-                    ? "border-red-500"
-                    : ""
-                }`}
-                value={(data.features?.[activeLang] || []).join("\n")}
-                onChange={(e) =>
-                  updateLangField("features", e.target.value.split("\n"))
-                }
-              />
-              {visibleTooltips.features && activeLang === "es" && (
-                <div className="absolute left-0 top-full mt-1 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg z-10">
-                  Campo Obligatorio
-                </div>
-              )}
-            </div>
-            <div className="relative">
-              <label className="block text-xs text-gray-600 mb-1">
-                WhatsApp
-              </label>
-              <input
-                disabled={isView}
-                className={`border rounded w-full px-2 py-2 ${
-                  submitAttempted && (data.whatsapp || "").trim() === ""
-                    ? "border-red-500"
-                    : ""
-                }`}
-                value={data.whatsapp || ""}
-                onChange={(e) => updateField("whatsapp", e.target.value)}
-              />
-              {visibleTooltips.whatsapp && (
-                <div className="absolute left-0 top-full mt-1 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg z-10">
-                  Campo Obligatorio
-                </div>
-              )}
-            </div>
-            <div className="pt-2 flex gap-2">
-              {!isView && (
-                <button className="btn-cta px-5 py-2" type="submit">
-                  Guardar Cambios
-                </button>
-              )}
-              {mode === "edit" && data.archived && (
+          {(!isView) ? (
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleAutoTranslate}
+                disabled={translating}
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {translating ? "Traduciendo..." : `Traducir a ${activeLang === "es" ? "ingles" : "español"} (${activeLang.toUpperCase()} → ${activeLang === "es" ? "EN" : "ES"})`}
+              </button>
+              <div className="w-px h-6 bg-gray-200 hidden sm:block"></div>
+              <span className="text-sm text-gray-500 font-medium whitespace-nowrap hidden sm:block">Idioma a modificar:</span>
+              <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
                 <button
                   type="button"
-                  className="px-3 py-2 rounded border bg-green-600/10 text-green-700 border-green-300"
-                  onClick={() => {
-                    const invalid = data.order === "" || Number(data.order) < 1;
-                    if (invalid) {
-                      setSubmitAttempted(true);
-                      setVisibleTooltips({ order: true });
-                      setTimeout(() => setVisibleTooltips({}), 1000);
-                      return;
-                    }
-                    onRestore?.({ ...data, order: Number(data.order) });
-                    onClose?.();
-                  }}
+                  onClick={() => setActiveLang("es")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
                 >
-                  Restaurar
+                  ES
                 </button>
-              )}
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("en")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  EN
+                </button>
+              </div>
               <button
-                className="px-3 py-2 border rounded"
-                type="button"
+                className="text-gray-400 hover:text-gray-600 ml-2"
                 onClick={() =>
                   isView || !hasChanges ? onClose() : setConfirmClose(true)
                 }
               >
-                {isView ? "Cerrar" : "Cancelar"}
+                <span className="text-2xl font-light">×</span>
               </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500 font-medium whitespace-nowrap hidden sm:block">Idioma actual:</span>
+              <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("es")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  ES
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("en")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  EN
+                </button>
+              </div>
+              <button
+                className="text-gray-400 hover:text-gray-600 ml-2"
+                onClick={onClose}
+              >
+                <span className="text-2xl font-light">×</span>
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="grid md:grid-cols-2 gap-0">
+          <form onSubmit={submit} className="flex flex-col h-full">
+            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+              <ServiceFormComponent
+                tab={activeLang}
+                local={data}
+                updateLangField={updateLangField}
+                updateField={updateField}
+                readOnly={isView}
+                invalid={submitAttempted ? {
+                  title: (data.title?.[activeLang] || "").trim() === "",
+                  description: (data.description?.[activeLang] || "").trim() === "",
+                  whatsapp: (data.whatsapp || "").trim() === "",
+                } : {}}
+              />
+            </div>
+
+            {/* Botones Flotantes Permanentes */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-end gap-4 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+              <div className="flex items-center gap-3">
+                <button
+                  className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  type="button"
+                  onClick={() =>
+                    isView || !hasChanges ? onClose() : setConfirmClose(true)
+                  }
+                >
+                  {isView ? "Cerrar" : "Cancelar"}
+                </button>
+                {mode === "edit" && data.archived && (
+                  <button
+                    type="button"
+                    className="px-5 py-2.5 bg-green-50 text-green-700 border border-green-200 font-medium rounded-lg hover:bg-green-100 transition-colors"
+                    onClick={() => {
+                      onRestore?.({ ...data });
+                      onClose?.();
+                    }}
+                  >
+                    Restaurar
+                  </button>
+                )}
+                {!isView && (
+                  <button className="px-6 py-2.5 bg-[#e83d38] text-white font-medium rounded-lg shadow-sm hover:bg-[#d63430] hover:shadow transition-all" type="submit">
+                    Guardar Cambios
+                  </button>
+                )}
+              </div>
             </div>
           </form>
 
@@ -694,15 +531,7 @@ export default function ServiceFormModal({
           </div>
         </div>
 
-        {showIconPicker && (
-          <IconPicker
-            onSelect={(name) => {
-              setData((s) => ({ ...s, icon: name }));
-              setShowIconPicker(false);
-            }}
-            onClose={() => setShowIconPicker(false)}
-          />
-        )}
+
 
         {confirmClose && (
           <div
@@ -755,143 +584,3 @@ export default function ServiceFormModal({
   );
 }
 
-function IconPicker({ onSelect, onClose }) {
-  const [tab, setTab] = useState("local");
-  const [term, setTerm] = useState("");
-  const [debounced, setDebounced] = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const id = setTimeout(() => setDebounced(term), 400);
-    return () => clearTimeout(id);
-  }, [term]);
-
-  useEffect(() => {
-    let active = true;
-    async function search() {
-      if (tab !== "web" || debounced.length < 3) return setResults([]);
-      setLoading(true);
-      try {
-        const q = encodeURIComponent(debounced);
-        const res = await fetch(`https://api.iconify.design/search?query=${q}`);
-        const data = await res.json();
-        if (!active) return;
-        const items = Array.isArray(data?.icons) ? data.icons : [];
-        setResults(items.map((x) => x));
-      } catch {
-        if (active) setResults([]);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-    search();
-    return () => {
-      active = false;
-    };
-  }, [tab, debounced]);
-
-  const localIcons = Object.keys(localIconMap);
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-gray-900/90 rounded-xl p-5 w-full max-w-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex gap-2">
-            <button
-              className={`px-3 py-1.5 rounded border ${
-                tab === "local"
-                  ? "bg-red-600 text-white border-red-600"
-                  : "bg-white"
-              }`}
-              onClick={() => setTab("local")}
-            >
-              Iconos Locales
-            </button>
-            <button
-              className={`px-3 py-1.5 rounded border ${
-                tab === "web"
-                  ? "bg-red-600 text-white border-red-600"
-                  : "bg-white"
-              }`}
-              onClick={() => setTab("web")}
-            >
-              Buscar en la Web
-            </button>
-          </div>
-          <button className="text-gray-500" onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        {tab === "web" && (
-          <input
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
-            placeholder="Buscar icono en inglés (ejm: database, brain)"
-            className="w-full border rounded px-3 py-2 mb-3"
-          />
-        )}
-
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-72 overflow-y-auto pr-1">
-          {tab === "local" &&
-            (localIcons.length ? localIcons : suggestedIconNames).map(
-              (name) => (
-                <button
-                  key={name}
-                  onClick={() => onSelect(name)}
-                  className="p-2 rounded hover:bg-red-200 flex flex-col items-center gap-1"
-                >
-                  <RenderIcon
-                    iconName={name}
-                    className="w-6 h-6 text-red-600"
-                  />
-                  <span className="text-[11px] text-gray-600 truncate w-full text-center">
-                    {name}
-                  </span>
-                </button>
-              )
-            )}
-          {tab === "web" &&
-            (loading ? (
-              <div className="col-span-full text-center text-sm text-gray-600">
-                Buscando…
-              </div>
-            ) : results.length ? (
-              results.slice(0, 60).map((full) => (
-                <button
-                  key={full}
-                  onClick={() => onSelect(full)}
-                  className="p-2 rounded hover:bg-red-200 flex flex-col items-center gap-1"
-                >
-                  <RenderIcon
-                    iconName={full}
-                    className="w-6 h-6 text-red-600"
-                  />
-                  <span className="text-[11px] text-gray-600 truncate w-full text-center">
-                    {full.split(":").pop()}
-                  </span>
-                </button>
-              ))
-            ) : (
-              <div className="col-span-full text-center text-sm text-gray-600">
-                Sin resultados
-              </div>
-            ))}
-        </div>
-
-        <div className="mt-4 pt-3 border-t">
-          <button className="w-full py-2 rounded border" onClick={onClose}>
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}

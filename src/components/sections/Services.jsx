@@ -158,7 +158,7 @@ const Services = ({ limit }) => {
               s.id ||
               crypto.randomUUID?.() ||
               Math.random().toString(36).slice(2),
-            icon: iconMap[s.icon] || Brain,
+            icon: s.icon || "Brain",
             title:
               (s.title && (s.title[language] || s.title.es || s.title.en)) ||
               "",
