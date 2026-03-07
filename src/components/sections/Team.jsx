@@ -243,7 +243,6 @@ const Team = () => {
               id: m.id || `team-${Math.random().toString(36).slice(2, 8)}`,
               name: getI18nValue(m.name),
               role: getI18nValue(m.role),
-              bio: getI18nValue(m.bio),
               photo: m.photo || m.image || "",
               image: m.photo || m.image || "",
               src_cv_pdf: m.src_cv_pdf || "", // ✅ Mapeo directo

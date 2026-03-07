@@ -5,6 +5,7 @@ import { useAutoTranslate } from "../../hooks/useAutoTranslate";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { messages } from "../../../../config/i18n";
 import ConfirmModal from "../common/ConfirmModal";
+import TeamFormComponent from "./TeamFormComponent";
 
 export default function TeamFormModal({
   open,
@@ -121,46 +122,6 @@ export default function TeamFormModal({
       currentDataSkills: data.skills,
     });
 
-    // ✅ SINCRONIZAR SKILLS: Si hay skillsText pendiente, sincronizar con data.skills antes de traducir
-    if (data.skillsText !== undefined) {
-      console.log(
-        "🔄 Sincronizando skillsText con data.skills para traducción..."
-      );
-      const currentSkills = data.skillsText
-        .split(/\r?\n|,/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      // Preservar skills del otro idioma (targetLang)
-      let otherSkills = [];
-      if (
-        typeof data.skills === "object" &&
-        data.skills !== null &&
-        !Array.isArray(data.skills)
-      ) {
-        otherSkills = data.skills[targetLang] || [];
-      }
-
-      // ✅ CORREGIDO: Actualizar directamente el estado en lugar de variable temporal
-      const updatedSkills = {
-        [sourceLang]: currentSkills,
-        [targetLang]: otherSkills,
-      };
-
-      console.log("✅ Skills sincronizados:", {
-        sourceLang: `${sourceLang} (${currentSkills.length} items)`,
-        targetLang: `${targetLang} (${otherSkills.length} items)`,
-        skillsData: updatedSkills,
-      });
-
-      // Sincronizar al estado antes de la traducción
-      setData((prevData) => ({
-        ...prevData,
-        skills: updatedSkills,
-        skillsText: undefined, // Limpiar skillsText después de sincronizar
-      }));
-    }
-
     // Verificar que hay contenido en el idioma fuente (usar data directamente)
     const hasSourceContent =
       (data.name?.[sourceLang] && data.name[sourceLang].trim()) ||
@@ -170,8 +131,7 @@ export default function TeamFormModal({
 
     if (!hasSourceContent) {
       showAlert(
-        `Primero completa los campos en ${
-          sourceLang === "es" ? "Español" : "Inglés"
+        `Primero completa los campos en ${sourceLang === "es" ? "Español" : "Inglés"
         } antes de traducir.`,
         "warning",
         "Campos Requeridos"
@@ -257,11 +217,6 @@ export default function TeamFormModal({
           typeof member.role === "object" && member.role !== null
             ? member.role
             : { es: String(member.role || ""), en: String(member.role || "") },
-        // Asegurar que bio es un objeto bilingüe
-        bio:
-          typeof member.bio === "object" && member.bio !== null
-            ? member.bio
-            : { es: String(member.bio || ""), en: String(member.bio || "") },
         // ✅ Inicializar campos nuevos
         src_cv_pdf: member.src_cv_pdf || "",
         link_bio: member.link_bio || "",
@@ -285,59 +240,15 @@ export default function TeamFormModal({
     }
   }, [open]);
 
-  // ✅ CORREGIDO: Sincronizar cambios pendientes antes de cambiar idioma
-  useEffect(() => {
-    // Al cambiar de idioma, PRIMERO sincronizar skillsText con data.skills
-    // para no perder cambios pendientes, LUEGO limpiar skillsText
-    setData((prevData) => {
-      const newData = { ...prevData };
-
-      // Si hay skillsText pendiente, sincronizar con data.skills antes de limpiar
-      if (prevData.skillsText !== undefined) {
-        console.log(
-          "🔄 [useEffect activeLang] Sincronizando skillsText pendiente antes de cambiar idioma..."
-        );
-
-        const currentSkills = prevData.skillsText
-          .split(/\r?\n|,/)
-          .map((s) => s.trim())
-          .filter(Boolean);
-
-        // Determinar el idioma anterior (antes del cambio)
-        const previousLang = activeLang === "es" ? "en" : "es";
-
-        // Asegurar que skills es un objeto bilingüe
-        if (
-          typeof newData.skills !== "object" ||
-          newData.skills === null ||
-          Array.isArray(newData.skills)
-        ) {
-          newData.skills = { es: [], en: [] };
-        }
-
-        // Actualizar el idioma anterior con los cambios pendientes
-        newData.skills[previousLang] = currentSkills;
-
-        console.log(
-          `✅ [useEffect activeLang] Skills sincronizados para ${previousLang}:`,
-          currentSkills
-        );
-      }
-
-      // Limpiar skillsText para cargar desde data.skills[activeLang] en el nuevo idioma
-      delete newData.skillsText;
-
-      return newData;
-    });
-  }, [activeLang]); // Solo cuando cambia el idioma
+  // Limpiar cualquier lógica innecesaria de ciclo de vida (eliminado el sync temporal de skillsText porque ya no existe)
 
   const isView = mode === "view";
   const isCreate = mode === "create";
   const title = isView
     ? "Miembro"
     : isCreate
-    ? "Nuevo Miembro"
-    : "Editar Miembro";
+      ? "Nuevo Miembro"
+      : "Editar Miembro";
 
   function validate() {
     const nameVal = getI18nVal(data?.name, activeLang);
@@ -357,18 +268,13 @@ export default function TeamFormModal({
       setTimeout(() => setShowTip(null), 1000);
       return false;
     }
-    // ✅ CORREGIDO: Usar la misma lógica que el textarea para validar skills
-    const skillsStr =
-      data.skillsText !== undefined
-        ? data.skillsText
-        : typeof data.skills === "object" &&
-          data.skills !== null &&
-          !Array.isArray(data.skills)
-        ? (data.skills[activeLang] || []).join("\n") // Extraer del objeto bilingüe
-        : Array.isArray(data.skills)
-        ? data.skills.join("\n")
-        : "";
-    if (!skillsStr.trim().length) {
+    // ✅ Validar la nueva versión array de skills
+    const skillsArr = (typeof data.skills === "object" && data.skills !== null && !Array.isArray(data.skills)
+      ? data.skills[activeLang] || []
+      : Array.isArray(data.skills) ? data.skills : [])
+      .map(s => s.trim())
+      .filter(Boolean);
+    if (!skillsArr.length) {
       setShowTip("skills");
       setTimeout(() => setShowTip(null), 1000);
       return false;
@@ -406,55 +312,21 @@ export default function TeamFormModal({
     e?.preventDefault?.();
     if (!validate()) return;
 
-    // Obtener skills según el idioma
+    // Obtener skills según el idioma, extrayendo el listado de arreglos filtrado
     const getSkillsForLang = (lng) => {
-      // Si existe skillsText, usar ese valor (editando actualmente)
-      if (data.skillsText !== undefined) {
-        // Solo actualizar el idioma actual
-        if (lng === activeLang) {
-          return data.skillsText
-            .split(/\r?\n|,/)
-            .map((s) => s.trim())
-            .filter(Boolean);
-        }
-        // Para el otro idioma, mantener el valor existente
-        if (
-          typeof data.skills === "object" &&
-          data.skills !== null &&
-          !Array.isArray(data.skills)
-        ) {
-          return data.skills[lng] || [];
-        }
-        // Fallback: array simple legacy
-        if (Array.isArray(data.skills)) {
-          return data.skills;
-        }
-        return [];
+      let arr = [];
+      if (typeof data.skills === "object" && data.skills !== null && !Array.isArray(data.skills)) {
+        arr = data.skills[lng] || [];
+      } else if (Array.isArray(data.skills)) {
+        arr = data.skills;
       }
-
-      // Si skills es objeto bilingüe
-      if (
-        typeof data.skills === "object" &&
-        data.skills !== null &&
-        !Array.isArray(data.skills)
-      ) {
-        return data.skills[lng] || [];
-      }
-
-      // Si skills es array simple (legacy)
-      if (Array.isArray(data.skills)) {
-        return data.skills;
-      }
-
-      return [];
+      return arr.filter(s => s && s.trim());
     };
 
     const nameES = getI18nVal(data.name, "es");
     const nameEN = getI18nVal(data.name, "en");
     const roleES = getI18nVal(data.role, "es");
     const roleEN = getI18nVal(data.role, "en");
-    const bioES = getI18nVal(data.bio, "es");
-    const bioEN = getI18nVal(data.bio, "en");
     const skillsES = getSkillsForLang("es");
     const skillsEN = getSkillsForLang("en");
 
@@ -462,7 +334,6 @@ export default function TeamFormModal({
       id: data.id || `team-${Math.random().toString(36).slice(2, 8)}`,
       name: { es: nameES.trim(), en: (nameEN || nameES).trim() },
       role: { es: roleES.trim(), en: (roleEN || roleES).trim() },
-      bio: { es: bioES, en: bioEN || bioES },
       photo: (data.photo || data.image || "").trim(),
       src_cv_pdf: (data.src_cv_pdf || "").trim(), // ✅ Campo correcto
       link_bio: (data.link_bio || "").trim(),     // ✅ Campo correcto
@@ -488,46 +359,23 @@ export default function TeamFormModal({
       Array.isArray(data.skills)
     );
 
-    // Construir objeto de skills bilingüe
+    // Construir objeto de skills bilingüe desde el array persistente
     let skillsObj = {};
 
-    if (data.skillsText !== undefined) {
-      // Estamos editando: data.skillsText tiene el texto del idioma actual
-      const currentSkills = data.skillsText
-        .split(/\r?\n|,/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      // Preservar skills del otro idioma
-      const otherLang = activeLang === "es" ? "en" : "es";
-      let otherSkills = [];
-
-      if (
-        typeof data.skills === "object" &&
-        data.skills !== null &&
-        !Array.isArray(data.skills)
-      ) {
-        otherSkills = data.skills[otherLang] || [];
-      }
-
-      // Construir objeto bilingüe completo
-      skillsObj = {
-        [activeLang]: currentSkills,
-        [otherLang]: otherSkills,
-      };
-    } else if (
+    if (
       typeof data.skills === "object" &&
       data.skills !== null &&
       !Array.isArray(data.skills)
     ) {
       // Skills ya están en formato bilingüe
-      skillsObj = data.skills;
+      skillsObj = {
+        es: (data.skills.es || []).filter(s => s && s.trim()),
+        en: (data.skills.en || []).filter(s => s && s.trim())
+      };
     } else if (Array.isArray(data.skills)) {
       // Skills legacy (array simple) - asignar a ambos idiomas
-      skillsObj = {
-        es: data.skills,
-        en: data.skills,
-      };
+      const s = data.skills.filter(s => s && s.trim());
+      skillsObj = { es: s, en: s };
     } else {
       // Sin skills
       skillsObj = { es: [], en: [] };
@@ -564,448 +412,149 @@ export default function TeamFormModal({
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl overflow-hidden my-8">
-        <div className="px-6 py-4 border-b">
-          {/* Header: Título + botones idioma + auto-traducir + Cerrar */}
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-xl font-semibold">{title}</h3>
-
-            <div className="flex items-center gap-3">
-              {/* Botones de idioma - SIEMPRE visibles */}
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className={`px-3 py-1.5 rounded-lg border text-sm ${
-                    activeLang === "es"
-                      ? "bg-red-600 text-white border-red-600"
-                      : "bg-white"
-                  }`}
-                  onClick={() => setActiveLang("es")}
-                >
-                  Español (ES)
-                </button>
-                <button
-                  type="button"
-                  className={`px-3 py-1.5 rounded-lg border text-sm ${
-                    activeLang === "en"
-                      ? "bg-red-600 text-white border-red-600"
-                      : "bg-white"
-                  }`}
-                  onClick={() => setActiveLang("en")}
-                >
-                  Inglés (EN)
-                </button>
-              </div>
-
-              {/* Botón de auto-traducción - Solo en modo edit/create */}
-              {!isView &&
-                (() => {
-                  const targetLang = activeLang === "es" ? "EN" : "ES";
-
-                  return (
-                    <button
-                      type="button"
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium ${
-                        translating
-                          ? "bg-gray-300 text-gray-600 cursor-wait"
-                          : "bg-blue-500 text-white border-blue-500 hover:bg-blue-600"
-                      }`}
-                      onClick={handleAutoTranslate}
-                      disabled={translating}
-                      title={`Traducir automáticamente ${activeLang.toUpperCase()} → ${targetLang}`}
-                    >
-                      {translating ? (
-                        <>
-                          <span className="inline-block animate-spin mr-1">
-                            ⟳
-                          </span>
-                          Traduciendo...
-                        </>
-                      ) : (
-                        `🌐 Traducir a ${targetLang}`
-                      )}
-                    </button>
-                  );
-                })()}
-
-              {/* Botón de cerrar */}
-              <button className="text-gray-500 text-2xl" onClick={onClose}>
-                ×
-              </button>
-            </div>
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6" onClick={onClose}>
+      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+        {/* Header estandarizado modales */}
+        <div className="px-6 py-4 bg-gray-50 flex items-center justify-between border-b shrink-0 z-20">
+          <div className="flex items-center gap-4">
+            <h3 className="text-xl font-bold text-gray-900 hidden md:block">{title}</h3>
           </div>
-        </div>
-        <div
-          className={`grid grid-cols-1 ${
-            mode !== "view" ? "md:grid-cols-2" : ""
-          } gap-6 p-6`}
-        >
-          {!isView && (
-            <form className="space-y-3" onSubmit={submit}>
-              {/* ✅ Contenedor compacto de ID y Orden - Layout inline */}
-              <div className="bg-gray-50 rounded-lg px-4 py-2.5 border border-gray-200">
-                <div className="flex items-center gap-6">
-                  {/* ID - flex-1 con label inline */}
-                  <div className="flex-1 min-w-0 flex items-center gap-3">
-                    <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                      ID
-                    </label>
-                    <div
-                      className="flex-1 px-3 py-1.5 bg-gray-100 border border-gray-300 rounded text-gray-600 font-mono text-sm truncate"
-                      title={data.id || "(auto)"}
-                    >
-                      {data.id || "(auto)"}
-                    </div>
-                  </div>
 
-                  {/* Orden - Ancho fijo con label inline */}
-                  <div className="relative flex items-center gap-3">
-                    <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                      Orden *
-                    </label>
-                    <input
-                      type="number"
-                      className={`w-20 px-3 py-1.5 border rounded text-sm text-center ${
-                        showTip === "order"
-                          ? "border-red-500 bg-white"
-                          : "border-gray-300 bg-white"
-                      }`}
-                      value={data.order ?? ""}
-                      onChange={(e) =>
-                        setData((d) => ({ ...d, order: e.target.value }))
-                      }
-                      disabled={isView}
-                    />
-                    {showTip === "order" && (
-                      <div className="absolute left-0 top-full mt-1 text-xs text-red-600">
-                        Campo obligatorio
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Foto (4:3 recomendado, JPG/PNG, arrastrar o buscar)
-                </label>
-                <div
-                  className={`relative rounded-xl border-2 ${
-                    showTip === "photo"
-                      ? "border-red-500"
-                      : "border-dashed border-gray-300"
-                  } bg-gray-50 flex items-center justify-center aspect-[4/3] text-gray-500 overflow-hidden ${
-                    uploadPhoto.uploading ? "opacity-50 cursor-wait" : ""
-                  }`}
-                  onDrop={onDropFile}
-                  onDragOver={uploadPhoto.dragOver}
-                >
-                  {uploadPhoto.uploading ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-                      <div className="text-sm text-gray-600">
-                        Subiendo imagen...
-                      </div>
-                    </div>
-                  ) : data.photo || data.image ? (
-                    <>
-                      <img
-                        src={data.photo || data.image}
-                        alt="preview"
-                        className="w-full h-full object-contain rounded-xl"
-                      />
-                      {!isView && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setData((d) => ({ ...d, photo: "", image: "" }));
-                          }}
-                          className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors z-10"
-                          title="Eliminar imagen"
-                        >
-                          <X className="w-4 h-4 text-white" />
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 text-center px-4">
-                      <Upload className="w-6 h-6" />
-                      <div className="text-sm">Arrastrar imagen aquí</div>
-                      <div className="text-xs text-gray-400">o</div>
-                      <button
-                        type="button"
-                        className="px-3 py-1 rounded border"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploadPhoto.uploading}
-                      >
-                        Buscar
-                      </button>
-                      <div className="text-xs text-gray-500">
-                        Máx. 5MB • JPG/PNG
-                      </div>
-                    </div>
-                  )}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={onPickFile}
-                  />
-                </div>
-                {(uploadMsg || uploadPhoto.uploadMessage) && (
-                  <div
-                    className={`text-xs mt-1 ${
-                      uploadPhoto.uploadMessage?.includes("✅")
-                        ? "text-green-600"
-                        : uploadPhoto.uploadMessage?.includes("❌")
-                        ? "text-red-600"
-                        : "text-yellow-600"
-                    }`}
-                  >
-                    {uploadPhoto.uploadMessage || uploadMsg}
-                  </div>
-                )}
-                <input
-                  className="w-full border rounded px-3 py-2 mt-2"
-                  placeholder="o pega aquí una URL pública de la foto"
-                  value={data.photo || data.image || ""}
-                  onChange={(e) =>
-                    setData((d) => ({ ...d, photo: e.target.value }))
-                  }
-                  disabled={isView}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Nombre (requerido)
-                </label>
-                <input
-                  className={`w-full border rounded px-3 py-2 ${
-                    showTip === "name" ? "border-red-500" : ""
-                  }`}
-                  placeholder={getPlaceholder("name")}
-                  value={getI18nVal(data.name, activeLang)}
-                  onChange={(e) =>
-                    setData((d) => ({
-                      ...d,
-                      name: setI18nVal(d.name, activeLang, e.target.value),
-                    }))
-                  }
-                  disabled={isView}
-                />
-                {showTip === "name" && (
-                  <div className="text-xs text-red-600 mt-1">
-                    Campo obligatorio
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Cargo (requerido)
-                </label>
-                <input
-                  className={`w-full border rounded px-3 py-2 ${
-                    showTip === "role" ? "border-red-500" : ""
-                  }`}
-                  placeholder={getPlaceholder("role")}
-                  value={getI18nVal(data.role, activeLang)}
-                  onChange={(e) =>
-                    setData((d) => ({
-                      ...d,
-                      role: setI18nVal(d.role, activeLang, e.target.value),
-                    }))
-                  }
-                  disabled={isView}
-                />
-                {showTip === "role" && (
-                  <div className="text-xs text-red-600 mt-1">
-                    Campo obligatorio
-                  </div>
-                )}
-              </div>
-
-              {/* CV Upload Section */}
-              <div className="bg-gray-50 rounded-lg px-4 py-2.5 border border-gray-200">
-                <label className="block text-sm font-medium mb-1">
-                  CV (PDF) y Biografía
-                </label>
-                <div className="space-y-3">
-                  {/* CV Upload */}
-                  <div>
-                    <label className="text-xs text-gray-500 mb-1 block">
-                      Archivo PDF (src_cv_pdf)
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        className="flex-1 border rounded px-3 py-2 text-sm"
-                        placeholder="URL del PDF o subir archivo..."
-                        value={data.src_cv_pdf || ""}
-                        onChange={(e) =>
-                          setData((d) => ({ ...d, src_cv_pdf: e.target.value }))
-                        }
-                        disabled={isView}
-                      />
-                      {/* Hidden file input for CV */}
-                      <input
-                        ref={cvInputRef}
-                        type="file"
-                        accept=".pdf"
-                        className="hidden"
-                        onChange={onPickCV}
-                      />
-                      {!isView && (
-                        <button
-                          type="button"
-                          className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 transition-colors"
-                          onClick={() => cvInputRef.current?.click()}
-                          disabled={uploadCV.uploading}
-                          title="Subir PDF"
-                        >
-                          {uploadCV.uploading ? (
-                            <span className="animate-spin inline-block">⟳</span>
-                          ) : (
-                            <Upload className="w-4 h-4" />
-                          )}
-                        </button>
-                      )}
-                      {/* Download/View button if CV exists */}
-                      {data.src_cv_pdf && (
-                        <a
-                          href={data.src_cv_pdf}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded transition-colors"
-                          title="Ver CV actual"
-                        >
-                          📄
-                        </a>
-                      )}
-                    </div>
-                    {(cvMsg || uploadCV.uploadMessage) && (
-                      <div
-                        className={`text-xs mt-1 ${
-                          uploadCV.uploadMessage?.includes("✅")
-                            ? "text-green-600"
-                            : uploadCV.uploadMessage?.includes("❌")
-                            ? "text-red-600"
-                            : "text-yellow-600"
-                        }`}
-                      >
-                        {uploadCV.uploadMessage || cvMsg}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Link Bio */}
-                  <div>
-                    <label className="text-xs text-gray-500 mb-1 block">
-                      Enlace Biografía (link_bio) - Opcional
-                    </label>
-                    <input
-                      className="w-full border rounded px-3 py-2 text-sm"
-                      placeholder="https://linkedin.com/in/..."
-                      value={data.link_bio || ""}
-                      onChange={(e) =>
-                        setData((d) => ({ ...d, link_bio: e.target.value }))
-                      }
-                      disabled={isView}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Skills (una por línea o separadas por coma) - requerido
-                </label>
-                <textarea
-                  className={`w-full border rounded px-3 py-2 h-28 ${
-                    showTip === "skills" ? "border-red-500" : ""
-                  }`}
-                  placeholder={getPlaceholder("skills")}
-                  value={
-                    data.skillsText !== undefined
-                      ? data.skillsText
-                      : typeof data.skills === "object" &&
-                        data.skills !== null &&
-                        !Array.isArray(data.skills)
-                      ? (data.skills[activeLang] || []).join("\n")
-                      : Array.isArray(data.skills)
-                      ? data.skills.join("\n")
-                      : ""
-                  }
-                  onChange={(e) =>
-                    setData((d) => ({ ...d, skillsText: e.target.value }))
-                  }
-                  disabled={isView}
-                />
-                {showTip === "skills" && (
-                  <div className="text-xs text-red-600 mt-1">
-                    Campo obligatorio
-                  </div>
-                )}
-              </div>
-              {!isView && (
-                <div className="pt-2 space-y-3">
-                  {/* Botones de acción */}
-                  <div className="flex gap-2">
-                    <button type="submit" className="btn-cta px-4 py-2">
-                      {isCreate ? "Guardar" : "Guardar Cambios"}
-                    </button>
-                    <button
-                      type="button"
-                      className="px-4 py-2 border rounded"
-                      onClick={onClose}
-                    >
-                      Cancelar
-                    </button>
-                    {data.archived ? (
-                      <button
-                        type="button"
-                        className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-                        onClick={() =>
-                          onRestore?.({
-                            ...data,
-                            order: Number(data.order) || undefined,
-                          })
-                        }
-                      >
-                        Restaurar
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              )}
-            </form>
-          )}
-          <div className="flex flex-col h-full">
-            <div className="flex gap-2 mb-2 justify-end md:justify-center lg:justify-center">
+          {(!isView) ? (
+            <div className="flex items-center gap-3">
               <button
                 type="button"
-                className={`px-3 py-1 rounded-lg border ${
-                  previewMode === "overlay"
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-white"
-                }`}
-                onClick={() => setPreviewMode("overlay")}
+                onClick={handleAutoTranslate}
+                disabled={translating}
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors disabled:opacity-50"
               >
-                Vista Overlay
+                {translating ? "Traduciendo..." : `Traducir a ${activeLang === "es" ? "ingles" : "español"} (${activeLang.toUpperCase()} → ${activeLang === "es" ? "EN" : "ES"})`}
               </button>
+              <div className="w-px h-6 bg-gray-200 hidden sm:block"></div>
+              <span className="text-sm text-gray-500 font-medium whitespace-nowrap hidden sm:block">Idioma a modificar:</span>
+              <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("es")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  ES
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("en")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  EN
+                </button>
+              </div>
               <button
-                type="button"
-                className={`px-3 py-1 rounded-lg border ${
-                  previewMode === "plain"
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-white"
-                }`}
-                onClick={() => setPreviewMode("plain")}
+                className="text-gray-400 hover:text-gray-600 ml-2"
+                onClick={onClose}
               >
-                Vista Sin Overlay
+                <span className="text-2xl font-light">×</span>
               </button>
             </div>
-            <div className="flex-1 flex items-center justify-center">
-              <div className="w-full max-w-md md:max-w-lg lg:max-w-xl">
+          ) : (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500 font-medium whitespace-nowrap hidden sm:block">Idioma actual:</span>
+              <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("es")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  ES
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveLang("en")}
+                  className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                  EN
+                </button>
+              </div>
+              <button
+                className="text-gray-400 hover:text-gray-600 ml-2"
+                onClick={onClose}
+              >
+                <span className="text-2xl font-light">×</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Form Details + Preview Split Content */}
+        <div className="flex-1 overflow-hidden flex flex-col md:flex-row bg-white relative">
+          {/* Left Side: Form Details */}
+          <div className="flex-1 bg-gray-50 overflow-y-auto w-full md:border-r border-gray-200 p-6 custom-scrollbar relative">
+            <TeamFormComponent
+              tab={activeLang}
+              local={data}
+              updateLangField={(field, value) => {
+                setData(d => ({
+                  ...d,
+                  [field]: setI18nVal(d[field], activeLang, value)
+                }))
+              }}
+              updateField={(f, v) => setData(d => ({ ...d, [f]: v }))}
+              readOnly={isView}
+              invalid={{
+                name: showTip === "name",
+                role: showTip === "role",
+                photo: showTip === "photo",
+                skills: showTip === "skills"
+              }}
+              uploadPhoto={uploadPhoto}
+              uploadCV={uploadCV}
+              uploadMsg={uploadMsg}
+              cvMsg={cvMsg}
+              fileInputRef={fileInputRef}
+              cvInputRef={cvInputRef}
+              onDropFile={onDropFile}
+              onPickFile={onPickFile}
+              onPickCV={onPickCV}
+            />
+          </div>
+
+          {/* Right Side: Visual Preview */}
+          <div className="w-full md:w-[450px] lg:w-[500px] bg-white overflow-y-auto pt-0 flex flex-col custom-scrollbar pb-24 md:pb-0 border-t md:border-t-0 border-gray-200 z-0">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-4 shadow-sm z-10 flex justify-between items-center shrink-0">
+              <div>
+                <h4 className="font-semibold text-gray-800">Vista Previa</h4>
+                <p className="text-xs text-gray-500">Resultados en tiempo real</p>
+              </div>
+
+              <div className="flex gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200">
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${previewMode === "plain"
+                    ? "bg-white text-gray-800 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  onClick={() => setPreviewMode("plain")}
+                >
+                  Tarjeta
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${previewMode === "overlay"
+                    ? "bg-white text-gray-800 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  onClick={() => setPreviewMode("overlay")}
+                >
+                  Overlay
+                </button>
+              </div>
+            </div>
+
+            <div className="p-8 bg-[#FAFAFA] min-h-full flex items-start justify-center">
+              <div className="w-full">
                 <TeamMemberCard
                   member={Preview}
                   forceOverlay={previewMode === "overlay"}
@@ -1015,6 +564,71 @@ export default function TeamFormModal({
             </div>
           </div>
         </div>
+
+        {/* Sticky Footer */}
+        {!isView && (
+          <div className="px-6 py-4 bg-gray-50 flex items-center justify-between border-t shrink-0 z-40 rounded-b-xl">
+            {/* Status Info */}
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                {data.id ? `ID: ${data.id}` : "Nuevo Miembro"}
+              </div>
+
+              {/* Input temporal oculto de order por defecto pero puede implementarse de nuevo */}
+              {data.order && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded text-sm text-gray-600">
+                  <span className="font-medium">Orden:</span> {data.order}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Cancelar
+              </button>
+
+              {data.archived && onRestore && (
+                <button
+                  type="button"
+                  onClick={() => onRestore({ ...data, order: Number(data.order) || undefined })}
+                  className="px-5 py-2.5 bg-green-50 text-green-700 border border-green-200 font-medium rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  Restaurar Miembro
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={submit}
+                disabled={uploadPhoto?.uploading || uploadCV?.uploading}
+                className={`px-6 py-2.5 font-medium rounded-lg shadow-sm transition-all flex items-center gap-2 ${uploadPhoto?.uploading || uploadCV?.uploading
+                  ? "bg-red-300 text-white cursor-wait"
+                  : "bg-[#e83d38] text-white hover:bg-[#d63430] hover:shadow-md"
+                  }`}
+              >
+                {uploadPhoto?.uploading || uploadCV?.uploading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    Subiendo archivo...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {isCreate ? "Guardar Miembro" : "Guardar Cambios"}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Modales de Confirmación y Alertas */}

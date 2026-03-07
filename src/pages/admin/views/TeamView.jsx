@@ -116,6 +116,49 @@ export default function TeamView() {
                     setConfirmRow(row);
                     setShowConfirm(true);
                 }}
+                onOrderChange={async (member, newOrder) => {
+                    const prev = rows;
+                    const others = prev.filter((r) => r.id !== member.id);
+                    const compact = normalizeTeamOrder(others);
+                    const active = compact.filter((x) => !x.archived);
+                    const activeCount = active.length;
+                    const req = typeof newOrder === "number" ? newOrder : activeCount + 1;
+                    const target = Math.max(1, Math.min(req, activeCount + 1));
+                    const shifted = compact.map((r) => {
+                        if (!r.archived && Number(r.order) >= target) {
+                            return { ...r, order: Number(r.order) + 1 };
+                        }
+                        return r;
+                    });
+                    const next = [
+                        ...shifted,
+                        { ...member, order: target },
+                    ];
+                    const nextComputed = normalizeTeamOrder(next);
+                    setRows(nextComputed);
+                    const ok = await persistRows(nextComputed, "auto-save: onOrderChange");
+                    if (!ok) alert("No se pudo guardar el nuevo orden.");
+                    else loadTeam();
+                }}
+                onDelete={async (member) => {
+                    if (window.confirm(`¿Seguro que deseas eliminar permanentemente a "${member.name?.es || member.name || member.id}"?\n\nEsta acción no se puede deshacer.`)) {
+                        try {
+                            const { doc, deleteDoc } = await import("firebase/firestore");
+                            const { db } = await import("../../../config/firebase");
+
+                            await deleteDoc(doc(db, "team", member.id));
+
+                            const nextRows = rows.filter(r => r.id !== member.id);
+                            const normalized = normalizeTeamOrder(nextRows);
+                            setRows(normalized);
+                            await persistRows(normalized, "auto-save: after delete");
+
+                            loadTeam();
+                        } catch (e) {
+                            alert("Error al eliminar al miembro: " + (e?.message || e));
+                        }
+                    }
+                }}
             />
 
             <TeamFormModal
