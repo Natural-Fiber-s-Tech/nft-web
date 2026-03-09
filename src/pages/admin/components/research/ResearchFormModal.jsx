@@ -10,6 +10,7 @@ import { validateOrder, getOrderRange } from "../../../../lib/crud";
 import FieldRequiredModal from "./FieldRequiredModal";
 import DetailIncompleteConfirmModal from "../products/DetailIncompleteConfirmModal";
 import { useFileUpload } from "../../hooks/useFileUpload";
+import { useAutoTranslate } from "../../hooks/useAutoTranslate";
 
 // Función helper para generar slug desde título
 function generateSlug(title) {
@@ -32,12 +33,15 @@ export default function ResearchFormModal({
   mode = "edit",
   allRows = [], // ✅ Necesario para validar orden
 }) {
-  // Estado local para el idioma del preview (no depende del contexto)
-  const [previewLanguage, setPreviewLanguage] = useState("es");
+  // Estado local para el idioma del form (reemplaza a previewLanguage)
+  const [activeLang, setActiveLang] = useState("es");
   const [activeTab, setActiveTab] = useState("card");
   const [currentMode, setCurrentMode] = useState(mode);
   const [orderError, setOrderError] = useState(null);
   const [showOrderTooltip, setShowOrderTooltip] = useState(false);
+
+  // Hook de traducción
+  const { translateGlobal, isTranslating: translating } = useAutoTranslate();
 
   // Estados para validación elegante
   const [cardErrors, setCardErrors] = useState({});
@@ -325,6 +329,65 @@ export default function ResearchFormModal({
     setCurrentMode("edit");
   };
 
+  const handleAutoTranslate = async () => {
+    try {
+      if (activeLang === "es") {
+        const textToTranslate = [
+          formData.title?.es || "",
+          formData.summary_30w?.es || "",
+          formData.abstract?.es || (typeof formData.abstract === "string" ? formData.abstract : ""),
+          formData.fullSummary?.es || "",
+        ].join("|||");
+
+        if (!textToTranslate.trim() || textToTranslate === "|||||||||") return;
+
+        const result = await translateGlobal(textToTranslate, "en");
+        if (result) {
+          const [tTitle, tSumm, tAbs, tFull] = result.split("|||");
+
+          setFormData((prev) => ({
+            ...prev,
+            title: { ...prev.title, en: tTitle?.trim() || prev.title?.en || "" },
+            summary_30w: { ...prev.summary_30w, en: tSumm?.trim() || prev.summary_30w?.en || "" },
+            abstract: {
+              ...((typeof prev.abstract === "object") ? prev.abstract : { es: prev.abstract }),
+              en: tAbs?.trim() || ""
+            },
+            fullSummary: { ...prev.fullSummary, en: tFull?.trim() || prev.fullSummary?.en || "" },
+          }));
+        }
+      } else {
+        const textToTranslate = [
+          formData.title?.en || "",
+          formData.summary_30w?.en || "",
+          formData.abstract?.en || "",
+          formData.fullSummary?.en || "",
+        ].join("|||");
+
+        if (!textToTranslate.trim() || textToTranslate === "|||||||||") return;
+
+        const result = await translateGlobal(textToTranslate, "es");
+        if (result) {
+          const [tTitle, tSumm, tAbs, tFull] = result.split("|||");
+
+          setFormData((prev) => ({
+            ...prev,
+            title: { ...prev.title, es: tTitle?.trim() || prev.title?.es || "" },
+            summary_30w: { ...prev.summary_30w, es: tSumm?.trim() || prev.summary_30w?.es || "" },
+            abstract: {
+              ...((typeof prev.abstract === "object") ? prev.abstract : { en: prev.abstract }),
+              es: tAbs?.trim() || ""
+            },
+            fullSummary: { ...prev.fullSummary, es: tFull?.trim() || prev.fullSummary?.es || "" },
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Error en autotraducción:", error);
+      alert("Hubo un error al traducir automáticamente.");
+    }
+  };
+
   if (!open) return null;
 
   const isViewMode = currentMode === "view";
@@ -366,210 +429,184 @@ export default function ResearchFormModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden"
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-hidden"
       onClick={(e) => {
-        // Cerrar solo si se hace click en el overlay (no en el modal)
         if (e.target === e.currentTarget) {
           onClose();
         }
       }}
     >
       <div
-        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-7xl max-h-[95vh] flex flex-col border border-gray-700"
+        className="relative bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header con título, tabs y botón cerrar */}
-        <div className="px-6 pt-4 pb-3 border-b border-gray-700">
-          {/* Fila 1: Título + Badges + Botón Cerrar */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold text-white">
-                {isViewMode
-                  ? "Ver Artículo"
-                  : isRestoreMode
-                    ? "Restaurar Artículo"
-                    : currentMode === "create"
-                      ? "Nuevo Artículo"
-                      : "Editar Artículo"}
-              </h2>
-              {isViewMode && (
-                <span className="bg-blue-500/20 text-blue-400 text-xs font-medium px-2 py-1 rounded-full">
-                  Solo lectura
-                </span>
-              )}
-              {isRestoreMode && (
-                <span className="bg-green-500/20 text-green-400 text-xs font-medium px-2 py-1 rounded-full">
-                  Modo Restaurar
-                </span>
-              )}
-              {article?.archived && !isRestoreMode && (
-                <span className="bg-orange-500/20 text-orange-400 text-xs font-medium px-2 py-1 rounded-full">
-                  Archivado
-                </span>
-              )}
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-400" />
-            </button>
+        {/* Header estandarizado */}
+        <div className="px-6 py-4 bg-gray-50 flex flex-col md:flex-row items-start md:items-center justify-between border-b shrink-0 z-20 gap-4">
+
+          {/* Fila 1: Título + Badges */}
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-gray-900">
+              {isViewMode
+                ? "Ver Artículo"
+                : isRestoreMode
+                  ? "Restaurar Artículo"
+                  : currentMode === "create"
+                    ? "Nuevo Artículo"
+                    : "Editar Artículo"}
+            </h2>
+            {isViewMode && (
+              <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full border border-blue-200">
+                Solo lectura
+              </span>
+            )}
+            {isRestoreMode && (
+              <span className="bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded-full border border-emerald-200">
+                Modo Restaurar
+              </span>
+            )}
+            {article?.archived && !isRestoreMode && (
+              <span className="bg-amber-100 text-amber-700 text-xs font-medium px-2 py-1 rounded-full border border-amber-200">
+                Archivado
+              </span>
+            )}
           </div>
 
-          {/* Fila 2: Tabs de Vista y Idioma en un solo contenedor */}
-          <div className="flex items-center justify-between gap-4">
-            {/* Tabs de Vista */}
-            <div className="flex gap-2">
+          <div className="flex items-center gap-3 self-end md:self-auto">
+            {/* Opciones de Idioma y Tabs - Mostradas como los productos */}
+            {!isViewMode && (
+              <div className="flex items-center gap-3 mr-2">
+                <button
+                  type="button"
+                  onClick={handleAutoTranslate}
+                  disabled={translating}
+                  className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {translating ? "Traduciendo..." : `Traducir a ${activeLang === "es" ? "ingles" : "español"} (${activeLang.toUpperCase()} → ${activeLang === "es" ? "EN" : "ES"})`}
+                </button>
+                <div className="w-px h-6 bg-gray-200 hidden md:block"></div>
+                <span className="text-sm text-gray-500 font-medium hidden md:block">Idioma:</span>
+                <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setActiveLang("es")}
+                    className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    ES
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveLang("en")}
+                    className={`px-4 py-1.5 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-[#e83d38] text-white" : "text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    EN
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* View/Edit Actions */}
+            {isViewMode && (
+              <div className="flex items-center gap-2 border-r pr-4 mr-2 border-gray-200">
+                <span className="text-sm text-gray-500 font-medium mr-1">Preview en:</span>
+                <div className="flex border rounded-lg overflow-hidden bg-white shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setActiveLang("es")}
+                    className={`px-3 py-1 text-sm font-medium transition-colors ${activeLang === "es" ? "bg-gray-800 text-white" : "text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    ES
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveLang("en")}
+                    className={`px-3 py-1 text-sm font-medium transition-colors ${activeLang === "en" ? "bg-gray-800 text-white" : "text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    EN
+                  </button>
+                </div>
+                <button
+                  onClick={handleEditMode}
+                  className="flex items-center gap-2 ml-4 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors text-sm font-medium shadow-sm"
+                >
+                  <Edit className="w-4 h-4" />
+                  Editar
+                </button>
+              </div>
+            )}
+
+            <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-500">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Layout Side-by-Side para los formularios, muy parecido a Products */}
+        <div className="flex-1 overflow-hidden flex flex-col md:flex-row bg-white">
+
+          {/* Columna Izquierda: Formulario (Vista Card o Vista Detalle) */}
+          <div className="flex-1 overflow-y-auto w-full p-6 border-r border-gray-100 bg-white">
+
+            {/* Tabs de sección */}
+            <div className="flex gap-2 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
               <button
                 onClick={() => setActiveTab("card")}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${activeTab === "card"
-                  ? "bg-red-600 text-white shadow-lg"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === "card"
+                  ? "bg-white text-gray-800 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
                   }`}
               >
-                Vista Card
+                Vista Tarjeta
               </button>
               <button
                 onClick={() => setActiveTab("detail")}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${activeTab === "detail"
-                  ? "bg-red-600 text-white shadow-lg"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === "detail"
+                  ? "bg-white text-gray-800 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
                   }`}
               >
                 Vista Detalle
               </button>
             </div>
 
-            {/* Tabs de Idioma - SIEMPRE VISIBLE en todos los modos */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setPreviewLanguage("es")}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${previewLanguage === "es"
-                  ? "bg-red-600 text-white shadow-lg"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
-              >
-                Español (ES)
-              </button>
-              <button
-                onClick={() => setPreviewLanguage("en")}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${previewLanguage === "en"
-                  ? "bg-red-600 text-white shadow-lg"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
-              >
-                English (EN)
-              </button>
-            </div>
-          </div>
-
-          {/* Fila 3: Botón Editar centrado (solo en modo view) */}
-          {isViewMode && (
-            <div className="flex justify-center mt-3 pt-3 border-t border-gray-700">
-              <button
-                onClick={handleEditMode}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
-              >
-                <Edit className="w-4 h-4" />
-                Editar
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-3 bg-black/70">
-          {isViewMode ? (
-            // MODO VIEW: Mostrar vista previa renderizada
-            <div className="space-y-3">
-              {/* ✅ Información de registro - Layout inline (igual que modo edit) */}
-              <div className="bg-gray-800/50 rounded-lg px-4 py-2 border border-gray-700">
-                <div className="flex items-center gap-6">
-                  {/* ID/Slug - flex-1 con label inline */}
-                  <div className="flex-1 min-w-0 flex items-center gap-3">
-                    <label className="text-sm font-medium text-gray-400 whitespace-nowrap">
-                      ID / Slug
-                    </label>
-                    <div
-                      className="flex-1 px-3 py-1.5 bg-gray-900/50 border border-gray-600 rounded text-gray-300 font-mono text-sm truncate"
-                      title={formData.slug}
-                    >
-                      {formData.slug}
+            {isViewMode ? (
+              // Vista Solo Lectura Stats (en la parte izq)
+              <div className="space-y-4 max-w-lg">
+                <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-inner">
+                  <h4 className="text-gray-700 font-semibold mb-4 border-b pb-2">Datos Técnicos</h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">ID / Slug:</span>
+                      <span className="font-mono text-gray-800 bg-white px-2 border rounded shadow-sm overflow-hidden text-ellipsis max-w-[200px]" title={formData.slug}>{formData.slug}</span>
                     </div>
-                  </div>
-
-                  {/* Orden - Ancho fijo con label inline */}
-                  <div className="flex items-center gap-3">
-                    <label className="text-sm font-medium text-gray-400 whitespace-nowrap">
-                      Orden
-                    </label>
-                    <div className="px-3 py-1.5 bg-gray-900/50 border border-gray-600 rounded text-white text-sm w-20 text-center font-mono">
-                      {formData.order}
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">Orden:</span>
+                      <span className="font-mono text-gray-800 bg-white px-2 border rounded shadow-sm">{formData.order}</span>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Vista renderizada según tab activo */}
-              {activeTab === "card" ? (
-                <LanguageProvider>
-                  <PreviewWrapper language={previewLanguage}>
-                    <div className="max-w-md mx-auto">
-                      <h3 className="text-white text-lg font-semibold mb-4 text-center">
-                        📄 Vista Previa - Tarjeta de Investigación
-                      </h3>
-                      <ArticleCard article={previewArticle} isPreview={true} />
-                    </div>
-                  </PreviewWrapper>
-                </LanguageProvider>
-              ) : (
-                <LanguageProvider>
-                  <PreviewWrapper language={previewLanguage}>
-                    {/* Vista Detalle: renderizar componente completo sin wrappers adicionales */}
-                    <InvestigationDetail
-                      article={previewArticle}
-                      isPreview={true}
-                    />
-                  </PreviewWrapper>
-                </LanguageProvider>
-              )}
-            </div>
-          ) : (
-            // MODO EDIT/CREATE/RESTORE: Mostrar formularios
-            <div className="space-y-6">
-              {/* ✅ Contenedor compacto de ID/Slug y Orden - Layout inline */}
-              {isEditableMode && (
-                <div className="bg-gray-800/50 rounded-lg px-4 py-2.5 border border-gray-700">
+            ) : (
+              // Formulario interactivo
+              <div className="space-y-6">
+                {/* Bloque Info del ID y Orden en edicion */}
+                <div className="bg-gray-50 rounded-xl px-5 py-4 border border-gray-200">
                   <div className="flex items-center gap-6">
-                    {/* ID/Slug - flex-1 con label inline */}
                     <div className="flex-1 min-w-0 flex items-center gap-3">
-                      <label className="text-sm font-medium text-gray-400 whitespace-nowrap">
-                        ID / Slug
-                      </label>
-                      <div
-                        className="flex-1 px-3 py-1.5 bg-gray-900/50 border border-gray-600 rounded text-gray-300 font-mono text-sm truncate"
-                        title={formData.slug || formData.id}
-                      >
+                      <label className="text-sm font-medium text-gray-600 whitespace-nowrap">ID / Slug</label>
+                      <div className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-700 font-mono text-sm truncate" title={formData.slug || formData.id}>
                         {formData.slug || formData.id || "Generando..."}
                       </div>
                     </div>
 
-                    {/* Orden - Ancho fijo con label inline */}
                     <div className="relative flex items-center gap-3">
-                      <label className="text-sm font-medium text-gray-400 whitespace-nowrap">
-                        Orden *{" "}
-                        <span className="text-xs text-gray-500">
-                          ({orderRange.min}-{orderRange.max})
-                        </span>
+                      <label className="text-sm font-medium text-gray-600 whitespace-nowrap">
+                        Orden * <span className="text-xs text-gray-400">({orderRange.min}-{orderRange.max})</span>
                       </label>
                       <input
                         type="number"
                         value={formData.order}
                         onChange={(e) => handleOrderChange(e.target.value)}
-                        className={`w-20 px-3 py-1.5 bg-gray-900/50 border rounded text-white text-sm transition-all ${orderError
-                          ? "border-red-500 animate-shake"
-                          : "border-gray-600 focus:border-red-500"
-                          }`}
+                        className={`w-20 px-3 py-1.5 bg-white border border-gray-300 rounded text-gray-900 text-sm focus:ring-2 focus:ring-[#e83d38] ${orderError ? "border-red-500 animate-shake focus:ring-red-500" : ""}`}
                         min={orderRange.min}
                         max={orderRange.max}
                         step="1"
@@ -582,85 +619,117 @@ export default function ResearchFormModal({
                     </div>
                   </div>
                 </div>
-              )}
 
-              {/* Formularios según tab activo */}
-              {activeTab === "card" ? (
-                <ResearchCardForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  isNew={!article}
-                  readOnly={false}
-                  uploadImage={uploadImage}
-                />
-              ) : (
-                <ResearchDetailForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  readOnly={false}
-                  onPickPDF={() => {
-                    const input = document.createElement("input");
-                    input.type = "file";
-                    input.accept = ".pdf,application/pdf";
-                    input.onchange = (e) => uploadPDF.pickFile(e);
-                    input.click();
-                  }}
-                  onDropPDF={(e) => uploadPDF.dropFile(e)}
-                />
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        {!isViewMode && (
-          <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-700 bg-gray-800/50">
-            <button
-              onClick={onClose}
-              className="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium"
-            >
-              Cancelar
-            </button>
-
-            {isRestoreMode ? (
-              // ✅ Modo Restore: Solo botón Restaurar
-              <button
-                onClick={handleRestore}
-                className="flex items-center gap-2 px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium shadow-lg"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Restaurar Artículo
-              </button>
-            ) : currentMode === "edit" && article?.archived ? (
-              // ✅ Modo Edit de registro archivado: Mostrar ambos botones
-              <>
-                <button
-                  onClick={handleSave}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shadow-lg"
-                >
-                  Guardar Cambios
-                </button>
-                <button
-                  onClick={handleRestore}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium shadow-lg"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Restaurar
-                </button>
-              </>
-            ) : (
-              // ✅ Modo Edit normal o Create: Solo botón guardar
-              <button
-                onClick={handleSave}
-                className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium shadow-lg"
-              >
-                {currentMode === "create"
-                  ? "Crear Artículo"
-                  : "Guardar Cambios"}
-              </button>
+                {activeTab === "card" ? (
+                  <ResearchCardForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    activeLang={activeLang}
+                    isNew={!article}
+                    readOnly={false}
+                    uploadImage={uploadImage}
+                  />
+                ) : (
+                  <ResearchDetailForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    activeLang={activeLang}
+                    readOnly={false}
+                    onPickPDF={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = ".pdf,application/pdf";
+                      input.onchange = (e) => uploadPDF.pickFile(e);
+                      input.click();
+                    }}
+                    onDropPDF={(e) => uploadPDF.dropFile(e)}
+                  />
+                )}
+              </div>
             )}
           </div>
+
+          {/* Columna Derecha: Vista Previa */}
+          <div className="w-full md:w-[450px] lg:w-[500px] bg-[#FAFAFA] overflow-y-auto border-t md:border-t-0 md:border-l border-gray-200 z-0">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-4 shadow-sm z-10 flex justify-between items-center shrink-0">
+              <div>
+                <h4 className="font-semibold text-gray-800">Vista Previa</h4>
+                <p className="text-xs text-gray-500">Resultados en tiempo real ({activeLang.toUpperCase()})</p>
+              </div>
+            </div>
+
+            <div className="p-8 flex items-start justify-center">
+              <LanguageProvider>
+                <PreviewWrapper language={activeLang}>
+                  {activeTab === "card" ? (
+                    <div className="w-full">
+                      <ArticleCard article={previewArticle} isPreview={true} />
+                    </div>
+                  ) : (
+                    <div className="w-full scale-90 transform origin-top h-min">
+                      <InvestigationDetail article={previewArticle} isPreview={true} />
+                    </div>
+                  )}
+                </PreviewWrapper>
+              </LanguageProvider>
+            </div>
+          </div>
+        </div>
+
+        {/* Sticky Footer Claro */}
+        {!isViewMode && (
+          <div className="px-6 py-4 bg-gray-50 flex items-center justify-between border-t shrink-0 z-40 rounded-b-xl">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              Status: {currentMode === "create" ? "Borrador" : "Editando"}
+            </div>
+            <div className="flex justify-end gap-3 flex-1 sm:flex-none">
+              <button
+                onClick={onClose}
+                className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Cancelar
+              </button>
+
+              {isRestoreMode ? (
+                <button
+                  onClick={handleRestore}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-lg transition-colors font-medium shadow-sm"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Restaurar Artículo
+                </button>
+              ) : currentMode === "edit" && article?.archived ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shadow-sm"
+                  >
+                    Guardar Cambios
+                  </button>
+                  <button
+                    onClick={handleRestore}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-lg transition-colors font-medium shadow-sm"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Restaurar
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2.5 bg-[#e83d38] hover:bg-[#d63430] text-white rounded-lg transition-colors font-medium shadow-sm flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {currentMode === "create" ? "Crear Artículo" : "Guardar Cambios"}
+                </button>
+              )}
+            </div>
+          </div>
         )}
+
       </div>
 
       {/* ✅ Modal de Validación - Campos Requeridos */}
