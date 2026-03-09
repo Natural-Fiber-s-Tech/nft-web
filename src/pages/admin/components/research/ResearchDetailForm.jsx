@@ -25,6 +25,8 @@ export default function ResearchDetailForm({
   onPickPDF,
   onDropPDF,
   readOnly = false,
+  onImagePick,
+  onPdfPick,
 }) {
   const [newKeyword, setNewKeyword] = useState("");
   const [teamMembers, setTeamMembers] = useState([]);
@@ -51,19 +53,7 @@ export default function ResearchDetailForm({
 
   const activeProducts = products.filter((p) => !p.archived);
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setFormData((prev) => ({
-        ...prev,
-        localImage: event.target.result,
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleAddKeyword = () => {
     if (newKeyword.trim() && !formData.keywords.includes(newKeyword.trim())) {
@@ -123,50 +113,105 @@ export default function ResearchDetailForm({
         </div>
       )}
 
-      {/* 1. IMAGEN PORTADA (Digital Twin: aspect 16:9) */}
+      {/* 1. IMAGEN DE PORTADA - Manual */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-800">1. Imagen de Cabecera Detalle (16:9)</h3>
+          <h3 className="text-sm font-semibold text-gray-800">1. Imagen de Cabecera (16:9)</h3>
         </div>
         <div className="p-6">
-          <div className="relative aspect-[16/9] border-2 border-dashed border-gray-300 rounded-xl overflow-hidden bg-gray-50 hover:border-[#e83d38] transition-colors max-w-2xl group cursor-pointer">
+          <div className="relative aspect-[16/9] border-2 border-dashed border-gray-300 rounded-xl overflow-hidden bg-gray-50 hover:border-[#e83d38] transition-colors max-w-2xl group cursor-pointer"
+            onClick={() => !readOnly && document.getElementById('detail-image-input')?.click()}
+          >
             {formData.localImage ? (
               <>
-                <img
-                  src={formData.localImage}
-                  alt="Preview"
-                  className="w-full h-full object-contain"
-                />
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setFormData((prev) => ({ ...prev, localImage: "" }));
-                  }}
-                  className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm z-10"
-                >
-                  <X className="w-4 h-4 text-white" />
-                </button>
+                <img src={formData.localImage} alt="Preview" className="w-full h-full object-contain" />
+                {!readOnly && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setFormData((prev) => ({ ...prev, localImage: "" })); }}
+                    className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm z-10"
+                  >
+                    <X className="w-4 h-4 text-white" />
+                  </button>
+                )}
               </>
             ) : (
-              <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <Upload className="w-10 h-10 text-gray-400 mb-2 group-hover:text-gray-500 transition-colors" />
-                <span className="text-sm font-medium text-gray-600 group-hover:text-gray-700 transition-colors">
-                  Click para subir imagen
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
+                <span className="text-sm font-medium text-gray-600 group-hover:text-gray-700 transition-colors">Click para subir imagen de portada</span>
+                <span className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (16:9 recomendado)</span>
+              </div>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-3">
-            💡 Nota: La imagen debe contener el título del artículo.
-          </p>
+          {!readOnly && (
+            <input id="detail-image-input" type="file" accept="image/*" className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) onImagePick?.(f); e.target.value = ''; }}
+            />
+          )}
         </div>
       </div>
+
+      {/* 2. PDF Documento */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-800">2. Documento PDF del Artículo</h3>
+        </div>
+        <div className="p-6">
+          {formData.download_link_pdf && formData.pdfFileName ? (
+            <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <svg className="w-8 h-8 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">{formData.pdfFileName}</p>
+                <p className="text-xs text-green-600">PDF listo · se subirá al guardar el artículo</p>
+              </div>
+              {!readOnly && (
+                <button onClick={() => setFormData((p) => ({ ...p, download_link_pdf: "", pdfFileName: "" }))}
+                  className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          ) : formData.download_link_pdf && !formData.pdfFileName ? (
+            <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <svg className="w-8 h-8 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800">PDF guardado en la nube</p>
+                <a href={formData.download_link_pdf} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline truncate block">{formData.download_link_pdf}</a>
+              </div>
+              {!readOnly && (
+                <button onClick={() => setFormData((p) => ({ ...p, download_link_pdf: "" }))}
+                  className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled={readOnly}
+              className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center gap-2 hover:border-[#e83d38] hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => {
+                if (readOnly) return;
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.pdf,application/pdf';
+                input.onchange = (e) => { const f = e.target.files?.[0]; if (f) onPdfPick?.(f); };
+                input.click();
+              }}
+            >
+              <Upload className="w-10 h-10 text-gray-400" />
+              <p className="text-sm font-medium text-gray-600">Click para seleccionar un PDF</p>
+              <p className="text-xs text-gray-400">Máximo 3 MB · El archivo se subirá al guardar</p>
+            </button>
+          )}
+        </div>
+      </div>
+
 
       {/* Metadata Form Block */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

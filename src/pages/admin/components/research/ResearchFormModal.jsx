@@ -10,7 +10,8 @@ import { validateOrder, getOrderRange } from "../../../../lib/crud";
 import FieldRequiredModal from "./FieldRequiredModal";
 import DetailIncompleteConfirmModal from "../products/DetailIncompleteConfirmModal";
 import { useFileUpload } from "../../hooks/useFileUpload";
-import { useAutoTranslate } from "../../hooks/useAutoTranslate";
+import { translateText } from "../../hooks/useAutoTranslate";
+import { uploadFileToSupabase, compressImageToWebP } from "../../../../lib/storage";
 
 // Función helper para generar slug desde título
 function generateSlug(title) {
@@ -39,9 +40,12 @@ export default function ResearchFormModal({
   const [currentMode, setCurrentMode] = useState(mode);
   const [orderError, setOrderError] = useState(null);
   const [showOrderTooltip, setShowOrderTooltip] = useState(false);
+  // Archivos pendientes (se suben a Supabase solo al guardar)
+  const [pendingImageFile, setPendingImageFile] = useState(null);
+  const [pendingPdfFile, setPendingPdfFile] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
 
-  // Hook de traducción
-  const { translateGlobal, isTranslating: translating } = useAutoTranslate();
 
   // Estados para validación elegante
   const [cardErrors, setCardErrors] = useState({});
@@ -68,21 +72,21 @@ export default function ResearchFormModal({
     archived: false,
   });
 
-  // 🔥 Hooks de upload de archivos (DRY pattern - similar a Products)
-  const uploadPDF = useFileUpload({
-    accept: ".pdf,application/pdf",
-    maxSize: 10 * 1024 * 1024, // 10MB
-    uploadPath: "public/assets/images/investigation/pdf/",
-    onSuccess: (fileUrl) =>
-      setFormData((p) => ({ ...p, download_link_pdf: fileUrl })),
-  });
+  // Manejadores de selección de archivos (solo preview local, sin subir)
+  const handleImagePick = (file) => {
+    if (!file) return;
+    setPendingImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setFormData((p) => ({ ...p, localImage: previewUrl }));
+  };
 
-  const uploadImage = useFileUpload({
-    accept: "image/*",
-    maxSize: 5 * 1024 * 1024, // 5MB
-    uploadPath: "public/assets/images/investigation/images/",
-    onSuccess: (fileUrl) => setFormData((p) => ({ ...p, localImage: fileUrl })),
-  });
+  const handlePdfPick = (file) => {
+    if (!file) return;
+    setPendingPdfFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    // Guardamos la preview URL del PDF para mostrarla en el formulario
+    setFormData((p) => ({ ...p, download_link_pdf: previewUrl, pdfFileName: file.name }));
+  };
 
   // ✅ Validación para vista Card
   const validateCard = () => {
@@ -92,7 +96,6 @@ export default function ResearchFormModal({
     if (!formData.id) errors.id = "ID es requerido";
     if (!titleEsOrEn)
       errors.title = "Título es requerido (al menos en un idioma)";
-    if (!formData.localImage) errors.localImage = "Imagen es requerida";
     if (!formData.date) errors.date = "Fecha de publicación es requerida";
     if (formData.keywords.length === 0)
       errors.keywords = "Debe agregar al menos una keyword";
@@ -113,6 +116,11 @@ export default function ResearchFormModal({
 
     if (!hasAbstract) {
       errors.abstract = "Abstract/Resumen completo es requerido";
+    }
+
+    // Validar PDF requerido (porque de ahí sale la imagen)
+    if (!formData.download_link_pdf && !formData.localImage) {
+      errors.download_link_pdf = "Debe subir un documento PDF para extraer la portada.";
     }
 
     setDetailErrors(errors);
@@ -228,31 +236,72 @@ export default function ResearchFormModal({
 
   // Función para preparar datos y guardar
   const prepareAndSave = async () => {
+    setIsSaving(true);
     try {
-      // ✅ Generar slug desde título si no existe
       let finalData = { ...formData };
+
+      // 🚀 Subir imagen a Supabase si hay un archivo pendiente
+      if (pendingImageFile) {
+        try {
+          // Comprimir y convertir a WebP antes de subir
+          const webpFile = await compressImageToWebP(pendingImageFile);
+          const imageUrl = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/investigation/images');
+          finalData.localImage = imageUrl;
+        } catch (e) {
+          console.error("Error subiendo imagen:", e);
+          alert("Error subiendo la imagen. Verifica las políticas del bucket en Supabase.");
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      // 🚀 Subir PDF a Supabase si hay un archivo pendiente
+      if (pendingPdfFile) {
+        try {
+          const pdfUrl = await uploadFileToSupabase(pendingPdfFile, 'nft-assets', 'assets/images/investigation/pdf');
+          finalData.download_link_pdf = pdfUrl;
+        } catch (e) {
+          console.error("Error subiendo PDF:", e);
+          alert("Error subiendo el PDF. Verifica las políticas del bucket en Supabase.");
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      // 🛡️ SANITIZACIÓN: nunca guardar blob: o data: URLs en Firestore
+      // (causaría el error "value longer than 1048487 bytes")
+      const isLocalUrl = (url) => url && (url.startsWith('blob:') || url.startsWith('data:'));
+      if (isLocalUrl(finalData.localImage)) {
+        finalData.localImage = ""; // Limpiar — el usuario deberá re-subir la imagen
+      }
+      if (isLocalUrl(finalData.download_link_pdf)) {
+        finalData.download_link_pdf = "";
+      }
+
+      // Limpiar el campo auxiliar pdfFileName antes de guardar
+      delete finalData.pdfFileName;
+
+      // ✅ Generar slug desde título si no existe
       if (!finalData.slug && (finalData.title.es || finalData.title.en)) {
         const titleForSlug = finalData.title.es || finalData.title.en;
         finalData.slug = generateSlug(titleForSlug);
       }
 
       // ⚠️ IMPORTANTE: Preservar el estado archived del artículo original
-      // Solo cambiar archived cuando se usa el botón "Restaurar"
       if (currentMode === "edit" && article) {
-        finalData.archived = article.archived; // Mantener estado original
+        finalData.archived = article.archived;
       }
 
-      console.log("🔍 DEBUG - Datos a guardar:", finalData);
-      console.log("🔍 DEBUG - ID generado:", finalData.id);
-      console.log("🔍 DEBUG - Slug generado:", finalData.slug);
-      console.log("🔍 DEBUG - Estado archived:", finalData.archived);
-
       await onSave(finalData);
-      console.log("✅ Artículo guardado exitosamente");
+      // Limpiar archivos pendientes
+      setPendingImageFile(null);
+      setPendingPdfFile(null);
       onClose();
     } catch (error) {
       console.error("❌ Error al guardar:", error);
       alert("❌ Error al guardar el artículo: " + error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -330,63 +379,64 @@ export default function ResearchFormModal({
   };
 
   const handleAutoTranslate = async () => {
+    const src = activeLang;            // idioma de origen (el activo)
+    const tgt = src === "es" ? "en" : "es"; // idioma destino
+
+    // Verificar que haya algo que traducir
+    const hasContent =
+      formData.title?.[src]?.trim() ||
+      formData.summary_30w?.[src]?.trim() ||
+      (typeof formData.abstract === "object" ? formData.abstract?.[src] : formData.abstract)?.trim() ||
+      formData.fullSummary?.[src]?.trim();
+
+    if (!hasContent) return;
+
+    setTranslating(true);
     try {
-      if (activeLang === "es") {
-        const textToTranslate = [
-          formData.title?.es || "",
-          formData.summary_30w?.es || "",
-          formData.abstract?.es || (typeof formData.abstract === "string" ? formData.abstract : ""),
-          formData.fullSummary?.es || "",
-        ].join("|||");
+      const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
-        if (!textToTranslate.trim() || textToTranslate === "|||||||||") return;
+      const tTitle = formData.title?.[src]?.trim()
+        ? await translateText(formData.title[src], src, tgt)
+        : null;
+      await delay(150);
 
-        const result = await translateGlobal(textToTranslate, "en");
-        if (result) {
-          const [tTitle, tSumm, tAbs, tFull] = result.split("|||");
+      const tSumm = formData.summary_30w?.[src]?.trim()
+        ? await translateText(formData.summary_30w[src], src, tgt)
+        : null;
+      await delay(150);
 
-          setFormData((prev) => ({
-            ...prev,
-            title: { ...prev.title, en: tTitle?.trim() || prev.title?.en || "" },
-            summary_30w: { ...prev.summary_30w, en: tSumm?.trim() || prev.summary_30w?.en || "" },
-            abstract: {
-              ...((typeof prev.abstract === "object") ? prev.abstract : { es: prev.abstract }),
-              en: tAbs?.trim() || ""
-            },
-            fullSummary: { ...prev.fullSummary, en: tFull?.trim() || prev.fullSummary?.en || "" },
-          }));
+      const abstractSrc =
+        typeof formData.abstract === "object"
+          ? formData.abstract?.[src] || ""
+          : (src === "es" ? formData.abstract : "") || "";
+      const tAbs = abstractSrc.trim()
+        ? await translateText(abstractSrc, src, tgt)
+        : null;
+      await delay(150);
+
+      const tFull = formData.fullSummary?.[src]?.trim()
+        ? await translateText(formData.fullSummary[src], src, tgt)
+        : null;
+
+      setFormData((prev) => {
+        const updated = { ...prev };
+        if (tTitle !== null) updated.title = { ...prev.title, [tgt]: tTitle.trim() };
+        if (tSumm !== null) updated.summary_30w = { ...prev.summary_30w, [tgt]: tSumm.trim() };
+        if (tAbs !== null) {
+          const currAbstract = typeof prev.abstract === "object" ? prev.abstract : { [src]: prev.abstract };
+          updated.abstract = { ...currAbstract, [tgt]: tAbs.trim() };
         }
-      } else {
-        const textToTranslate = [
-          formData.title?.en || "",
-          formData.summary_30w?.en || "",
-          formData.abstract?.en || "",
-          formData.fullSummary?.en || "",
-        ].join("|||");
-
-        if (!textToTranslate.trim() || textToTranslate === "|||||||||") return;
-
-        const result = await translateGlobal(textToTranslate, "es");
-        if (result) {
-          const [tTitle, tSumm, tAbs, tFull] = result.split("|||");
-
-          setFormData((prev) => ({
-            ...prev,
-            title: { ...prev.title, es: tTitle?.trim() || prev.title?.es || "" },
-            summary_30w: { ...prev.summary_30w, es: tSumm?.trim() || prev.summary_30w?.es || "" },
-            abstract: {
-              ...((typeof prev.abstract === "object") ? prev.abstract : { en: prev.abstract }),
-              es: tAbs?.trim() || ""
-            },
-            fullSummary: { ...prev.fullSummary, es: tFull?.trim() || prev.fullSummary?.es || "" },
-          }));
-        }
-      }
+        if (tFull !== null) updated.fullSummary = { ...prev.fullSummary, [tgt]: tFull.trim() };
+        return updated;
+      });
     } catch (error) {
       console.error("Error en autotraducción:", error);
       alert("Hubo un error al traducir automáticamente.");
+    } finally {
+      setTranslating(false);
     }
   };
+
 
   if (!open) return null;
 
@@ -627,7 +677,7 @@ export default function ResearchFormModal({
                     activeLang={activeLang}
                     isNew={!article}
                     readOnly={false}
-                    uploadImage={uploadImage}
+                    onImagePick={handleImagePick}
                   />
                 ) : (
                   <ResearchDetailForm
@@ -635,14 +685,8 @@ export default function ResearchFormModal({
                     setFormData={setFormData}
                     activeLang={activeLang}
                     readOnly={false}
-                    onPickPDF={() => {
-                      const input = document.createElement("input");
-                      input.type = "file";
-                      input.accept = ".pdf,application/pdf";
-                      input.onchange = (e) => uploadPDF.pickFile(e);
-                      input.click();
-                    }}
-                    onDropPDF={(e) => uploadPDF.dropFile(e)}
+                    onImagePick={handleImagePick}
+                    onPdfPick={handlePdfPick}
                   />
                 )}
               </div>

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Eye, Pencil, Archive, RotateCcw, Columns } from "lucide-react";
+import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
@@ -9,6 +9,7 @@ export default function ResearchTable({
   onView,
   onEdit,
   onArchiveToggle,
+  onDelete,
 }) {
   const articles = Array.isArray(research) ? research : [];
   const columns = useMemo(
@@ -191,10 +192,20 @@ export default function ResearchTable({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className={`h-8 w-8 ${article.archived ? "text-green-600 hover:bg-green-50" : "text-red-600 hover:bg-red-50"}`}
+                      className={`h-8 w-8 ${article.archived ? "text-green-600 hover:bg-green-50" : "text-amber-600 hover:bg-amber-50"}`}
                       onClick={() => onArchiveToggle(article)}
+                      title={article.archived ? "Restaurar" : "Archivar"}
                     >
                       {article.archived ? <RotateCcw className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-red-600 hover:bg-red-50"
+                      onClick={() => onDelete(article)}
+                      title="Eliminar permanentemente"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </td>

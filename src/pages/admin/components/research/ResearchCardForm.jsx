@@ -9,7 +9,7 @@ export default function ResearchCardForm({
   activeLang = "es",
   isNew,
   readOnly = false,
-  uploadImage,
+  onImagePick,
 }) {
   const [newKeyword, setNewKeyword] = useState("");
   const [isDragging, setIsDragging] = useState(false);
@@ -18,65 +18,17 @@ export default function ResearchCardForm({
 
   const activeProducts = products.filter((p) => !p.archived);
 
-  // ✅ Usar hook de upload si está disponible, sino fallback a FileReader
-  const handleImageUpload = async (e) => {
-    if (uploadImage) {
-      uploadImage.pickFile(e);
-    } else {
-      // Fallback: FileReader directo
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData((prev) => ({
-          ...prev,
-          localImage: event.target.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // ✅ Drag & Drop handlers
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleImageChange = (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    onImagePick?.(file);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-
-    if (uploadImage) {
-      uploadImage.dropFile(e);
-    } else {
-      // Fallback: FileReader directo
-      const file = e.dataTransfer.files?.[0];
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setFormData((prev) => ({
-            ...prev,
-            localImage: event.target.result,
-          }));
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+    const file = e.dataTransfer?.files?.[0];
+    handleImageChange(file);
   };
 
   const handleAddKeyword = () => {
@@ -152,28 +104,19 @@ export default function ResearchCardForm({
         </div>
         <div className="p-6">
           <div
-            className={`relative aspect-[16/9] max-w-lg border-2 border-dashed rounded-xl overflow-hidden transition-colors ${isDragging
-              ? "border-[#e83d38] bg-red-50"
-              : "border-gray-300 bg-gray-50 hover:border-gray-400"
-              }`}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
+            className={`relative aspect-[16/9] max-w-lg border-2 border-dashed rounded-xl overflow-hidden transition-colors cursor-pointer ${isDragging ? "border-[#e83d38] bg-red-50" : "border-gray-300 bg-gray-50 hover:border-gray-400"}`}
+            onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
+            onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
+            onClick={() => !readOnly && fileInputRef.current?.click()}
           >
             {formData.localImage ? (
               <>
-                <img
-                  src={formData.localImage}
-                  alt="Preview"
-                  className="w-full h-full object-contain"
-                />
+                <img src={formData.localImage} alt="Preview" className="w-full h-full object-contain" />
                 {!readOnly && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setFormData((prev) => ({ ...prev, localImage: "" }));
-                    }}
+                    onClick={(e) => { e.stopPropagation(); setFormData((prev) => ({ ...prev, localImage: "" })); }}
                     className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors z-10 shadow-sm"
                   >
                     <X className="w-4 h-4 text-white" />
@@ -182,37 +125,14 @@ export default function ResearchCardForm({
               </>
             ) : (
               <>
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!readOnly && fileInputRef.current) {
-                      fileInputRef.current.click();
-                    }
-                  }}
-                  className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer group"
-                >
-                  <Upload
-                    className={`w-10 h-10 mb-2 transition-colors ${isDragging ? "text-[#e83d38]" : "text-gray-400 group-hover:text-gray-500"
-                      }`}
-                  />
-                  <span
-                    className={`text-sm font-medium transition-colors ${isDragging ? "text-[#e83d38]" : "text-gray-600 group-hover:text-gray-700"
-                      }`}
-                  >
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <Upload className={`w-10 h-10 mb-2 transition-colors ${isDragging ? "text-[#e83d38]" : "text-gray-400"}`} />
+                  <span className={`text-sm font-medium transition-colors ${isDragging ? "text-[#e83d38]" : "text-gray-600"}`}>
                     {isDragging ? "Suelta la imagen aquí" : "Click o arrastra imagen aquí"}
                   </span>
-                  <span className="text-xs text-gray-400 mt-1">
-                    JPG, PNG, WebP (16:9 recomendado)
-                  </span>
+                  <span className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (16:9 recomendado)</span>
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  disabled={readOnly}
-                />
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleImageChange(e.target.files?.[0])} className="hidden" disabled={readOnly} />
               </>
             )}
           </div>

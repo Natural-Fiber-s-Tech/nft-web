@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { fetchJson } from "../../../lib/api";
 import { normalizeOrder, upsertWithReorder, archiveItem, restoreItem } from "../../../lib/crud";
+import { deleteFileFromSupabase } from "../../../lib/storage";
 import ResearchTable from "../components/research/ResearchTable";
 import ResearchFormModal from "../components/research/ResearchFormModal";
 import ResearchArchiveConfirmModal from "../components/research/ResearchArchiveConfirmModal";
+import ConfirmModal from "../components/common/ConfirmModal";
 
 export default function ResearchView() {
     const [rows, setRows] = useState([]);
@@ -13,6 +15,8 @@ export default function ResearchView() {
     const [modalMode, setModalMode] = useState("view");
     const [confirmRow, setConfirmRow] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [deleteRow, setDeleteRow] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
         loadResearch();
@@ -64,9 +68,14 @@ export default function ResearchView() {
             const { doc, writeBatch } = await import("firebase/firestore");
             const { db } = await import("../../../config/firebase");
             const batch = writeBatch(db);
+            const isLocalUrl = (v) => typeof v === 'string' && (v.startsWith('blob:') || v.startsWith('data:'));
             nextRows.forEach((item) => {
-                const itemRef = doc(db, "research", item.id);
-                batch.set(itemRef, item, { merge: true });
+                // Sanitize: strip local URLs before saving to Firestore
+                const safe = Object.fromEntries(
+                    Object.entries(item).map(([k, v]) => [k, isLocalUrl(v) ? "" : v])
+                );
+                const itemRef = doc(db, "research", safe.id);
+                batch.set(itemRef, safe, { merge: true });
             });
             await batch.commit();
             return true;
@@ -141,6 +150,10 @@ export default function ResearchView() {
                         setShowConfirm(true);
                     }
                 }}
+                onDelete={(row) => {
+                    setDeleteRow(row);
+                    setShowDeleteConfirm(true);
+                }}
             />
 
             <ResearchFormModal
@@ -197,6 +210,43 @@ export default function ResearchView() {
                     setShowConfirm(false);
                     setConfirmRow(null);
                 }}
+            />
+
+            <ConfirmModal
+                open={showDeleteConfirm}
+                onClose={() => {
+                    setShowDeleteConfirm(false);
+                    setDeleteRow(null);
+                }}
+                onConfirm={async () => {
+                    if (!deleteRow) return;
+                    try {
+                        // 1. Borrar archivos de Supabase (silencioso si fallan)
+                        await Promise.allSettled([
+                            deleteFileFromSupabase(deleteRow.localImage),
+                            deleteFileFromSupabase(deleteRow.download_link_pdf),
+                        ]);
+
+                        // 2. Borrar documento de Firestore
+                        const { doc, deleteDoc } = await import("firebase/firestore");
+                        const { db } = await import("../../../config/firebase");
+                        await deleteDoc(doc(db, "research", deleteRow.id));
+
+                        setRows(prev => prev.filter(r => r.id !== deleteRow.id));
+                        loadResearch();
+                    } catch (error) {
+                        console.error("Error deleting research item:", error);
+                        alert("Hubo un error al eliminar el artículo.");
+                    } finally {
+                        setShowDeleteConfirm(false);
+                        setDeleteRow(null);
+                    }
+                }}
+                title="Eliminar Artículo Permanentemente"
+                message={`¿Estás seguro que deseas eliminar el artículo "${deleteRow?.title?.es || deleteRow?.title?.en}"?\n\nEsta acción no se puede deshacer y el artículo dejará de aparecer en la web.`}
+                type="error"
+                confirmText="Eliminar"
+                cancelText="Cancelar"
             />
         </div>
     );
