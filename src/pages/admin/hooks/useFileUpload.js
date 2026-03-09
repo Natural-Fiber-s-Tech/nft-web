@@ -22,6 +22,8 @@
  */
 
 import { useState, useCallback } from "react";
+import imageCompression from "browser-image-compression";
+import { uploadFileToSupabase } from "../../../lib/storage";
 
 /**
  * Convierte un File a Data URL (base64)
@@ -136,8 +138,21 @@ export function useFileUpload(options = {}) {
           return;
         }
 
-        // Validar tamaño
-        if (file.size > maxSize) {
+        // Custom validator para PDFs
+        if (file.type === "application/pdf") {
+          const maxPdfSize = 3 * 1024 * 1024; // 3MB estricto
+          if (file.size > maxPdfSize) {
+            const message = `El PDF es muy pesado (${formatFileSize(file.size)}).
+El límite máximo es 3 MB para garantizar tiempos de carga rápidos.
+Por favor, utiliza una herramienta como ilovepdf.com para comprimirlo antes de subirlo.`;
+            setUploadMessage(message);
+            onError?.(new Error(message));
+            return;
+          }
+        }
+
+        // Validar tamaño genérico
+        if (file.size > maxSize && file.type !== "application/pdf") {
           const message = `Archivo demasiado grande (${formatFileSize(
             file.size
           )}). Máximo permitido: ${formatFileSize(maxSize)}`;
@@ -146,46 +161,63 @@ export function useFileUpload(options = {}) {
           return;
         }
 
+        let fileToUpload = file;
+
+        // Comprimir imágenes y convertirlas a WebP automáticamente
+        if (file.type.startsWith("image/")) {
+          setUploadMessage("Optimizando imagen...");
+          try {
+            const options = {
+              maxSizeMB: 1, // Tamaño máximo de destino (1MB)
+              maxWidthOrHeight: 1920, // Resolución recomendada web
+              useWebWorker: true,
+              fileType: "image/webp", // Convertir siempre a WebP
+            };
+            const compressedFile = await imageCompression(file, options);
+            // Renombrar archivo a .webp
+            const newName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+            fileToUpload = new File([compressedFile], newName, { type: "image/webp" });
+            console.log(`Imagen optimizada: ${formatFileSize(file.size)} -> ${formatFileSize(fileToUpload.size)}`);
+          } catch (error) {
+            console.error("Error optimizando imagen:", error);
+            // Si falla la compresión, intentamos con el original
+          }
+        }
+
         // Opción 1: Solo preview local (no sube a servidor)
         if (usePreview) {
           try {
-            const dataUrl = await fileToDataURL(file);
-            onSuccess?.(dataUrl, file);
+            const dataUrl = await fileToDataURL(fileToUpload);
+            onSuccess?.(dataUrl, fileToUpload);
             setUploadMessage(
-              `✓ Preview local: ${file.name} (${formatFileSize(file.size)})`
+              `✓ Preview local: ${fileToUpload.name} (${formatFileSize(fileToUpload.size)})`
             );
           } catch (fileReaderError) {
             console.warn(
               "[useFileUpload] FileReader falló, usando Blob URL:",
               fileReaderError
             );
-            const blobUrl = URL.createObjectURL(file);
-            onSuccess?.(blobUrl, file);
-            setUploadMessage(`✓ Preview local (blob): ${file.name}`);
+            const blobUrl = URL.createObjectURL(fileToUpload);
+            onSuccess?.(blobUrl, fileToUpload);
+            setUploadMessage(`✓ Preview local (blob): ${fileToUpload.name}`);
           }
           return;
         }
 
-        // Opción 2: MOCK temporal en lugar de subir al servidor (ya que Firestore Storage se pospuso)
-        setUploadMessage(`⏳ Subiendo ${file.name} (MOCK)...`);
+        // Opción 2: Subida real usando Supabase
+        setUploadMessage(`⏳ Subiendo ${fileToUpload.name} a la nube...`);
 
-        // Simular delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Usamos siempre el bucket 'nft-assets' como configuró el usuario.
+        // Usamos uploadPath (ej: "products/images/") como la subcarpeta.
+        // Limpiamos la ruta para que no tenga prefijos complejos.
+        let folderPrefix = String(uploadPath).replace(/^public\//, "").replace(/^\//, "");
+        if (!folderPrefix) folderPrefix = "assets";
 
-        let fileUrl = "";
-        if (file.type.startsWith("image/")) {
-          // Si es imagen, generar un string largo de DataURL para que se vea previsualizado y se guarde en Firestore,
-          // o podemos usar un placeholder externo. Debido a requerimientos visuales del panel, vamos a usar un placeholder 
-          // que permita observar nombre del archivo.
-          fileUrl = `https://via.placeholder.com/640x360.png?text=${encodeURIComponent(file.name.substring(0, 15))}`;
-        } else {
-          // Si es PDF u otro
-          fileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-        }
+        const fileUrl = await uploadFileToSupabase(fileToUpload, 'nft-assets', folderPrefix);
 
-        console.log("[useFileUpload] Upload success (MOCK):", fileUrl);
-        onSuccess?.(fileUrl, file);
-        setUploadMessage(`✓ Archivo guardado (MOCK): ${file.name}`);
+        console.log("[useFileUpload] Upload success (Supabase):", fileUrl);
+        onSuccess?.(fileUrl, fileToUpload);
+        setUploadMessage(`✓ Archivo subido con éxito`);
       } catch (error) {
         console.error("[useFileUpload] Error:", error);
         const message = `Error al subir archivo: ${error.message || "Error desconocido"
