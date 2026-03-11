@@ -26,6 +26,21 @@ const InvestigationLanding = () => {
   useEffect(() => {
     const loadArticles = async () => {
       try {
+        const cached = sessionStorage.getItem("nft_research_cache");
+        const cacheTime = sessionStorage.getItem("nft_research_cache_time");
+        if (cached && cacheTime) {
+            const age = Date.now() - parseInt(cacheTime, 10);
+            if (age < 86400000) { // 24 hours
+                console.log("⚡ [InvestigationLanding] Loaded active articles from Session Storage");
+                const parsed = JSON.parse(cached);
+                const activeArticles = parsed.filter((article) => !article.archived);
+                setArticles(activeArticles);
+                setFilteredArticles(activeArticles);
+                setLoading(false);
+                return;
+            }
+        }
+
         const { collection, getDocs } = await import("firebase/firestore");
         const { db } = await import("../../config/firebase");
         const querySnapshot = await getDocs(collection(db, "research"));
@@ -43,6 +58,10 @@ const InvestigationLanding = () => {
 
         // Filtrar solo artículos activos (no archivados)
         const activeArticles = data.filter((article) => !article.archived);
+        
+        // Cachear todo el dataset (incluyendo archivados, para que admin también lo use si pasa primero por aquí, o viceversa)
+        sessionStorage.setItem("nft_research_cache", JSON.stringify(data));
+        sessionStorage.setItem("nft_research_cache_time", Date.now().toString());
 
         setArticles(activeArticles);
         setFilteredArticles(activeArticles);

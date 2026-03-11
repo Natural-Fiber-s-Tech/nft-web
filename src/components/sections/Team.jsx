@@ -193,11 +193,64 @@ const Team = () => {
   // DEBUG: Verificar que language cambia
   console.log("🔍 Team - language del contexto:", language);
 
-  // Cargar equipo desde /content/team.json
+  // Cargar equipo desde /content/team.json o Firestore
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
+        const cached = sessionStorage.getItem("nft_team_cache");
+        const cacheTime = sessionStorage.getItem("nft_team_cache_time");
+        if (cached && cacheTime) {
+          const age = Date.now() - parseInt(cacheTime, 10);
+          if (age < 86400000) { // 24 hours
+            console.log("⚡ [Team] Loaded data from Session Storage");
+            const data = JSON.parse(cached);
+            
+            // Re-normalizar según el idioma actual si ya está cacheado
+            if (cancelled) return;
+            // Helper para extraer valores bilingües
+            const getI18nValue = (field) => {
+              if (!field) return "";
+              if (typeof field === "string") return field;
+              if (typeof field === "object" && !Array.isArray(field)) {
+                return field[language] || field.es || field.en || "";
+              }
+              return "";
+            };
+
+            // Helper para extraer arrays bilingües
+            const getI18nArray = (field) => {
+              if (!field) return [];
+              if (Array.isArray(field)) return field; // Legacy: array simple
+              if (typeof field === "object") {
+                return field[language] || field.es || field.en || [];
+              }
+              return [];
+            };
+            
+            const normalized = (Array.isArray(data) ? data : [])
+              .map((m) => {
+                  return {
+                  id: m.id || `team-${Math.random().toString(36).slice(2, 8)}`,
+                  name: getI18nValue(m.name),
+                  role: getI18nValue(m.role),
+                  photo: m.photo || m.image || "",
+                  image: m.photo || m.image || "",
+                  src_cv_pdf: m.src_cv_pdf || "", // ✅ Mapeo directo
+                  link_bio: m.link_bio || "",     // ✅ Mapeo directo
+                  skills: getI18nArray(m.skills),
+                  order: typeof m.order === "number" ? m.order : 9999,
+                  archived: !!m.archived,
+                };
+              })
+              .filter((x) => !x.archived)
+              .sort(compareByOrder);
+
+            setTeamMembers(normalized);
+            return;
+          }
+        }
+
         const { collection, getDocs } = await import("firebase/firestore");
         const { db } = await import("../../config/firebase");
         const querySnapshot = await getDocs(collection(db, "team"));
@@ -213,6 +266,10 @@ const Team = () => {
           if (!res.ok) throw new Error("no_team_json");
           data = await res.json();
         }
+        
+        // Cachear todo el dataset crudo
+        sessionStorage.setItem("nft_team_cache", JSON.stringify(data));
+        sessionStorage.setItem("nft_team_cache_time", Date.now().toString());
 
         if (cancelled) return;
 

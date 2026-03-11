@@ -26,8 +26,24 @@ export default function ResearchView() {
     useEffect(() => {
         loadResearch();
     }, []);
-    async function loadResearch() {
+
+    async function loadResearch(forceRefresh = false) {
         try {
+            if (forceRefresh) {
+                sessionStorage.removeItem("nft_research_cache");
+                sessionStorage.removeItem("nft_research_cache_time");
+            } else {
+                const cached = sessionStorage.getItem("nft_research_cache");
+                const cacheTime = sessionStorage.getItem("nft_research_cache_time");
+                if (cached && cacheTime) {
+                    const MathAge = Date.now() - parseInt(cacheTime, 10);
+                    if (MathAge < 86400000) {
+                        console.log("⚡ Research loaded from Session Storage");
+                        setRows(JSON.parse(cached));
+                        return;
+                    }
+                }
+            }
             const { collection, getDocs } = await import("firebase/firestore");
             const { db } = await import("../../../config/firebase");
             const querySnapshot = await getDocs(collection(db, "research"));
@@ -43,7 +59,12 @@ export default function ResearchView() {
                     }
                     return acc;
                 }, []);
-                setRows(normalizeOrder(uniqueData));
+                const finalRows = normalizeOrder(uniqueData);
+                
+                sessionStorage.setItem("nft_research_cache", JSON.stringify(finalRows));
+                sessionStorage.setItem("nft_research_cache_time", Date.now().toString());
+                
+                setRows(finalRows);
             } else {
                 setRows([]);
             }
@@ -68,6 +89,11 @@ export default function ResearchView() {
                 batch.set(itemRef, safe, { merge: true });
             });
             await batch.commit();
+            
+            // Clear cache after persisting so next load is fresh
+            sessionStorage.removeItem("nft_research_cache");
+            sessionStorage.removeItem("nft_research_cache_time");
+            
             return true;
         } catch (e) {
             console.warn("Auto-persist research failed in Firestore:", e);

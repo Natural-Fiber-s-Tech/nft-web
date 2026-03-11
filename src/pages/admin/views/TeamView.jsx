@@ -23,8 +23,23 @@ export default function TeamView() {
         loadTeam();
     }, []);
 
-    async function loadTeam() {
+    async function loadTeam(forceRefresh = false) {
         try {
+            if (forceRefresh) {
+                sessionStorage.removeItem("nft_team_cache");
+                sessionStorage.removeItem("nft_team_cache_time");
+            } else {
+                const cached = sessionStorage.getItem("nft_team_cache");
+                const cacheTime = sessionStorage.getItem("nft_team_cache_time");
+                if (cached && cacheTime) {
+                    const MathAge = Date.now() - parseInt(cacheTime, 10);
+                    if (MathAge < 86400000) {
+                        console.log("⚡ Team loaded from Session Storage");
+                        setRows(JSON.parse(cached));
+                        return;
+                    }
+                }
+            }
             const { collection, getDocs } = await import("firebase/firestore");
             const { db } = await import("../../../config/firebase");
             const querySnapshot = await getDocs(collection(db, "team"));
@@ -35,7 +50,12 @@ export default function TeamView() {
                     ...doc.data()
                 }));
                 // Firestore devuelve el objeto, lo normalizamos
-                setRows(normalizeTeamOrder(data.map(normalizeTeamMember)));
+                const finalRows = normalizeTeamOrder(data.map(normalizeTeamMember));
+                
+                sessionStorage.setItem("nft_team_cache", JSON.stringify(finalRows));
+                sessionStorage.setItem("nft_team_cache_time", Date.now().toString());
+                
+                setRows(finalRows);
             } else {
                 setRows([]);
             }
@@ -55,6 +75,11 @@ export default function TeamView() {
                 batch.set(itemRef, item, { merge: true });
             });
             await batch.commit();
+            
+            // Clear cache after persisting
+            sessionStorage.removeItem("nft_team_cache");
+            sessionStorage.removeItem("nft_team_cache_time");
+            
             return true;
         } catch (e) {
             console.warn("Auto-persist team failed in Firestore:", e);

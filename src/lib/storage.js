@@ -40,7 +40,7 @@ export const uploadFileToSupabase = async (file, bucket = 'nft-assets', folderRe
     const { data, error } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
-            cacheControl: '3600',
+            cacheControl: '31536000',
             upsert: false
         });
 
