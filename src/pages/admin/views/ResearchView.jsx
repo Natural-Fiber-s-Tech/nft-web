@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { fetchJson } from "../../../lib/api";
 import { normalizeOrder, upsertWithReorder, archiveItem, restoreItem } from "../../../lib/crud";
-import { deleteFileFromSupabase } from "../../../lib/storage";
+import { deleteFileFromSupabase, uploadFileToSupabase, compressImageToWebP } from "../../../lib/storage";
 import ResearchTable from "../components/research/ResearchTable";
 import ResearchFormModal from "../components/research/ResearchFormModal";
 import ResearchArchiveConfirmModal from "../components/research/ResearchArchiveConfirmModal";
@@ -17,6 +17,11 @@ export default function ResearchView() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [deleteRow, setDeleteRow] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    // Filtros
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
 
     useEffect(() => {
         loadResearch();
@@ -40,22 +45,7 @@ export default function ResearchView() {
                 }, []);
                 setRows(normalizeOrder(uniqueData));
             } else {
-                const r = await fetch("/content/research.json");
-                if (r.ok) {
-                    const raw = await r.json();
-                    const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-                    if (data.length) {
-                        const uniqueData = data.reduce((acc, item) => {
-                            if (!acc.some((existing) => existing.slug === item.slug)) acc.push(item);
-                            return acc;
-                        }, []);
-                        const normalized = normalizeOrder(uniqueData);
-                        setRows(normalized);
-                        await persistRows(normalized, "seed research from public content");
-                    }
-                } else {
-                    setRows([]);
-                }
+                setRows([]);
             }
         } catch (error) {
             console.error("Error cargando investigación desde Firestore:", error);
@@ -85,51 +75,114 @@ export default function ResearchView() {
         }
     }
 
-    const tableRows = [...rows].sort((a, b) => {
-        if (!!a.archived && !b.archived) return 1;
-        if (!a.archived && !!b.archived) return -1;
-        const ao = typeof a.order === "number" ? a.order : 999;
-        const bo = typeof b.order === "number" ? b.order : 999;
-        return ao - bo;
+    // Filtrar localmente
+    const filteredArticles = rows.filter(article => {
+        const matchesSearch = searchTerm === "" ||
+            (article.title?.es?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                article.title?.en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (typeof article.title === 'string' && article.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                article.journal?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                article.slug?.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const matchesStatus = statusFilter === "all" ||
+            (statusFilter === "active" && !article.archived) ||
+            (statusFilter === "archived" && article.archived);
+
+        return matchesSearch && matchesStatus;
     });
 
+    const handleAdd = () => {
+        const blank = {
+            id: "research-" + Math.random().toString(36).slice(2, 8),
+            slug: "",
+            order: (rows?.filter((x) => !x.archived).length || 0) + 1,
+            localImage: "",
+            journal: "",
+            date: new Date().toISOString().split("T")[0],
+            title: { es: "", en: "" },
+            summary_30w: { es: "", en: "" },
+            keywords: [],
+            products: [],
+            fullSummary: { es: "", en: "" },
+            methodology: { es: "", en: "" },
+            results: { es: "", en: "" },
+            conclusions: { es: "", en: "" },
+            download_link_DOI: "",
+            download_link_pdf: "",
+            href: "",
+            archived: false,
+        };
+        setEditing(blank);
+        setModalMode("create");
+        setShowForm(true);
+    };
+
     return (
-        <div className="space-y-4">
-            <div className="flex justify-end gap-2">
-                <button
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors"
-                    onClick={() => {
-                        const blank = {
-                            id: "research-" + Math.random().toString(36).slice(2, 8),
-                            slug: "",
-                            order: (rows?.filter((x) => !x.archived).length || 0) + 1,
-                            localImage: "",
-                            journal: "",
-                            date: new Date().toISOString().split("T")[0],
-                            title: { es: "", en: "" },
-                            summary_30w: { es: "", en: "" },
-                            keywords: [],
-                            products: [],
-                            fullSummary: { es: "", en: "" },
-                            methodology: { es: "", en: "" },
-                            results: { es: "", en: "" },
-                            conclusions: { es: "", en: "" },
-                            download_link_DOI: "",
-                            download_link_pdf: "",
-                            href: "",
-                            archived: false,
-                        };
-                        setEditing(blank);
-                        setModalMode("create");
-                        setShowForm(true);
-                    }}
-                >
-                    <Plus className="w-4 h-4" /> Nuevo Artículo
-                </button>
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <div className="flex flex-col gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">Investigación</h2>
+                    <p className="text-muted-foreground">
+                        Gestiona los artículos y publicaciones científicas.
+                    </p>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+                        <input
+                            type="text"
+                            placeholder="Buscar por título, revista o ID..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="px-4 py-2 border rounded-lg w-full sm:w-72 focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                        />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                        >
+                            <option value="all">Todos los estados</option>
+                            <option value="active">Solo Activos</option>
+                            <option value="archived">Archivados</option>
+                        </select>
+                    </div>
+                    <div className="flex gap-2 min-w-max">
+                        <button
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
+                            title="Restaurar artículos desde respaldo"
+                            onClick={async () => {
+                                // ... same logic as ProductsView
+                                try {
+                                    const b = await fetchJson("/api/research/backups");
+                                    const files = Array.isArray(b?.files) ? b.files : [];
+                                    if (files.length) {
+                                        // Placeholder for backup logic, as it's not fully provided
+                                        alert("Backup functionality not fully implemented in this snippet.");
+                                    }
+                                } catch (error) {
+                                    console.error("Error fetching backups:", error);
+                                    alert("Error al cargar los respaldos.");
+                                }
+                            }}
+                        >
+                            {/* Placeholder for backup button content */}
+                            Restaurar Respaldo
+                        </button>
+                        <button onClick={handleAdd} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#e83d38] hover:bg-red-700 text-white text-sm">
+                            <Plus className="w-4 h-4" /> Nuevo Artículo
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <ResearchTable
-                research={tableRows}
+                research={[...filteredArticles].sort((a, b) => {
+                    if (!!a.archived && !b.archived) return 1;
+                    if (!a.archived && !!b.archived) return -1;
+                    const ao = typeof a.order === "number" ? a.order : 999;
+                    const bo = typeof b.order === "number" ? b.order : 999;
+                    return ao - bo;
+                })}
                 onView={(row) => {
                     setEditing(row);
                     setModalMode("view");

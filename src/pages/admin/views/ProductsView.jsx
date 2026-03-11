@@ -6,6 +6,7 @@ import ProductArchiveConfirmModal from "../components/products/ProductArchiveCon
 import { fetchJson } from "../../../lib/api";
 import { normalizeOrder } from "../../../lib/crud";
 import { useProducts } from "../../../context/hooks/useProducts";
+import { deleteFileFromSupabase, uploadFileToSupabase, compressImageToWebP } from "../../../lib/storage";
 
 // Helper to migrate legacy products to new flat schema with suffixes (Option 1)
 function migrateProduct(product) {
@@ -76,6 +77,12 @@ export default function ProductsView() {
     const [modalMode, setModalMode] = useState("view");
     const [confirmRow, setConfirmRow] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    
+    // Filtros
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [categoryFilter, setCategoryFilter] = useState("all");
+    
     const { refreshProducts } = useProducts();
 
     useEffect(() => {
@@ -105,11 +112,19 @@ export default function ProductsView() {
             const { db } = await import("../../../config/firebase");
 
             const batch = writeBatch(db);
+            const isLocalUrl = (v) => typeof v === 'string' && (v.startsWith('blob:') || v.startsWith('data:'));
             nextRows.forEach((item) => {
-                const itemRef = doc(db, "products", item.id);
-                // Asegurarnos de limpiar cualquier key antigua antes de guardar
                 const cleanedItem = migrateProduct(item);
-                batch.set(itemRef, cleanedItem, { merge: true }); // merge: true preserves other unexpected fields, but we overwrite known bad ones with cleanedItem in future writes
+                // Sanitize: strip local blob/base64 URLs before saving to Firestore
+                const safe = Object.fromEntries(
+                    Object.entries(cleanedItem).map(([k, v]) => {
+                        if (isLocalUrl(v)) return [k, ''];
+                        if (Array.isArray(v)) return [k, v.filter((x) => !isLocalUrl(x))];
+                        return [k, v];
+                    })
+                );
+                const itemRef = doc(db, "products", safe.id);
+                batch.set(itemRef, safe, { merge: true });
             });
             await batch.commit();
             return true;
@@ -119,81 +134,129 @@ export default function ProductsView() {
         }
     }
 
+    // Filtrar localmente
+    const filteredRows = rows.filter(row => {
+        const matchesSearch = searchTerm === "" || 
+            (row.name_es?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+             row.name_en?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+             row.id?.toLowerCase().includes(searchTerm.toLowerCase()));
+             
+        const matchesStatus = statusFilter === "all" || 
+            (statusFilter === "active" && !row.archived) || 
+            (statusFilter === "archived" && row.archived);
+            
+        const matchesCategory = categoryFilter === "all" || 
+            (row.tag_es === categoryFilter || row.tag_en === categoryFilter);
+
+        return matchesSearch && matchesStatus && matchesCategory;
+    });
+
+    // Obtener categorías únicas para el selector
+    const uniqueCategories = [...new Set(rows.map(r => r.tag_es).filter(Boolean))];
+
     return (
         <div className="space-y-4">
-            <div className="flex justify-end gap-2">
-                <button
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors"
-                    onClick={() => {
-                        const blank = {
-                            id: "product-" + Math.random().toString(36).slice(2, 8),
-                            name_es: "",
-                            name_en: "",
-                            description_es: "",
-                            description_en: "",
-                            photos: "",
-                            video: "",
-                            technical_sheet_es: "",
-                            technical_sheet_en: "",
-                            tag_es: "",
-                            tag_en: "",
-                            order: (rows?.filter((x) => !x.archived).length || 0) + 1,
-                            archived: false,
-                        };
-                        setEditing(blank);
-                        setModalMode("create");
-                        setShowForm(true);
-                    }}
-                >
-                    <Plus className="w-4 h-4" /> Nuevo Producto
-                </button>
-                <button
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors"
-                    title="Restaurar productos desde respaldo"
-                    onClick={async () => {
-                        // Logic simplified for brevity, assume similar to AdminApp
-                        try {
-                            const b = await fetchJson("/api/products/backups");
-                            const files = Array.isArray(b?.files) ? b.files : [];
-                            if (files.length) {
-                                const latest = files[0];
-                                const r = await fetchJson(
-                                    `/api/products/restore?file=${encodeURIComponent(latest)}`,
-                                    { method: "POST" }
-                                );
-                                if (r?.ok) {
-                                    loadProducts();
-                                    alert("Productos restaurados desde respaldo: " + latest);
-                                    return;
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por nombre o ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 border rounded-lg w-full sm:w-64 focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                    />
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                    >
+                        <option value="all">Todos los estados</option>
+                        <option value="active">Solo Activos</option>
+                        <option value="archived">Archivados</option>
+                    </select>
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                    >
+                        <option value="all">Todas las categorías</option>
+                        {uniqueCategories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
+                        onClick={() => {
+                            const blank = {
+                                id: "product-" + Math.random().toString(36).slice(2, 8),
+                                name_es: "",
+                                name_en: "",
+                                description_es: "",
+                                description_en: "",
+                                photos: "",
+                                video: "",
+                                technical_sheet_es: "",
+                                technical_sheet_en: "",
+                                tag_es: "",
+                                tag_en: "",
+                                order: (rows?.filter((x) => !x.archived).length || 0) + 1,
+                                archived: false,
+                            };
+                            setEditing(blank);
+                            setModalMode("create");
+                            setShowForm(true);
+                        }}
+                    >
+                        <Plus className="w-4 h-4" /> Nuevo Producto
+                    </button>
+                    <button
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
+                        title="Restaurar productos desde respaldo"
+                        onClick={async () => {
+                            // Logic simplified for brevity, assume similar to AdminApp
+                            try {
+                                const b = await fetchJson("/api/products/backups");
+                                const files = Array.isArray(b?.files) ? b.files : [];
+                                if (files.length) {
+                                    const latest = files[0];
+                                    const r = await fetchJson(
+                                        `/api/products/restore?file=${encodeURIComponent(latest)}`,
+                                        { method: "POST" }
+                                    );
+                                    if (r?.ok) {
+                                        loadProducts();
+                                        alert("Productos restaurados desde respaldo: " + latest);
+                                        return;
+                                    }
                                 }
-                            }
-                            const cached = localStorage.getItem("admin_products");
-                            if (cached) {
-                                const data = JSON.parse(cached);
-                                if (Array.isArray(data) && data.length) {
-                                    setRows(data);
-                                    await persistRows(data, "restore from local cache");
-                                    alert("Productos restaurados desde caché local");
-                                    return;
+                                const cached = localStorage.getItem("admin_products");
+                                if (cached) {
+                                    const data = JSON.parse(cached);
+                                    if (Array.isArray(data) && data.length) {
+                                        setRows(data);
+                                        await persistRows(data, "restore from local cache");
+                                        alert("Productos restaurados desde caché local");
+                                        return;
+                                    }
                                 }
+                                alert("No se encontraron respaldos disponibles");
+                            } catch (e) {
+                                alert("Error restaurando: " + (e?.message || e));
                             }
-                            alert("No se encontraron respaldos disponibles");
-                        } catch (e) {
-                            alert("Error restaurando: " + (e?.message || e));
-                        }
-                    }}
-                >
-                    Restaurar
-                </button>
+                        }}
+                    >
+                        Restaurar
+                    </button>
+                </div>
             </div>
 
             <ProductsTable
-                products={[...rows].sort((a, b) => {
-                    if (!!a.archived && !b.archived) return 1;
-                    if (!a.archived && !!b.archived) return -1;
-                    const ao = typeof a.order === "number" ? a.order : 999;
-                    const bo = typeof b.order === "number" ? b.order : 999;
-                    return ao - bo;
+                products={[...filteredRows].sort((a, b) => {
+                    if (a.archived === b.archived) return (a.order || 999) - (b.order || 999);
+                    return a.archived ? 1 : -1;
                 })}
                 onView={(row) => {
                     setEditing(row);
@@ -240,6 +303,22 @@ export default function ProductsView() {
                             const { db } = await import("../../../config/firebase");
 
                             await deleteDoc(doc(db, "products", product.id));
+
+                            // Eliminar archivos de Supabase
+                            const filesToDelete = [];
+                            if (product.photos) filesToDelete.push(product.photos);
+                            if (product.technical_sheet_es) filesToDelete.push(product.technical_sheet_es);
+                            if (product.technical_sheet_en) filesToDelete.push(product.technical_sheet_en);
+                            if (Array.isArray(product.gallery)) {
+                                product.gallery.forEach(url => {
+                                    if (url) filesToDelete.push(url);
+                                });
+                            }
+
+                            // Ejecutar las eliminaciones sin bloquear la UI principal
+                            Promise.allSettled(
+                                filesToDelete.map(url => deleteFileFromSupabase(url))
+                            ).catch(e => console.error("Error eliminando archivos de Supabase:", e));
 
                             const nextRows = rows.filter(r => r.id !== product.id);
                             const normalized = normalizeOrder(nextRows);

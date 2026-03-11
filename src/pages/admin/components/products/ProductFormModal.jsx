@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ProductFormComponent from "./ProductFormComponent";
 import DetailIncompleteConfirmModal from "./DetailIncompleteConfirmModal";
-import { useFileUpload } from "../../hooks/useFileUpload";
+
 import { translateText } from "../../hooks/useAutoTranslate";
+import { uploadFileToSupabase, compressImageToWebP } from "../../../../lib/storage";
 
 export default function ProductFormModal({
     open,
@@ -66,6 +67,11 @@ export default function ProductFormModal({
     const [showDetailConfirm, setShowDetailConfirm] = useState(false);
     const [pendingSave, setPendingSave] = useState(null);
     const [translating, setTranslating] = useState(false);
+    // Archivos de imagen pendientes (se suben a Supabase al guardar)
+    const [pendingPhotoFile, setPendingPhotoFile] = useState(null);
+    const [pendingGalleryFiles, setPendingGalleryFiles] = useState([]); // [{blobUrl, file}]
+    // Fichas técnicas pendientes (ES y EN)
+    const [pendingSheetFiles, setPendingSheetFiles] = useState({ es: null, en: null });
 
     // Funciones de actualización planas con sufijos
     function updateFlatField(baseField, val) {
@@ -172,39 +178,7 @@ export default function ProductFormModal({
         return e;
     }
 
-    // Hook mock de upload de archivos
-    const uploadImage = useFileUpload({
-        accept: "image/*",
-        maxSize: 5 * 1024 * 1024,
-        uploadPath: "public/assets/images/products/",
-        onSuccess: (fileUrl) => updateRawField('photos', fileUrl),
-    });
 
-    const uploadGalleryImage = useFileUpload({
-        accept: "image/*",
-        maxSize: 5 * 1024 * 1024,
-        uploadPath: "public/assets/images/products/",
-        onSuccess: (fileUrl) => {
-            setLocal((p) => ({
-                ...p,
-                gallery: [...(p.gallery || []), fileUrl],
-            }));
-        },
-    });
-
-    const uploadDatasheetES = useFileUpload({
-        accept: ".pdf,application/pdf",
-        maxSize: 10 * 1024 * 1024,
-        uploadPath: "public/assets/images/products/pdf/",
-        onSuccess: (fileUrl) => updateRawField('technical_sheet_es', fileUrl),
-    });
-
-    const uploadDatasheetEN = useFileUpload({
-        accept: ".pdf,application/pdf",
-        maxSize: 10 * 1024 * 1024,
-        uploadPath: "public/assets/images/products/pdf/",
-        onSuccess: (fileUrl) => updateRawField('technical_sheet_en', fileUrl),
-    });
 
     async function uploadFromUrl(kind, urlStr) {
         const url = String(urlStr || "").trim();
@@ -267,120 +241,46 @@ export default function ProductFormModal({
                 }
             }
 
-            // ✅ Para imágenes, usar preview local inmediato (como en Research y Team)
+            // 📸 Para imágenes: preview local con Blob URL + guardar File pendiente
             if (kind === "image" || kind === "gallery") {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const dataUrl = event.target.result;
-                    if (kind === "image") {
-                        setLocal((p) => ({ ...p, photos: dataUrl })); // using flat field
-                    } else if (kind === "gallery") {
-                        setLocal((p) => ({
-                            ...p,
-                            gallery: [...(p.gallery || []), dataUrl],
-                        }));
-                    }
-                };
-                reader.readAsDataURL(file);
-                setUploading(false);
-                return; // ✅ No intentar upload async, solo preview local
-            }
-
-            // ✅ Para PDFs (datasheets), sí intentar upload async
-            // 1) Intento multipart
-            let url = "";
-            try {
-                const form = new FormData();
-                form.append("file", file, file.name || `file-${Date.now()}.bin`);
-                form.append("path", `/content/products/${local.id}/`);
-                console.log("[adminx] upload multipart start", {
-                    kind,
-                    name: file?.name,
-                    size: file?.size,
-                    id: local.id,
-                });
-                const res = await fetch("/api/upload", { method: "POST", body: form });
-                const debugHdr = res.headers.get("X-Upload-Debug");
-                const data = await res.json().catch(() => ({}));
-                console.log("[adminx] upload multipart res", {
-                    status: res.status,
-                    ok: res.ok,
-                    debug: debugHdr,
-                    data,
-                });
-                if (res.ok && data?.ok) {
-                    url = data?.url || data?.path || "";
-                } else {
-                    // 2) Fallback JSON base64 (cuando multipart no llega bien)
-                    console.log("[adminx] fallback base64 start", {
-                        kind,
-                        name: file?.name,
-                        size: file?.size,
-                    });
-                    const base64 = await new Promise((resolve, reject) => {
-                        try {
-                            const fr = new FileReader();
-                            fr.onload = () => {
-                                const s = String(fr.result || "");
-                                const i = s.indexOf(",");
-                                resolve(i >= 0 ? s.slice(i + 1) : s);
-                            };
-                            fr.onerror = reject;
-                            fr.readAsDataURL(file);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    });
-                    const res2 = await fetch("/api/upload", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            name: file.name || `file-${Date.now()}.bin`,
-                            path: `/content/products/${local.id}/`,
-                            data: base64,
-                        }),
-                    });
-                    const debugHdr2 = res2.headers.get("X-Upload-Debug");
-                    const data2 = await res2.json().catch(() => ({}));
-                    console.log("[adminx] fallback base64 res", {
-                        status: res2.status,
-                        ok: res2.ok,
-                        debug: debugHdr2,
-                        data: data2,
-                    });
-                    if (!res2.ok || !data2?.ok) {
-                        const msg = data2?.error || `HTTP ${res2.status}`;
-                        throw new Error(msg);
-                    }
-                    url = data2?.url || data2?.path || "";
+                const blobUrl = URL.createObjectURL(file);
+                if (kind === "image") {
+                    setPendingPhotoFile(file);
+                    setLocal((p) => ({ ...p, photos: blobUrl }));
+                } else if (kind === "gallery") {
+                    setPendingGalleryFiles((prev) => [...prev, { blobUrl, file }]);
+                    setLocal((p) => ({
+                        ...p,
+                        gallery: [...(p.gallery || []), blobUrl],
+                    }));
                 }
-            } catch (inner) {
-                // Re-lanza para la alerta superior
-                console.error("[adminx] upload error inner", inner);
-                throw inner;
+                setUploading(false);
+                return;
             }
 
-            if (!url) throw new Error("no_url");
-            // ✅ Solo asignar URLs para datasheets (PDFs), no para imágenes
-            if (kind === "datasheet-es")
+            // 📄 Para PDFs (datasheets): preview blob URL + guardar File pendiente
+            if (kind === "datasheet-es" || kind === "datasheet-en") {
+                const lang = kind === "datasheet-es" ? "es" : "en";
+                const blobUrl = URL.createObjectURL(file);
+                // Guardamos el File para subirlo al guardar
+                setPendingSheetFiles((prev) => ({ ...prev, [lang]: { file, blobUrl } }));
+                // Preview local: el campo technical_sheet_{lang} muestra el nombre del archivo
                 setLocal((p) => ({
                     ...p,
-                    technicalSheets: { ...(p.technicalSheets || {}), es: url },
+                    [`technical_sheet_${lang}`]: blobUrl,
+                    [`_sheetName_${lang}`]: file.name,
                 }));
-            if (kind === "datasheet-en")
-                setLocal((p) => ({
-                    ...p,
-                    technicalSheets: { ...(p.technicalSheets || {}), en: url },
-                }));
-        } catch (e) {
-            // ✅ Solo mostrar alert si es datasheet, imágenes ya tienen preview
-            if (kind.startsWith("datasheet")) {
-                alert(
-                    `No se pudo subir el archivo (${kind}).\nDetalle: ${e?.message || e
-                    }\n\nConsejos:\n- Evita URLs 'blob:' (no se pueden importar).\n- Usa el botón Importar URL con un enlace https público, o descarga el archivo y súbelo.\n- Asegúrate de tener vercel dev corriendo (puerto :3000) y variables GITHUB_* válidas.`
-                );
+                setUploading(false);
+                return;
             }
-            console.error("[adminx] uploadFile error", e);
+
+            // Tipo de archivo no manejado
+            console.warn('[uploadFile] kind no soportado:', kind);
+        } catch (e) {
+            if (kind?.startsWith('datasheet')) {
+                alert(`No se pudo preparar el PDF (${kind}).\n${e?.message || e}`);
+            }
+            console.error('[ProductFormModal] uploadFile error', e);
         } finally {
             setUploading(false);
         }
@@ -390,39 +290,14 @@ export default function ProductFormModal({
         e.preventDefault();
         if (isView) return;
 
-        // 🔥 Usar hooks de upload según el tipo de archivo
-        if (kind === "image") {
-            return uploadImage.dropFile(e);
-        }
-        if (kind === "gallery") {
-            return uploadGalleryImage.dropFile(e);
-        }
-        if (kind === "datasheet-es") {
-            return uploadDatasheetES.dropFile(e);
-        }
-        if (kind === "datasheet-en") {
-            return uploadDatasheetEN.dropFile(e);
-        }
+        const files = Array.from(e.dataTransfer?.files || []);
+        if (!files.length) return;
 
-        // Fallback: Intentar URL si no hay archivo
-        try {
-            const items = e.dataTransfer?.items;
-            if (items && items.length) {
-                for (const it of items) {
-                    if (it.kind === "string") {
-                        const type = it.type || "text/plain";
-                        if (type === "text/uri-list" || type === "text/plain") {
-                            it.getAsString((text) => {
-                                const u = String(text || "").trim();
-                                console.log("[adminx] drop url", { kind, u });
-                                if (u) uploadFromUrl(kind, u);
-                            });
-                            return;
-                        }
-                    }
-                }
-            }
-        } catch { }
+        if (kind === "gallery") {
+            files.forEach((file) => uploadFile("gallery", file));
+        } else {
+            uploadFile(kind, files[0]);
+        }
     }
 
     function onPick(kind) {
@@ -430,29 +305,29 @@ export default function ProductFormModal({
         const inp = document.createElement("input");
         inp.type = "file";
 
-        // 🔥 Configurar según el tipo de archivo
         if (kind === "image") {
             inp.accept = "image/*";
-            inp.onchange = (ev) => uploadImage.pickFile(ev);
+            inp.onchange = (ev) => {
+                const file = ev.target.files?.[0];
+                if (file) uploadFile("image", file);
+            };
         } else if (kind === "gallery") {
             inp.accept = "image/*";
             inp.multiple = true;
             inp.onchange = (ev) => {
-                // Para múltiples imágenes, procesar una por una
-                const files = Array.from(ev.target.files || []);
-                files.forEach((file) => uploadGalleryImage.handleFile(file));
+                Array.from(ev.target.files || []).forEach((file) => uploadFile("gallery", file));
             };
         } else if (kind === "datasheet-es") {
             inp.accept = ".pdf,application/pdf";
-            inp.onchange = (ev) => uploadDatasheetES.pickFile(ev);
-        } else if (kind === "datasheet-en") {
-            inp.accept = ".pdf,application/pdf";
-            inp.onchange = (ev) => uploadDatasheetEN.pickFile(ev);
-        } else {
-            inp.accept = ".pdf,.doc,.docx";
             inp.onchange = (ev) => {
                 const file = ev.target.files?.[0];
-                if (file) uploadFile(kind, file);
+                if (file) uploadFile("datasheet-es", file);
+            };
+        } else if (kind === "datasheet-en") {
+            inp.accept = ".pdf,application/pdf";
+            inp.onchange = (ev) => {
+                const file = ev.target.files?.[0];
+                if (file) uploadFile("datasheet-en", file);
             };
         }
 
@@ -505,7 +380,7 @@ export default function ProductFormModal({
         onSave?.(finalData);
     }
 
-    const handleSaveWrapper = () => {
+    const handleSaveWrapper = async () => {
         const err = validateCard();
         if (Object.keys(err).length > 0) {
             const errorMsg = Object.values(err).join("\n- ");
@@ -513,12 +388,84 @@ export default function ProductFormModal({
             return;
         }
 
-        let finalData = { ...local };
-        if (isCreate && finalData.name_es) {
-            const slug = generateSlug(finalData.name_es);
-            if (slug) finalData.slug = `${slug}-${local.id.slice(-4)}`;
+        setUploading(true);
+        try {
+            let finalData = { ...local };
+
+            // 🚀 Subir imagen principal a Supabase (con conversión WebP)
+            if (pendingPhotoFile) {
+                try {
+                    const webpFile = await compressImageToWebP(pendingPhotoFile);
+                    const url = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/products/images');
+                    finalData.photos = url;
+                } catch (e) {
+                    console.error('Error subiendo imagen principal:', e);
+                    alert('Error subiendo la imagen. Verifica las políticas RLS del bucket en Supabase.');
+                    return;
+                }
+            }
+
+            // 🚀 Subir imágenes de galeria a Supabase
+            if (pendingGalleryFiles.length > 0) {
+                const uploadedGallery = [];
+                for (const { blobUrl, file } of pendingGalleryFiles) {
+                    try {
+                        const webpFile = await compressImageToWebP(file);
+                        const url = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/products/gallery');
+                        uploadedGallery.push({ blobUrl, url });
+                    } catch (e) {
+                        console.error('Error subiendo imagen de galeria:', e);
+                        uploadedGallery.push({ blobUrl, url: '' });
+                    }
+                }
+                finalData.gallery = (finalData.gallery || []).map((item) => {
+                    const match = uploadedGallery.find((g) => g.blobUrl === item);
+                    return match ? match.url : item;
+                }).filter(Boolean);
+            }
+
+            // 🚀 Subir fichas técnicas PDF a Supabase
+            for (const lang of ['es', 'en']) {
+                const pending = pendingSheetFiles[lang];
+                if (pending?.file) {
+                    try {
+                        const url = await uploadFileToSupabase(pending.file, 'nft-assets', `assets/products/datasheets/${lang}`);
+                        finalData[`technical_sheet_${lang}`] = url;
+                    } catch (e) {
+                        console.error(`Error subiendo ficha técnica ${lang.toUpperCase()}:`, e);
+                        alert(`Error subiendo la ficha técnica ${lang.toUpperCase()}. Verifica las políticas RLS de Supabase.`);
+                        return;
+                    }
+                }
+                // Limpiar campo auxiliar de nombre
+                delete finalData[`_sheetName_${lang}`];
+            }
+
+            // 🛡️ Sanitizar: nunca guardar blob: ni data: en Firestore
+            const isLocal = (v) => typeof v === 'string' && (v.startsWith('blob:') || v.startsWith('data:'));
+            if (isLocal(finalData.photos)) finalData.photos = '';
+            if (isLocal(finalData.technical_sheet_es)) finalData.technical_sheet_es = '';
+            if (isLocal(finalData.technical_sheet_en)) finalData.technical_sheet_en = '';
+            if (Array.isArray(finalData.gallery)) {
+                finalData.gallery = finalData.gallery.filter((u) => !isLocal(u));
+            }
+
+            if (isCreate && finalData.name_es) {
+                const slug = generateSlug(finalData.name_es);
+                if (slug) {
+                    const random4 = Math.floor(1000 + Math.random() * 9000);
+                    finalData.id = `${slug}-${random4}`;
+                    finalData.slug = finalData.id;
+                }
+            }
+
+            onSave?.(finalData);
+            setPendingPhotoFile(null);
+            setPendingGalleryFiles([]);
+            setPendingSheetFiles({ es: null, en: null });
+        } finally {
+            setUploading(false);
         }
-        onSave?.(finalData);
     };
 
     if (!isOpen) return null;

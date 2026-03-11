@@ -21,7 +21,7 @@ const Navbar = () => {
         .sort((a, b) => (a.order || 0) - (b.order || 0))
         .map((p) => ({
           id: p.id,
-          name: p.name?.[language] || p.name?.es || p.name?.en || p.id,
+          name: p[`name_${language}`] || p.name_es || p.name?.[language] || p.name?.es || p.name?.en || p.id,
         }));
       setProductItems(activeProducts);
     }

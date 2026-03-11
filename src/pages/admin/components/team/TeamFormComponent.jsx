@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { FileText, Image as ImageIcon, Briefcase, ListChecks, Link, Upload, X } from "lucide-react";
 
 export default function TeamFormComponent({
@@ -22,6 +22,10 @@ export default function TeamFormComponent({
 
     const getLangVal = (key) => local[key]?.[tab] || "";
     const setLangVal = (key, val) => updateLangField(key, val);
+
+    // States for drag & drop indication
+    const [isDraggingPhoto, setIsDraggingPhoto] = useState(false);
+    const [isDraggingCV, setIsDraggingCV] = useState(false);
 
     // Controladores de habilidades dinámicas
     const getSkills = () => {
@@ -168,11 +172,14 @@ export default function TeamFormComponent({
                             <div
                                 className={`relative rounded-xl border-2 ${invalid.photo
                                     ? "border-red-500"
-                                    : "border-dashed border-gray-300"
-                                    } bg-gray-50 flex items-center justify-center aspect-[4/3] text-gray-500 overflow-hidden ${uploadPhoto?.uploading ? "opacity-50 cursor-wait" : ""
+                                    : isDraggingPhoto ? "border-[#e83d38] bg-red-50" : "border-dashed border-gray-300"
+                                    } bg-gray-50 flex items-center justify-center aspect-[4/3] text-gray-500 overflow-hidden transition-colors ${uploadPhoto?.uploading ? "opacity-50 cursor-wait" : ""
                                     }`}
-                                onDrop={onDropFile}
-                                onDragOver={uploadPhoto?.dragOver}
+                                onDragEnter={(e) => { e.preventDefault(); setIsDraggingPhoto(true); if(uploadPhoto?.dragEnter) uploadPhoto.dragEnter(e); }}
+                                onDragLeave={(e) => { e.preventDefault(); setIsDraggingPhoto(false); if(uploadPhoto?.dragLeave) uploadPhoto.dragLeave(e); }}
+                                onDragOver={(e) => { e.preventDefault(); if(uploadPhoto?.dragOver) uploadPhoto.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
+                                onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingPhoto(false); onDropFile(e); }}
+                                onClick={() => !uploadPhoto?.uploading && !readOnly && fileInputRef.current?.click()}
                             >
                                 {uploadPhoto?.uploading ? (
                                     <div className="flex flex-col items-center gap-2">
@@ -257,11 +264,17 @@ export default function TeamFormComponent({
                                     <FileText className="w-4 h-4 text-gray-500" />
                                     CV (PDF)
                                 </label>
-                                <div className="space-y-2">
+                                <div
+                                    className={`space-y-4 p-4 border-2 border-dashed rounded-xl transition-colors ${isDraggingCV ? 'border-[#e83d38] bg-red-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
+                                    onDragEnter={(e) => { e.preventDefault(); setIsDraggingCV(true); if(uploadCV?.dragEnter) uploadCV.dragEnter(e); }}
+                                    onDragLeave={(e) => { e.preventDefault(); setIsDraggingCV(false); if(uploadCV?.dragLeave) uploadCV.dragLeave(e); }}
+                                    onDragOver={(e) => { e.preventDefault(); if(uploadCV?.dragOver) uploadCV.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
+                                    onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingCV(false); if(!readOnly) uploadCV.dropFile(e); }}
+                                >
                                     <div className="flex items-center gap-2">
                                         <input
                                             className="flex-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
-                                            placeholder="URL del PDF o subir archivo..."
+                                            placeholder="URL del PDF o arrastra archivo aquí..."
                                             value={local.src_cv_pdf || ""}
                                             onChange={(e) => updateField("src_cv_pdf", e.target.value)}
                                             disabled={readOnly}

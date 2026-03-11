@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { fetchJson } from "../../../lib/api";
 import { normalizeTeamMember, normalizeTeamOrder } from "../../../models/team";
+import { deleteFileFromSupabase, uploadFileToSupabase, compressImageToWebP } from "../../../lib/storage";
 import TeamTable from "../components/team/TeamTable";
 import TeamFormModal from "../components/team/TeamFormModal";
 import TeamArchiveConfirmModal from "../components/team/TeamArchiveConfirmModal";
@@ -13,6 +14,10 @@ export default function TeamView() {
     const [modalMode, setModalMode] = useState("view");
     const [confirmRow, setConfirmRow] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+
+    // Filtros
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
 
     useEffect(() => {
         loadTeam();
@@ -32,18 +37,7 @@ export default function TeamView() {
                 // Firestore devuelve el objeto, lo normalizamos
                 setRows(normalizeTeamOrder(data.map(normalizeTeamMember)));
             } else {
-                const r = await fetch("/content/team.json");
-                if (r.ok) {
-                    const raw = await r.json();
-                    const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-                    if (data.length) {
-                        const normalized = normalizeTeamOrder(data.map(normalizeTeamMember));
-                        setRows(normalized);
-                        await persistRows(normalized, "seed team from public content");
-                    }
-                } else {
-                    setRows([]);
-                }
+                setRows([]);
             }
         } catch (error) {
             console.error("Error cargando equipo desde Firestore:", error);
@@ -76,32 +70,79 @@ export default function TeamView() {
         return ao - bo;
     });
 
+    // Filtrar localmente
+    const filteredTeam = tableRows.filter(member => {
+        const matchesSearch = searchTerm === "" ||
+            (member.name?.es?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                member.name?.en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (typeof member.name === 'string' && member.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                member.role?.es?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                member.role?.en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (typeof member.role === 'string' && member.role.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                member.id?.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const matchesStatus = statusFilter === "all" ||
+            (statusFilter === "active" && !member.archived) ||
+            (statusFilter === "archived" && member.archived);
+
+        return matchesSearch && matchesStatus;
+    });
+
     return (
-        <div className="space-y-4">
-            <div className="flex justify-end gap-2">
-                <button
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors"
-                    onClick={() => {
-                        const blank = {
-                            id: "team-" + Math.random().toString(36).slice(2, 8),
-                            name: "",
-                            role: "",
-                            photo: "",
-                            skills: [],
-                            order: (rows?.filter((x) => !x.archived).length || 0) + 1,
-                            archived: false,
-                        };
-                        setEditing(blank);
-                        setModalMode("create");
-                        setShowForm(true);
-                    }}
-                >
-                    <Plus className="w-4 h-4" /> Nuevo Miembro
-                </button>
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <div className="flex flex-col gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">Equipo</h2>
+                    <p className="text-muted-foreground">
+                        Gestiona los miembros del equipo y sus perfiles.
+                    </p>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+                        <input
+                            type="text"
+                            placeholder="Buscar por nombre, cargo o ID..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="px-4 py-2 border rounded-lg w-full sm:w-72 focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                        />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-[#e83d38] focus:border-transparent text-sm"
+                        >
+                            <option value="all">Todos los estados</option>
+                            <option value="active">Solo Activos</option>
+                            <option value="archived">Archivados</option>
+                        </select>
+                    </div>
+                    <div className="flex gap-2 min-w-max">
+                        <button
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#e83d38] hover:bg-red-700 text-white transition-colors text-sm"
+                            onClick={() => {
+                                const blank = {
+                                    id: "team-" + Math.random().toString(36).slice(2, 8),
+                                    name: "",
+                                    role: "",
+                                    photo: "",
+                                    skills: [],
+                                    order: (rows?.filter((x) => !x.archived).length || 0) + 1,
+                                    archived: false,
+                                };
+                                setEditing(blank);
+                                setModalMode("create");
+                                setShowForm(true);
+                            }}
+                        >
+                            <Plus className="w-4 h-4" /> Nuevo Miembro
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <TeamTable
-                team={tableRows}
+                team={filteredTeam}
                 onView={(row) => {
                     setEditing(row);
                     setModalMode("view");
@@ -147,6 +188,15 @@ export default function TeamView() {
                             const { db } = await import("../../../config/firebase");
 
                             await deleteDoc(doc(db, "team", member.id));
+
+                            const filesToDelete = [];
+                            if (member.photo) filesToDelete.push(member.photo);
+                            if (member.image) filesToDelete.push(member.image);
+                            if (member.src_cv_pdf) filesToDelete.push(member.src_cv_pdf);
+
+                            Promise.allSettled(
+                                filesToDelete.map(url => deleteFileFromSupabase(url))
+                            ).catch(e => console.error("Error eliminando archivos de equipo en Supabase:", e));
 
                             const nextRows = rows.filter(r => r.id !== member.id);
                             const normalized = normalizeTeamOrder(nextRows);

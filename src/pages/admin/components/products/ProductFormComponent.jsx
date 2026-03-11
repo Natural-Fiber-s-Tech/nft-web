@@ -111,7 +111,7 @@ const FeatureIconPicker = ({ value, onChange, disabled }) => {
                                             setIsOpen(false);
                                             setSearch("");
                                         }}
-                                        className={`p - 2 flex items - center justify - center rounded - md hover: bg - gray - 100 transition - colors ${value === name ? 'bg-red-50 text-[#e83d38]' : 'text-gray-600'} `}
+                                        className={`p-2 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors ${value === name ? 'bg-red-50 text-[#e83d38]' : 'text-gray-600'} `}
                                         title={name}
                                     >
                                         <IconItem className="w-5 h-5" />
@@ -144,6 +144,10 @@ export default function ProductFormComponent({
     uploading,
 }) {
     const isES = tab === "es";
+    const [isDraggingMain, setIsDraggingMain] = useState(false);
+    const [isDraggingGallery, setIsDraggingGallery] = useState(false);
+    const [isDraggingPDFES, setIsDraggingPDFES] = useState(false);
+    const [isDraggingPDFEN, setIsDraggingPDFEN] = useState(false);
 
     // Helpers globales para hacer binding a los campos con sufijos (name_es, description_en)
     const getVal = (field) => local[`${field}_${tab}`] || "";
@@ -321,9 +325,11 @@ export default function ProductFormComponent({
                         <div className="space-y-3">
                             <label className="text-sm font-medium text-gray-700">Imagen Principal *</label>
                             <div
-                                className={`border - 2 ${invalid.image ? 'border-red-300 bg-red-50' : 'border-dashed border-gray-300'} rounded - xl p - 4 text - center cursor - pointer hover: bg - gray - 50 transition - colors relative overflow - hidden group`}
+                                className={`border-2 border-dashed ${invalid.image ? 'border-red-300 bg-red-50' : isDraggingMain ? 'border-[#e83d38] bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'} rounded-xl p-4 text-center cursor-pointer transition-colors relative overflow-hidden group`}
+                                onDragEnter={(e) => { e.preventDefault(); setIsDraggingMain(true); }}
+                                onDragLeave={(e) => { e.preventDefault(); setIsDraggingMain(false); }}
                                 onDragOver={(e) => e.preventDefault()}
-                                onDrop={(e) => !readOnly && onDrop("image", e)}
+                                onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingMain(false); if(!readOnly) onDrop("image", e); }}
                                 onClick={() => !readOnly && onPick("image")}
                             >
                                 {local.photos ? (
@@ -349,18 +355,6 @@ export default function ProductFormComponent({
                                     </div>
                                 )}
                                 {uploading && <div className="absolute inset-0 bg-white/80 flex items-center justify-center text-sm font-medium text-blue-600">Subiendo...</div>}
-                            </div>
-
-                            <div className="flex gap-2 items-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                <span className="shrink-0 font-medium">URL:</span>
-                                <input
-                                    type="text"
-                                    value={local.photos || ""}
-                                    onChange={(e) => updateRawField('photos', e.target.value)}
-                                    disabled={readOnly}
-                                    className="bg-transparent border-none flex-1 outline-none truncate"
-                                    placeholder="https://..."
-                                />
                             </div>
                         </div>
 
@@ -418,9 +412,11 @@ export default function ProductFormComponent({
                         </div>
 
                         <div
-                            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border border-dashed border-gray-300 rounded-xl bg-gray-50"
+                            className={`grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border-2 border-dashed rounded-xl transition-colors ${isDraggingGallery ? 'border-[#e83d38] bg-red-50' : 'border-gray-300 bg-gray-50'}`}
+                            onDragEnter={(e) => { e.preventDefault(); setIsDraggingGallery(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); setIsDraggingGallery(false); }}
                             onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => !readOnly && onDrop("gallery", e)}
+                            onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingGallery(false); if(!readOnly) onDrop("gallery", e); }}
                         >
                             {(local.gallery || []).map((url, i) => (
                                 <div key={i} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-white shadow-sm">
@@ -450,59 +446,83 @@ export default function ProductFormComponent({
                 </div>
             </div>
 
-            {/* Ficha Técnica (Dependiente del idioma) */}
+
+            {/* Ficha Técnica (Global: ES + EN) */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-gray-500" />
-                        Ficha Técnica / Datasheet ({tab.toUpperCase()})
+                        Ficha Técnica / Datasheet (Global)
                     </h3>
+                    <p className="text-sm text-gray-500 mt-1">Sube el PDF en cada idioma. Se aplican a todos los idiomas.</p>
                 </div>
 
-                <div className="p-6">
-                    <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-700">Archivo PDF Técnico (Opcional)</label>
-                        <div className="flex gap-4 items-center">
-                            <button
-                                type="button"
-                                className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm font-medium text-gray-700 bg-white hover:bg-gray-50 inline-flex items-center gap-2 transition-colors disabled:opacity-50"
-                                onClick={() => !readOnly && onPick(`datasheet-${tab}`)}
-                                disabled={readOnly || uploading}
-                            >
-                                <Upload className="w-4 h-4" />
-                                Subir PDF {tab.toUpperCase()}
-                            </button>
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {['es', 'en'].map((lang) => {
+                        const sheetUrl = local[`technical_sheet_${lang}`] || '';
+                        const sheetName = local[`_sheetName_${lang}`] || '';
+                        const isBlob = sheetUrl.startsWith('blob:');
+                        const isPending = isBlob && sheetName;
+                        return (
+                            <div key={lang} className="space-y-3">
+                                <label className="text-sm font-medium text-gray-700">
+                                    PDF Ficha Técnica — {lang.toUpperCase()}
+                                    <span className="ml-1 text-gray-400 font-normal">(Opcional)</span>
+                                </label>
 
-                            <div
-                                className="flex-1 flex px-3 py-2 border border-gray-200 rounded-lg bg-gray-50"
-                                onDragOver={(e) => e.preventDefault()}
-                                onDrop={(e) => !readOnly && onDrop(`datasheet-${tab}`, e)}
-                            >
-                                <input
-                                    disabled={readOnly}
-                                    value={getVal("technical_sheet") || ""}
-                                    onChange={(e) => setVal("technical_sheet", e.target.value)}
-                                    className="w-full bg-transparent border-none text-sm outline-none font-mono text-gray-600"
-                                    placeholder="Arrastra el PDF aquí o pega la URL..."
-                                />
-                            </div>
-                        </div>
-
-                        {getVal("technical_sheet") && (
-                            <div className="pt-2">
-                                <a
-                                    href={getVal("technical_sheet")}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium w-fit"
+                                {/* Drop zone + button */}
+                                <div
+                                    className={`flex flex-col gap-3 p-4 border-2 border-dashed rounded-xl transition-colors ${(lang === 'es' ? isDraggingPDFES : isDraggingPDFEN) ? 'border-[#e83d38] bg-red-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
+                                    onDragEnter={(e) => { e.preventDefault(); (lang === 'es' ? setIsDraggingPDFES : setIsDraggingPDFEN)(true); }}
+                                    onDragLeave={(e) => { e.preventDefault(); (lang === 'es' ? setIsDraggingPDFES : setIsDraggingPDFEN)(false); }}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => { e.preventDefault(); e.stopPropagation(); (lang === 'es' ? setIsDraggingPDFES : setIsDraggingPDFEN)(false); if(!readOnly) onDrop(`datasheet-${lang}`, e); }}
                                 >
-                                    Ver Archivo PDF Actual
-                                </a>
+                                    <button
+                                        type="button"
+                                        className="self-start px-4 py-2 border border-gray-300 rounded-lg shadow-sm font-medium text-gray-700 bg-white hover:bg-gray-50 inline-flex items-center gap-2 transition-colors disabled:opacity-50"
+                                        onClick={() => !readOnly && onPick(`datasheet-${lang}`)}
+                                        disabled={readOnly || uploading}
+                                    >
+                                        <Upload className="w-4 h-4" />
+                                        {isPending ? 'Cambiar PDF' : `Subir PDF ${lang.toUpperCase()}`}
+                                    </button>
+
+                                    {isPending ? (
+                                        <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-sm">
+                                            <FileText className="w-4 h-4 text-green-600 shrink-0" />
+                                            <span className="text-green-800 font-medium truncate">{sheetName}</span>
+                                            <span className="text-green-600 text-xs shrink-0">(pendiente)</span>
+                                        </div>
+                                    ) : sheetUrl && !isBlob ? (
+                                        <a
+                                            href={sheetUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium w-fit"
+                                        >
+                                            <FileText className="w-4 h-4" />
+                                            Ver PDF actual ({lang.toUpperCase()})
+                                        </a>
+                                    ) : (
+                                        <p className="text-xs text-gray-400 text-center py-1">Arrastra el PDF aquí</p>
+                                    )}
+
+                                    {/* URL manual override */}
+                                    <input
+                                        disabled={readOnly}
+                                        value={isBlob ? '' : sheetUrl}
+                                        onChange={(e) => updateRawField(`technical_sheet_${lang}`, e.target.value)}
+                                        className="w-full bg-white border border-gray-200 text-sm rounded-lg px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#e83d38] font-mono text-gray-600"
+                                        placeholder="O pega la URL del PDF..."
+                                    />
+                                </div>
                             </div>
-                        )}
-                    </div>
+                        );
+                    })}
                 </div>
             </div>
+
 
             {/* Características Principales (Main Features) */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">

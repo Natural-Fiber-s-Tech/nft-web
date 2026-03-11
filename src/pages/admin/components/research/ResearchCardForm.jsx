@@ -48,14 +48,14 @@ export default function ResearchCardForm({
     }));
   };
 
-  const handleProductToggle = (productName) => {
+  const handleProductToggle = (productId) => {
     setFormData((prev) => {
-      const isSelected = prev.products.includes(productName);
+      const isSelected = prev.products.includes(productId);
       return {
         ...prev,
         products: isSelected
-          ? prev.products.filter((p) => p !== productName)
-          : [...prev.products, productName],
+          ? prev.products.filter((p) => p !== productId)
+          : [...prev.products, productId],
       };
     });
   };
@@ -271,7 +271,7 @@ export default function ResearchCardForm({
                 {activeProducts
                   .sort((a, b) => (a.order || 0) - (b.order || 0))
                   .map((product) => {
-                    const productName = product.name?.es || product.name?.en || product.id;
+                    const displayName = product.name_es || product.name?.es || product.name_en || product.name?.en || product.id;
                     return (
                       <label
                         key={product.id}
@@ -279,12 +279,12 @@ export default function ResearchCardForm({
                       >
                         <input
                           type="checkbox"
-                          checked={formData.products.includes(productName)}
-                          onChange={() => handleProductToggle(productName)}
+                          checked={formData.products.includes(product.id) || formData.products.includes(displayName)}
+                          onChange={() => handleProductToggle(product.id)}
                           className="w-4 h-4 text-[#e83d38] bg-white border-gray-300 rounded focus:ring-red-500 flex-shrink-0"
                         />
                         <span className="text-sm text-gray-700 group-hover:text-gray-900 truncate font-medium">
-                          {productName}
+                          {displayName}
                         </span>
                       </label>
                     );

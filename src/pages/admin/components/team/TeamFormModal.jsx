@@ -6,6 +6,7 @@ import { useFileUpload } from "../../hooks/useFileUpload";
 import { messages } from "../../../../config/i18n";
 import ConfirmModal from "../common/ConfirmModal";
 import TeamFormComponent from "./TeamFormComponent";
+import { uploadFileToSupabase, compressImageToWebP } from "../../../../lib/storage";
 
 export default function TeamFormModal({
   open,
@@ -25,6 +26,11 @@ export default function TeamFormModal({
   const [previewMode, setPreviewMode] = useState(
     mode === "view" ? "plain" : "overlay"
   ); // 'overlay' | 'plain'
+  
+  // Pending files to upload on save
+  const [pendingPhotoFile, setPendingPhotoFile] = useState(null);
+  const [pendingCVFile, setPendingCVFile] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Estados para modales de confirmación y alertas
   const [confirmModal, setConfirmModal] = useState({
@@ -74,17 +80,25 @@ export default function TeamFormModal({
   // 🔥 Hook de upload de archivos (DRY pattern)
   const uploadPhoto = useFileUpload({
     accept: "image/*",
+    usePreview: true, // No subir de inmediato
     maxSize: 5 * 1024 * 1024, // 5MB
     uploadPath: "public/assets/images/team/",
-    onSuccess: (fileUrl) => setData((d) => ({ ...d, photo: fileUrl })),
+    onSuccess: (fileUrl, file) => {
+        setPendingPhotoFile(file);
+        setData((d) => ({ ...d, photo: fileUrl }));
+    },
   });
 
   // ✅ Hook para subir CV (PDF)
   const uploadCV = useFileUpload({
     accept: ".pdf",
+    usePreview: true, // No subir de inmediato
     maxSize: 10 * 1024 * 1024, // 10MB
     uploadPath: "public/assets/images/team/cvs/", // ✅ Ruta corregida
-    onSuccess: (fileUrl) => setData((d) => ({ ...d, src_cv_pdf: fileUrl })),
+    onSuccess: (fileUrl, file) => {
+        setPendingCVFile(file);
+        setData((d) => ({ ...d, src_cv_pdf: fileUrl }));
+    },
   });
 
   // 🔥 Hook de auto-traducción DINÁMICO - configuración basada en activeLang (como Products)
@@ -308,44 +322,81 @@ export default function TeamFormModal({
     }
   };
 
-  function submit(e) {
+  async function submit(e) {
     e?.preventDefault?.();
     if (!validate()) return;
 
-    // Obtener skills según el idioma, extrayendo el listado de arreglos filtrado
-    const getSkillsForLang = (lng) => {
-      let arr = [];
-      if (typeof data.skills === "object" && data.skills !== null && !Array.isArray(data.skills)) {
-        arr = data.skills[lng] || [];
-      } else if (Array.isArray(data.skills)) {
-        arr = data.skills;
-      }
-      return arr.filter(s => s && s.trim());
-    };
+    setIsSaving(true);
+    try {
+        let finalData = { ...data };
 
-    const nameES = getI18nVal(data.name, "es");
-    const nameEN = getI18nVal(data.name, "en");
-    const roleES = getI18nVal(data.role, "es");
-    const roleEN = getI18nVal(data.role, "en");
-    const skillsES = getSkillsForLang("es");
-    const skillsEN = getSkillsForLang("en");
+        // 🚀 Subir foto a Supabase
+        if (pendingPhotoFile) {
+            try {
+                const webpFile = await compressImageToWebP(pendingPhotoFile);
+                finalData.photo = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/team');
+            } catch (err) {
+                console.error('Error subiendo foto:', err);
+                showAlert('Error subiendo la imagen de perfil. Revisa las reglas de Storage.', 'error');
+                return;
+            }
+        }
 
-    const payload = {
-      id: data.id || `team-${Math.random().toString(36).slice(2, 8)}`,
-      name: { es: nameES.trim(), en: (nameEN || nameES).trim() },
-      role: { es: roleES.trim(), en: (roleEN || roleES).trim() },
-      photo: (data.photo || data.image || "").trim(),
-      src_cv_pdf: (data.src_cv_pdf || "").trim(), // ✅ Campo correcto
-      link_bio: (data.link_bio || "").trim(),     // ✅ Campo correcto
-      skills: {
-        es: skillsES.length > 0 ? skillsES : skillsEN,
-        en: skillsEN.length > 0 ? skillsEN : skillsES,
-      },
-      order: Number(data.order) || undefined,
-      archived: !!data.archived,
-    };
-    onSave?.(payload);
-    onClose?.();
+        // 🚀 Subir CV a Supabase
+        if (pendingCVFile) {
+            try {
+                finalData.src_cv_pdf = await uploadFileToSupabase(pendingCVFile, 'nft-assets', 'assets/team/cv');
+            } catch (err) {
+                console.error('Error subiendo CV:', err);
+                showAlert('Error subiendo el CV PDF. Revisa las reglas de Storage.', 'error');
+                return;
+            }
+        }
+
+        // 🛡️ Sanitizar: nunca guardar blob: ni data: en Firestore
+        const isLocalUrl = (url) => typeof url === 'string' && (url.startsWith('blob:') || url.startsWith('data:'));
+        if (isLocalUrl(finalData.photo)) finalData.photo = '';
+        if (isLocalUrl(finalData.src_cv_pdf)) finalData.src_cv_pdf = '';
+
+        // Obtener skills según el idioma, extrayendo el listado de arreglos filtrado
+        const getSkillsForLang = (lng) => {
+          let arr = [];
+          if (typeof finalData.skills === "object" && finalData.skills !== null && !Array.isArray(finalData.skills)) {
+            arr = finalData.skills[lng] || [];
+          } else if (Array.isArray(finalData.skills)) {
+            arr = finalData.skills;
+          }
+          return arr.filter(s => s && s.trim());
+        };
+
+        const nameES = getI18nVal(finalData.name, "es");
+        const nameEN = getI18nVal(finalData.name, "en");
+        const roleES = getI18nVal(finalData.role, "es");
+        const roleEN = getI18nVal(finalData.role, "en");
+        const skillsES = getSkillsForLang("es");
+        const skillsEN = getSkillsForLang("en");
+
+        const payload = {
+          id: finalData.id || `team-${Math.random().toString(36).slice(2, 8)}`,
+          name: { es: nameES.trim(), en: (nameEN || nameES).trim() },
+          role: { es: roleES.trim(), en: (roleEN || roleES).trim() },
+          photo: (finalData.photo || finalData.image || "").trim(),
+          src_cv_pdf: (finalData.src_cv_pdf || "").trim(), // ✅ Campo correcto
+          link_bio: (finalData.link_bio || "").trim(),     // ✅ Campo correcto
+          skills: {
+            es: skillsES.length > 0 ? skillsES : skillsEN,
+            en: skillsEN.length > 0 ? skillsEN : skillsES,
+          },
+          order: Number(finalData.order) || undefined,
+          archived: !!finalData.archived,
+        };
+        onSave?.(payload);
+        setPendingPhotoFile(null);
+        setPendingCVFile(null);
+        onClose?.();
+    } finally {
+        setIsSaving(false);
+    }
   }
 
   const Preview = useMemo(() => {
@@ -606,16 +657,16 @@ export default function TeamFormModal({
               <button
                 type="button"
                 onClick={submit}
-                disabled={uploadPhoto?.uploading || uploadCV?.uploading}
-                className={`px-6 py-2.5 font-medium rounded-lg shadow-sm transition-all flex items-center gap-2 ${uploadPhoto?.uploading || uploadCV?.uploading
+                disabled={isSaving || uploadPhoto?.uploading || uploadCV?.uploading}
+                className={`px-6 py-2.5 font-medium rounded-lg shadow-sm transition-all flex items-center gap-2 ${isSaving || uploadPhoto?.uploading || uploadCV?.uploading
                   ? "bg-red-300 text-white cursor-wait"
                   : "bg-[#e83d38] text-white hover:bg-[#d63430] hover:shadow-md"
                   }`}
               >
-                {uploadPhoto?.uploading || uploadCV?.uploading ? (
+                {isSaving || uploadPhoto?.uploading || uploadCV?.uploading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                    Subiendo archivo...
+                    {isSaving ? "Guardando..." : "Subiendo archivo..."}
                   </>
                 ) : (
                   <>

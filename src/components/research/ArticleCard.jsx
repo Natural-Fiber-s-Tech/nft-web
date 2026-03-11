@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useProducts } from "../../context/hooks/useProducts";
 
 /**
  * Componente reutilizable para mostrar una tarjeta de artículo de investigación
@@ -12,6 +13,7 @@ import { useLanguage } from "../../context/hooks/useLanguage";
 const ArticleCard = ({ article, isPreview = false }) => {
   const [imageError, setImageError] = useState(false);
   const { t, language } = useLanguage();
+  const { products } = useProducts();
 
   const formatDate = (dateString) => {
     try {
@@ -135,14 +137,21 @@ const ArticleCard = ({ article, isPreview = false }) => {
                 {t("research.landing.relatedProducts")}
               </p>
               <div className="flex flex-wrap gap-1">
-                {article.products.slice(0, 2).map((product, index) => (
-                  <span
-                    key={index}
-                    className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded"
-                  >
-                    {product}
-                  </span>
-                ))}
+                {article.products.slice(0, 2).map((prodId, index) => {
+                  const productObj = products.find(p => p.id === prodId || p.name_es === prodId);
+                  const displayName = productObj 
+                    ? (language === 'en' ? (productObj.name_en || productObj.name_es) : (productObj.name_es || productObj.name_en))
+                    : prodId;
+
+                  return (
+                    <span
+                      key={index}
+                      className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded"
+                    >
+                      {displayName}
+                    </span>
+                  );
+                })}
                 {article.products.length > 2 && (
                   <span className="text-xs text-gray-400">
                     {t("research.landing.moreCount", {
