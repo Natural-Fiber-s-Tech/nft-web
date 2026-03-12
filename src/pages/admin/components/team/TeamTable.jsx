@@ -39,8 +39,14 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
 
   const getStickyStyle = (key) => {
     if (isMobile || showAllColumns) return {};
-    if (key === "actions") return { position: 'sticky', right: 0, zIndex: 20, background: 'white', boxShadow: '-4px 0 8px -4px rgba(0,0,0,0.1)' };
+    if (key === "actions") return { position: 'sticky', right: 0, zIndex: 20, boxShadow: '-4px 0 8px -4px rgba(0,0,0,0.1)' };
     return {};
+  };
+
+  const getStickyClass = (key) => {
+    if (isMobile || showAllColumns) return "";
+    if (key === "actions") return "sticky-actions-cell";
+    return "";
   };
 
   // Determine the top 3 items for highlighting (only active non-archived items contribute to rank)
@@ -61,8 +67,7 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
                 <th
                   key={col.key}
                   ref={getHeaderRef(col.key)}
-                  className={`h-10 px-4 align-middle font-medium text-gray-500 text-xs uppercase tracking-wider relative group ${!isColumnVisible(col.key) ? "hidden" : ""
-                    }`}
+                  className={`h-10 px-4 align-middle font-medium text-gray-500 text-xs uppercase tracking-wider relative group ${getStickyClass(col.key)} ${!isColumnVisible(col.key) ? "hidden" : ""}`}
                   style={{
                     width: columnWidths[col.key] || "auto",
                     ...getStickyStyle(col.key)
@@ -182,7 +187,7 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
                   </td>
 
                   <td
-                    className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
+                    className={`p-4 align-middle text-center ${getStickyClass("actions")} ${!isColumnVisible("actions") ? "hidden" : ""}`}
                     style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
                   >
                     <div className="flex items-center justify-center gap-1">

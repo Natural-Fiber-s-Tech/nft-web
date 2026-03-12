@@ -124,7 +124,13 @@ body {
   background-color: var(--surface);
 }
 
-.app-theme .bg-gray-50 {
+.app-theme.dark .bg-gray-50\/75,
+.app-theme.dark .bg-white\/50 {
+  background-color: rgba(18, 19, 22, 0.75) !important;
+}
+
+.app-theme .bg-gray-50,
+.app-theme .bg-gray-100 {
   background-color: var(--surface) !important;
 }
 
@@ -132,26 +138,25 @@ body {
   background-color: var(--border) !important;
 }
 
-.app-theme .text-gray-900 {
+.app-theme .text-gray-900,
+.app-theme .text-gray-800 {
   color: var(--text) !important;
 }
 
-.app-theme .text-gray-700 {
+.app-theme .text-gray-700,
+.app-theme .text-gray-600,
+.app-theme .text-gray-500,
+.app-theme .text-gray-400 {
   color: var(--muted) !important;
 }
 
-.app-theme .text-gray-600 {
-  color: var(--muted) !important;
-}
-
-.app-theme .text-gray-500 {
-  color: var(--muted) !important;
-}
-
-.app-theme .border-gray-200 {
+.app-theme .border-gray-100,
+.app-theme .border-gray-200,
+.app-theme .border-gray-300 {
   border-color: var(--border) !important;
 }
 
+.app-theme .shadow-sm,
 .app-theme .shadow-md,
 .app-theme .shadow-lg,
 .app-theme .shadow-xl,
@@ -175,11 +180,41 @@ body {
   color: var(--primary) !important;
 }
 
+.app-theme.dark .bg-red-50 {
+  background-color: rgba(240, 82, 82, 0.1) !important;
+}
+
+.app-theme.dark .hover\:bg-red-50:hover {
+  background-color: rgba(240, 82, 82, 0.15) !important;
+}
+
+.app-theme.dark .hover\:bg-blue-50:hover {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.app-theme.dark .hover\:bg-amber-50:hover {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.app-theme.dark .bg-amber-50\/40 {
+  background-color: rgba(245, 158, 11, 0.05) !important;
+}
+
+.app-theme.dark .border-amber-100 {
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+.app-theme.dark .hover\:bg-green-50:hover {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+.app-theme .hover\:bg-gray-50:hover,
+.app-theme .hover\:bg-gray-100:hover,
 .app-theme .hover\:bg-gray-200:hover {
   background-color: var(--border) !important;
 }
 
-.app-theme .hover\:bg-gray-100:hover {
+.app-theme.dark .hover\:bg-gray-50\/75:hover {
   background-color: var(--border) !important;
 }
 
@@ -201,9 +236,38 @@ body {
       rgba(255, 255, 255, 0.04),
       rgba(255, 255, 255, 0.02)),
     var(--glass-bg) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid var(--glass-border);
+}
+
+/* Sticky Actions Column Background Matchers */
+.app-theme th.sticky-actions-cell,
+.app-theme td.sticky-actions-cell {
+  background-color: var(--surface) !important;
+}
+
+.app-theme tr:hover td.sticky-actions-cell {
+  background-color: var(--border) !important;
+}
+
+.app-theme tr.bg-amber-50\/40 td.sticky-actions-cell {
+  background-color: rgba(245, 158, 11, 0.05) !important;
+}
+
+.app-theme:not(.dark) tr.bg-amber-50\/40 td.sticky-actions-cell {
+  background-color: rgba(255, 251, 235, 1) !important; /* Tailwind amber-50 approximate */
+}
+
+/* Admin Table Text Truncation and Fixed Layout */
+.app-theme table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.app-theme table th,
+.app-theme table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-theme .menu-panel {

@@ -58,26 +58,18 @@ export default function ServicesTable({
 
   const isSticky = (key) => key === "status" || key === "actions";
 
-  const getStickyClass = (key) => {
-    if (!isSticky(key) || isMobile || showAllColumns) return "";
-    if (key === "actions") return "sticky right-0 z-20 bg-white shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]";
-    if (key === "status") return "sticky right-[80px] z-10 bg-white shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]"; // Approximation, JS doesn't calc 'right' value for us here seamlessly, might need dynamic style or just assume width.
-    // Actually, sticky positioning with multiple columns requires knowing the width of the following sticky column.
-    // 'actions' is last, so right-0. 'status' is before actions.
-    // If 'actions' width is dynamic, pure CSS sticky 'right' for 'status' is hard without calc().
-    // For simplicity, let's only stick 'actions' or manage 'status' with a fixed width or specific logic.
-    // The previous CSS didn't seem to sticky 'status' properly unless it had a known right.
-    return "";
-  };
-
   // Revised sticky logic: Only sticky 'actions' col for simplicity, or hardcode status width if fixed.
   // Actions is usually fixed width.
   const getStickyStyle = (key) => {
     if (!isSticky(key) || isMobile || showAllColumns) return {};
-    if (key === "actions") return { position: 'sticky', right: 0, zIndex: 20, background: 'white', boxShadow: '-4px 0 8px -4px rgba(0,0,0,0.1)' };
-    // Status sticky is tricky without fixed widths. Let's stick only actions for now to avoid layout bugs.
-    // If we really want status keys, we'd need to compute the width of actions column.
+    if (key === "actions") return { position: 'sticky', right: 0, zIndex: 20, boxShadow: '-4px 0 8px -4px rgba(0,0,0,0.1)' };
     return {};
+  };
+
+  const getStickyClass = (key) => {
+    if (!isSticky(key) || isMobile || showAllColumns) return "";
+    if (key === "actions") return "sticky-actions-cell";
+    return "";
   };
 
 
@@ -95,8 +87,7 @@ export default function ServicesTable({
                 <th
                   key={col.key}
                   ref={getHeaderRef(col.key)}
-                  className={`h-10 px-4 align-middle font-medium text-gray-500 text-xs uppercase tracking-wider relative group ${!isColumnVisible(col.key) ? "hidden" : ""
-                    }`}
+                  className={`h-10 px-4 align-middle font-medium text-gray-500 text-xs uppercase tracking-wider relative group ${getStickyClass(col.key)} ${!isColumnVisible(col.key) ? "hidden" : ""}`}
                   style={{
                     width: columnWidths[col.key] || "auto",
                     ...getStickyStyle(col.key)
@@ -221,9 +212,8 @@ export default function ServicesTable({
                       </Badge>
                     </td>
 
-                    {/* Acciones */}
                     <td
-                      className={`p-4 align-middle text-center ${!isColumnVisible("actions") ? "hidden" : ""}`}
+                      className={`p-4 align-middle text-center ${getStickyClass("actions")} ${!isColumnVisible("actions") ? "hidden" : ""}`}
                       style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
                     >
                       <div className="flex items-center justify-center gap-1">
