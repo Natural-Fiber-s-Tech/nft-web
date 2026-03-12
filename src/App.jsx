@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { AppProviders } from "./context/AppProviders";
 import Navbar from "./components/layout/Navbar";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 
 // ========================================
 // ✅ WEB PÚBLICA - Carga inmediata
@@ -40,6 +40,9 @@ const LoadingScreen = () => (
 );
 
 const App = () => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.includes('adminx');
+
   return (
     <ErrorBoundary>
       <AppProviders>
@@ -160,11 +163,12 @@ const App = () => {
             />
           </Routes>
           <Footer />
-          <div className="fixed bottom-5 right-5 z-40 flex flex-row gap-4 items-end  ">
-            <WhatsAppButton />
-            <FAQChatbot />
-
-          </div>
+          {!isAdminRoute && (
+            <div className="fixed bottom-5 right-5 z-40 flex flex-row gap-4 items-end">
+              <WhatsAppButton />
+              <FAQChatbot />
+            </div>
+          )}
         </div>
       </AppProviders>
     </ErrorBoundary>
