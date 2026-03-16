@@ -26,7 +26,7 @@ export default function TeamFormModal({
   const [previewMode, setPreviewMode] = useState(
     mode === "view" ? "plain" : "overlay"
   ); // 'overlay' | 'plain'
-  
+
   // Pending files to upload on save
   const [pendingPhotoFile, setPendingPhotoFile] = useState(null);
   const [pendingCVFile, setPendingCVFile] = useState(null);
@@ -84,8 +84,8 @@ export default function TeamFormModal({
     maxSize: 5 * 1024 * 1024, // 5MB
     uploadPath: "public/assets/images/team/",
     onSuccess: (fileUrl, file) => {
-        setPendingPhotoFile(file);
-        setData((d) => ({ ...d, photo: fileUrl }));
+      setPendingPhotoFile(file);
+      setData((d) => ({ ...d, photo: fileUrl }));
     },
   });
 
@@ -96,8 +96,8 @@ export default function TeamFormModal({
     maxSize: 10 * 1024 * 1024, // 10MB
     uploadPath: "public/assets/images/team/cvs/", // ✅ Ruta corregida
     onSuccess: (fileUrl, file) => {
-        setPendingCVFile(file);
-        setData((d) => ({ ...d, src_cv_pdf: fileUrl }));
+      setPendingCVFile(file);
+      setData((d) => ({ ...d, src_cv_pdf: fileUrl }));
     },
   });
 
@@ -328,74 +328,74 @@ export default function TeamFormModal({
 
     setIsSaving(true);
     try {
-        let finalData = { ...data };
+      let finalData = { ...data };
 
-        // 🚀 Subir foto a Supabase
-        if (pendingPhotoFile) {
-            try {
-                const webpFile = await compressImageToWebP(pendingPhotoFile);
-                finalData.photo = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/team');
-            } catch (err) {
-                console.error('Error subiendo foto:', err);
-                showAlert('Error subiendo la imagen de perfil. Revisa las reglas de Storage.', 'error');
-                return;
-            }
+      // 🚀 Subir foto a Supabase
+      if (pendingPhotoFile) {
+        try {
+          const webpFile = await compressImageToWebP(pendingPhotoFile);
+          finalData.photo = await uploadFileToSupabase(webpFile, 'nft-assets', 'assets/images/team');
+        } catch (err) {
+          console.error('Error subiendo foto:', err);
+          showAlert('Error subiendo la imagen de perfil. Revisa las reglas de Storage.', 'error');
+          return;
         }
+      }
 
-        // 🚀 Subir CV a Supabase
-        if (pendingCVFile) {
-            try {
-                finalData.src_cv_pdf = await uploadFileToSupabase(pendingCVFile, 'nft-assets', 'assets/team/cv');
-            } catch (err) {
-                console.error('Error subiendo CV:', err);
-                showAlert('Error subiendo el CV PDF. Revisa las reglas de Storage.', 'error');
-                return;
-            }
+      // 🚀 Subir CV a Supabase
+      if (pendingCVFile) {
+        try {
+          finalData.src_cv_pdf = await uploadFileToSupabase(pendingCVFile, 'nft-assets', 'assets/team/cv');
+        } catch (err) {
+          console.error('Error subiendo CV:', err);
+          showAlert('Error subiendo el CV PDF. Revisa las reglas de Storage.', 'error');
+          return;
         }
+      }
 
-        // 🛡️ Sanitizar: nunca guardar blob: ni data: en Firestore
-        const isLocalUrl = (url) => typeof url === 'string' && (url.startsWith('blob:') || url.startsWith('data:'));
-        if (isLocalUrl(finalData.photo)) finalData.photo = '';
-        if (isLocalUrl(finalData.src_cv_pdf)) finalData.src_cv_pdf = '';
+      // 🛡️ Sanitizar: nunca guardar blob: ni data: en Firestore
+      const isLocalUrl = (url) => typeof url === 'string' && (url.startsWith('blob:') || url.startsWith('data:'));
+      if (isLocalUrl(finalData.photo)) finalData.photo = '';
+      if (isLocalUrl(finalData.src_cv_pdf)) finalData.src_cv_pdf = '';
 
-        // Obtener skills según el idioma, extrayendo el listado de arreglos filtrado
-        const getSkillsForLang = (lng) => {
-          let arr = [];
-          if (typeof finalData.skills === "object" && finalData.skills !== null && !Array.isArray(finalData.skills)) {
-            arr = finalData.skills[lng] || [];
-          } else if (Array.isArray(finalData.skills)) {
-            arr = finalData.skills;
-          }
-          return arr.filter(s => s && s.trim());
-        };
+      // Obtener skills según el idioma, extrayendo el listado de arreglos filtrado
+      const getSkillsForLang = (lng) => {
+        let arr = [];
+        if (typeof finalData.skills === "object" && finalData.skills !== null && !Array.isArray(finalData.skills)) {
+          arr = finalData.skills[lng] || [];
+        } else if (Array.isArray(finalData.skills)) {
+          arr = finalData.skills;
+        }
+        return arr.filter(s => s && s.trim());
+      };
 
-        const nameES = getI18nVal(finalData.name, "es");
-        const nameEN = getI18nVal(finalData.name, "en");
-        const roleES = getI18nVal(finalData.role, "es");
-        const roleEN = getI18nVal(finalData.role, "en");
-        const skillsES = getSkillsForLang("es");
-        const skillsEN = getSkillsForLang("en");
+      const nameES = getI18nVal(finalData.name, "es");
+      const nameEN = getI18nVal(finalData.name, "en");
+      const roleES = getI18nVal(finalData.role, "es");
+      const roleEN = getI18nVal(finalData.role, "en");
+      const skillsES = getSkillsForLang("es");
+      const skillsEN = getSkillsForLang("en");
 
-        const payload = {
-          id: finalData.id || `team-${Math.random().toString(36).slice(2, 8)}`,
-          name: { es: nameES.trim(), en: (nameEN || nameES).trim() },
-          role: { es: roleES.trim(), en: (roleEN || roleES).trim() },
-          photo: (finalData.photo || finalData.image || "").trim(),
-          src_cv_pdf: (finalData.src_cv_pdf || "").trim(), // ✅ Campo correcto
-          link_bio: (finalData.link_bio || "").trim(),     // ✅ Campo correcto
-          skills: {
-            es: skillsES.length > 0 ? skillsES : skillsEN,
-            en: skillsEN.length > 0 ? skillsEN : skillsES,
-          },
-          order: Number(finalData.order) || undefined,
-          archived: !!finalData.archived,
-        };
-        onSave?.(payload);
-        setPendingPhotoFile(null);
-        setPendingCVFile(null);
-        onClose?.();
+      const payload = {
+        id: finalData.id || `team-${Math.random().toString(36).slice(2, 8)}`,
+        name: { es: nameES.trim(), en: (nameEN || nameES).trim() },
+        role: { es: roleES.trim(), en: (roleEN || roleES).trim() },
+        photo: (finalData.photo || finalData.image || "").trim(),
+        src_cv_pdf: (finalData.src_cv_pdf || "").trim(), // ✅ Campo correcto
+        link_bio: (finalData.link_bio || "").trim(),     // ✅ Campo correcto
+        skills: {
+          es: skillsES.length > 0 ? skillsES : skillsEN,
+          en: skillsEN.length > 0 ? skillsEN : skillsES,
+        },
+        order: Number(finalData.order) || undefined,
+        archived: !!finalData.archived,
+      };
+      onSave?.(payload);
+      setPendingPhotoFile(null);
+      setPendingCVFile(null);
+      onClose?.();
     } finally {
-        setIsSaving(false);
+      setIsSaving(false);
     }
   }
 
@@ -411,25 +411,20 @@ export default function TeamFormModal({
     );
 
     // Construir objeto de skills bilingüe desde el array persistente
-    let skillsObj = {};
 
-    if (
-      typeof data.skills === "object" &&
-      data.skills !== null &&
-      !Array.isArray(data.skills)
-    ) {
-      // Skills ya están en formato bilingüe
+    // Construir objeto de skills bilingüe de forma segura
+    let skillsObj = { es: [], en: [] };
+
+    if (data?.skills && typeof data.skills === "object" && !Array.isArray(data.skills)) {
+      // Si es un objeto (formato bilingüe), extraemos con validación de array
       skillsObj = {
-        es: (data.skills.es || []).filter(s => s && s.trim()),
-        en: (data.skills.en || []).filter(s => s && s.trim())
+        es: Array.isArray(data.skills.es) ? data.skills.es.filter(s => s && s.trim()) : [],
+        en: Array.isArray(data.skills.en) ? data.skills.en.filter(s => s && s.trim()) : []
       };
     } else if (Array.isArray(data.skills)) {
-      // Skills legacy (array simple) - asignar a ambos idiomas
-      const s = data.skills.filter(s => s && s.trim());
-      skillsObj = { es: s, en: s };
-    } else {
-      // Sin skills
-      skillsObj = { es: [], en: [] };
+      // Soporte para datos antiguos (legacy)
+      const safeSkills = data.skills.filter(s => s && s.trim());
+      skillsObj = { es: safeSkills, en: safeSkills };
     }
 
     // Pasar estructura completa para que TeamMemberCard pueda seleccionar según idioma
@@ -546,11 +541,30 @@ export default function TeamFormModal({
             <TeamFormComponent
               tab={activeLang}
               local={data}
+              // TeamFormModal.jsx - Dentro del render de TeamFormComponent
               updateLangField={(field, value) => {
-                setData(d => ({
-                  ...d,
-                  [field]: setI18nVal(d[field], activeLang, value)
-                }))
+                setData(d => {
+                  // Si estamos actualizando las skills
+                  if (field === "skills" && Array.isArray(value)) {
+                    const currentSkills = (typeof d.skills === 'object' && d.skills !== null && !Array.isArray(d.skills))
+                      ? d.skills
+                      : { es: [], en: [] };
+
+                    // Sincronizamos la estructura:
+                    // Si el nuevo array es más largo o corto, aplicamos el cambio a ambos
+                    const newSkills = {
+                      es: [...value],
+                      en: [...value]
+                    };
+
+                    // Nota: Esto copiará el texto actual. 
+                    // Si quieres que el texto ya existente en el otro idioma no se borre al editar uno,
+                    // la lógica de TeamFormComponent (handleSkillChange) se encargará de la edición fina.
+                    return { ...d, [field]: newSkills };
+                  }
+
+                  return { ...d, [field]: setI18nVal(d[field], activeLang, value) };
+                });
               }}
               updateField={(f, v) => setData(d => ({ ...d, [f]: v }))}
               readOnly={isView}

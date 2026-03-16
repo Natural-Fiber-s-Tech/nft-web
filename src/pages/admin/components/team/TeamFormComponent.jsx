@@ -28,30 +28,72 @@ export default function TeamFormComponent({
     const [isDraggingCV, setIsDraggingCV] = useState(false);
 
     // Controladores de habilidades dinámicas
+    // TeamFormComponent.jsx - Línea 30 aprox.
     const getSkills = () => {
-        if (typeof local.skills === 'object' && local.skills !== null && !Array.isArray(local.skills)) {
-            return local.skills[tab] || [];
+        // 1. Si no existe skills, retornamos array vacío
+        if (!local.skills) return [];
+
+        // 2. Si es el formato bilingüe { es: [], en: [] }
+        if (typeof local.skills === 'object' && !Array.isArray(local.skills)) {
+            const skillsInLang = local.skills[tab];
+            return Array.isArray(skillsInLang) ? skillsInLang : [];
         }
+
+        // 3. Si es un array simple (legacy)
         if (Array.isArray(local.skills)) {
             return local.skills;
         }
+
         return [];
     };
 
+    // TeamFormComponent.jsx
+
     const handleSkillChange = (index, value) => {
-        const updated = [...getSkills()];
-        updated[index] = value;
-        setLangVal("skills", updated);
+        // Obtenemos el objeto completo de skills
+        const currentSkillsObj = (typeof local.skills === 'object' && !Array.isArray(local.skills))
+            ? { ...local.skills }
+            : { es: [], en: [] };
+
+        // Aseguramos que ambos idiomas tengan arrays
+        const es = Array.isArray(currentSkillsObj.es) ? [...currentSkillsObj.es] : [];
+        const en = Array.isArray(currentSkillsObj.en) ? [...currentSkillsObj.en] : [];
+
+        // Actualizamos SOLO el idioma actual en esa posición
+        if (tab === "es") es[index] = value;
+        else en[index] = value;
+
+        // Enviamos el objeto completo al padre
+        updateField("skills", { es, en });
     };
 
     const addSkill = () => {
-        setLangVal("skills", [...getSkills(), ""]);
+        const current = getSkills(); // Usa tu función getSkills segura
+        const updated = [...current, ""];
+
+        // Al añadir, añadimos el espacio en blanco a AMBOS idiomas
+        const currentSkillsObj = (typeof local.skills === 'object' && !Array.isArray(local.skills))
+            ? { ...local.skills }
+            : { es: [], en: [] };
+
+        updateField("skills", {
+            es: [...(currentSkillsObj.es || []), ""],
+            en: [...(currentSkillsObj.en || []), ""]
+        });
     };
 
     const removeSkill = (index) => {
-        const updated = [...getSkills()];
-        updated.splice(index, 1);
-        setLangVal("skills", updated);
+        const currentSkillsObj = (typeof local.skills === 'object' && !Array.isArray(local.skills))
+            ? { ...local.skills }
+            : { es: [], en: [] };
+
+        const es = [...(currentSkillsObj.es || [])];
+        const en = [...(currentSkillsObj.en || [])];
+
+        es.splice(index, 1);
+        en.splice(index, 1);
+
+        updateField("skills", { es, en });
     };
 
     return (
@@ -175,9 +217,9 @@ export default function TeamFormComponent({
                                     : isDraggingPhoto ? "border-[#e83d38] bg-red-50" : "border-dashed border-gray-300"
                                     } bg-gray-50 flex items-center justify-center aspect-[4/3] text-gray-500 overflow-hidden transition-colors ${uploadPhoto?.uploading ? "opacity-50 cursor-wait" : ""
                                     }`}
-                                onDragEnter={(e) => { e.preventDefault(); setIsDraggingPhoto(true); if(uploadPhoto?.dragEnter) uploadPhoto.dragEnter(e); }}
-                                onDragLeave={(e) => { e.preventDefault(); setIsDraggingPhoto(false); if(uploadPhoto?.dragLeave) uploadPhoto.dragLeave(e); }}
-                                onDragOver={(e) => { e.preventDefault(); if(uploadPhoto?.dragOver) uploadPhoto.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
+                                onDragEnter={(e) => { e.preventDefault(); setIsDraggingPhoto(true); if (uploadPhoto?.dragEnter) uploadPhoto.dragEnter(e); }}
+                                onDragLeave={(e) => { e.preventDefault(); setIsDraggingPhoto(false); if (uploadPhoto?.dragLeave) uploadPhoto.dragLeave(e); }}
+                                onDragOver={(e) => { e.preventDefault(); if (uploadPhoto?.dragOver) uploadPhoto.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
                                 onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingPhoto(false); onDropFile(e); }}
                                 onClick={() => !uploadPhoto?.uploading && !readOnly && fileInputRef.current?.click()}
                             >
@@ -266,10 +308,10 @@ export default function TeamFormComponent({
                                 </label>
                                 <div
                                     className={`space-y-4 p-4 border-2 border-dashed rounded-xl transition-colors ${isDraggingCV ? 'border-[#e83d38] bg-red-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
-                                    onDragEnter={(e) => { e.preventDefault(); setIsDraggingCV(true); if(uploadCV?.dragEnter) uploadCV.dragEnter(e); }}
-                                    onDragLeave={(e) => { e.preventDefault(); setIsDraggingCV(false); if(uploadCV?.dragLeave) uploadCV.dragLeave(e); }}
-                                    onDragOver={(e) => { e.preventDefault(); if(uploadCV?.dragOver) uploadCV.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
-                                    onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingCV(false); if(!readOnly) uploadCV.dropFile(e); }}
+                                    onDragEnter={(e) => { e.preventDefault(); setIsDraggingCV(true); if (uploadCV?.dragEnter) uploadCV.dragEnter(e); }}
+                                    onDragLeave={(e) => { e.preventDefault(); setIsDraggingCV(false); if (uploadCV?.dragLeave) uploadCV.dragLeave(e); }}
+                                    onDragOver={(e) => { e.preventDefault(); if (uploadCV?.dragOver) uploadCV.dragOver(e); else e.dataTransfer.dropEffect = "copy"; }}
+                                    onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingCV(false); if (!readOnly) uploadCV.dropFile(e); }}
                                 >
                                     <div className="flex items-center gap-2">
                                         <input
