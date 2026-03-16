@@ -813,7 +813,7 @@ export const messages = {
     },
     footer: {
       brandSmall: "NATURAL FIBER'S TECH",
-      brandDesc: "Centro de I+D en tecnología textil",
+      brandDesc: "Centro de I+D tecnológico",
       brandLong:
         "Diseñamos y desarrollamos tecnología para análisis de fibras, integrando ciencia, ingeniería y experiencia de campo.",
       contact: "Contacto",
@@ -1649,7 +1649,7 @@ export const messages = {
     },
     footer: {
       brandSmall: "NATURAL FIBER'S TECH",
-      brandDesc: "R&D Center in textile technology",
+      brandDesc: "R&D Center in technological innovation",
       brandLong:
         "We design and develop technology for fiber analysis, integrating science, engineering, and field experience.",
       contact: "Contact",
