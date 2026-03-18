@@ -219,8 +219,8 @@ export const messages = {
     products: {
       title: "Nuestros Productos",
       viewAll: "Ver Todos los Productos",
-      brochure: "Descargar Folleto",
-      brochureLong: "Descargar Folleto Empresarial",
+      brochure: "Descargar Catálogo",
+      brochureLong: "Descargar Catálogo Empresarial",
       lead: "Tecnología de vanguardia para análisis de fibras animales, desarrollada con los más altos estándares de precisión e innovación",
       viewDetails: "Ver Detalles",
       cards: {
@@ -1061,8 +1061,8 @@ export const messages = {
     products: {
       title: "Our Products",
       viewAll: "View All Products",
-      brochure: "Download Brochure",
-      brochureLong: "Download Company Brochure",
+      brochure: "Download Catalog",
+      brochureLong: "Download Company Catalog",
       lead: "Cutting-edge technology for animal fiber analysis, developed with the highest standards of precision and innovation",
       viewDetails: "View Details",
       cards: {
