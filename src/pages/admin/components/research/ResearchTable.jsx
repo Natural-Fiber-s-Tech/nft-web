@@ -3,6 +3,22 @@ import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { SortableRowWrapper, DragHandle } from "../common/SortableTable";
 
 export default function ResearchTable({
   research,
@@ -10,6 +26,8 @@ export default function ResearchTable({
   onEdit,
   onArchiveToggle,
   onDelete,
+  onReorder,
+  isDragEnabled = true,
 }) {
   const articles = Array.isArray(research) ? research : [];
   const columns = useMemo(
@@ -74,8 +92,39 @@ export default function ResearchTable({
     }
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = articles.findIndex((x) => x.id === active.id);
+      const newIndex = articles.findIndex((x) => x.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newArray = arrayMove(articles, oldIndex, newIndex);
+        const sorted = newArray.map((item, index) => {
+            return { ...item, order: index + 1 };
+        });
+        onReorder?.(sorted);
+      }
+    }
+  };
+
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={handleDragEnd}
+    >
       <div
         ref={containerRef}
         className={`relative w-full rounded-xl border border-gray-200 shadow-sm bg-white ${isMobile || showAllColumns ? "overflow-x-auto" : "overflow-x-hidden"
@@ -109,12 +158,17 @@ export default function ResearchTable({
               ))}
             </tr>
           </thead>
-          <tbody className="[&_tr:last-child]:border-0">
-            {articles.map((article, index) => (
-              <tr
-                key={article.slug || `article-${index}`}
-                className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
-              >
+          <SortableContext
+            items={articles.map((a) => a.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <tbody className="[&_tr:last-child]:border-0">
+              {articles.map((article, index) => (
+                <SortableRowWrapper
+                  key={article.id || article.slug || `article-${index}`}
+                  id={article.id}
+                  className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
+                >
                 <td
                   className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
                   title={article.slug}
@@ -127,7 +181,18 @@ export default function ResearchTable({
                   className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
                   style={{ width: columnWidths.order || "auto" }}
                 >
-                  {article.archived ? <span className="text-gray-300">-</span> : article.order ?? "-"}
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    {article.archived ? (
+                      <span className="text-gray-300">-</span>
+                    ) : isDragEnabled ? (
+                      <div className="flex items-center gap-2">
+                          <DragHandle />
+                          <span className="text-gray-500 font-medium text-xs">{article.order}</span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-500 font-medium text-xs">{article.order}</span>
+                    )}
+                  </div>
                 </td>
 
                 <td
@@ -214,9 +279,10 @@ export default function ResearchTable({
                     </Button>
                   </div>
                 </td>
-              </tr>
+              </SortableRowWrapper>
             ))}
           </tbody>
+          </SortableContext>
         </table>
       </div>
 
@@ -236,6 +302,6 @@ export default function ResearchTable({
           )}
         </button>
       )}
-    </>
+    </DndContext>
   );
 }

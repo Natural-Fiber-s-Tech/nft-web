@@ -3,8 +3,24 @@ import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { SortableRowWrapper, DragHandle } from "../common/SortableTable";
 
-export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDelete, onOrderChange }) {
+export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDelete, onReorder, isDragEnabled = true }) {
   const columns = useMemo(
     () => [
       { key: "id", label: "ID", priority: "always" },
@@ -53,8 +69,37 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
   // Team is already sorted by order, we just need to count active items
   let activeRank = 0;
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = team.findIndex((x) => x.id === active.id);
+      const newIndex = team.findIndex((x) => x.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newArray = arrayMove(team, oldIndex, newIndex);
+        const sorted = newArray.map((item, index) => {
+            return { ...item, order: index + 1 };
+        });
+        onReorder?.(sorted);
+      }
+    }
+  };
+
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={handleDragEnd}
+    >
       <div
         ref={containerRef}
         className={`relative w-full rounded-xl border border-gray-200 shadow-sm bg-white ${isMobile || showAllColumns ? "overflow-x-auto" : "overflow-x-hidden"
@@ -88,21 +133,22 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
               ))}
             </tr>
           </thead>
-          <tbody className="[&_tr:last-child]:border-0">
-            {team.map((m) => {
-              const isActive = !m.archived;
-              let isTop3 = false;
-              if (isActive) {
-                activeRank++;
-                isTop3 = activeRank <= 3;
-              }
+          <SortableContext items={team.map(m => m.id)} strategy={verticalListSortingStrategy}>
+            <tbody className="[&_tr:last-child]:border-0">
+              {team.map((m) => {
+                const isActive = !m.archived;
+                let isTop3 = false;
+                if (isActive) {
+                  activeRank++;
+                  isTop3 = activeRank <= 3;
+                }
 
-              return (
-                <tr
-                  key={m.id}
-                  className={`border-b transition-colors hover:bg-gray-50/75 ${isTop3 ? "bg-amber-50/40 border-amber-100" : "border-gray-100"
-                    }`}
-                >
+                return (
+                  <SortableRowWrapper
+                    key={m.id}
+                    id={m.id}
+                    isTop3={isTop3}
+                  >
                   <td
                     className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
                     title={m.id}
@@ -119,18 +165,14 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
                       <span className="text-gray-300">-</span>
                     ) : (
                       <div className="flex flex-col items-center justify-center gap-1">
-                        <input
-                          type="number"
-                          min="1"
-                          value={m.order || ""}
-                          onChange={(e) => {
-                            const val = parseInt(e.target.value, 10);
-                            if (!isNaN(val) && val > 0) {
-                              onOrderChange?.(m, val);
-                            }
-                          }}
-                          className="w-16 h-8 text-center border border-gray-200 rounded text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                        />
+                        {isDragEnabled ? (
+                          <div className="flex items-center gap-2">
+                            <DragHandle />
+                            <span className="text-gray-500 font-medium text-xs">{m.order}</span>
+                          </div>
+                        ) : (
+                          <span className="text-gray-500 font-medium text-xs">{m.order}</span>
+                        )}
                         {isTop3 && (
                           <span className="text-[10px] font-bold text-amber-600 tracking-wider">
                             ★ INICIO
@@ -217,10 +259,11 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
                       </Button>
                     </div>
                   </td>
-                </tr>
+                </SortableRowWrapper>
               )
             })}
           </tbody>
+          </SortableContext>
         </table>
       </div>
 
@@ -240,6 +283,6 @@ export default function TeamTable({ team, onView, onEdit, onArchiveToggle, onDel
           )}
         </button>
       )}
-    </>
+    </DndContext>
   );
 }

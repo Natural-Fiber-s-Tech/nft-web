@@ -4,14 +4,31 @@ import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { SortableRowWrapper, DragHandle } from "../common/SortableTable";
 
 export default function ServicesTable({
   services,
   onView,
   onEdit,
   onArchiveToggle,
-  onOrderChange,
+  onReorder,
   onDelete,
+  isDragEnabled = true,
 }) {
   const columns = useMemo(
     () => [
@@ -72,9 +89,37 @@ export default function ServicesTable({
     return "";
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = services.findIndex((x) => x.id === active.id);
+      const newIndex = services.findIndex((x) => x.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newArray = arrayMove(services, oldIndex, newIndex);
+        const sorted = newArray.map((item, index) => {
+            return { ...item, order: index + 1 };
+        });
+        onReorder?.(sorted);
+      }
+    }
+  };
 
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={handleDragEnd}
+    >
       <div
         ref={containerRef}
         className={`relative w-full rounded-xl border border-gray-200 shadow-sm bg-white ${isMobile || showAllColumns ? "overflow-x-auto" : "overflow-x-hidden"
@@ -108,23 +153,24 @@ export default function ServicesTable({
               ))}
             </tr>
           </thead>
-          <tbody className="[&_tr:last-child]:border-0">
-            {(() => {
-              let activeRank = 0;
-              return services.map((s) => {
-                const isActive = !s.archived;
-                let isTop3 = false;
-                if (isActive) {
-                  activeRank++;
-                  isTop3 = activeRank <= 3;
-                }
+          <SortableContext items={services.map(s => s.id)} strategy={verticalListSortingStrategy}>
+            <tbody className="[&_tr:last-child]:border-0">
+              {(() => {
+                let activeRank = 0;
+                return services.map((s) => {
+                  const isActive = !s.archived;
+                  let isTop3 = false;
+                  if (isActive) {
+                    activeRank++;
+                    isTop3 = activeRank <= 3;
+                  }
 
-                return (
-                  <tr
-                    key={s.id}
-                    className={`border-b transition-colors hover:bg-gray-50/75 ${isTop3 ? "bg-amber-50/40 border-amber-100" : "border-gray-100"
-                      }`}
-                  >
+                  return (
+                    <SortableRowWrapper
+                      key={s.id}
+                      id={s.id}
+                      isTop3={isTop3}
+                    >
                     {/* ID */}
                     <td
                       className={`p-4 align-middle whitespace-nowrap overflow-hidden text-ellipsis ${!isColumnVisible("id") ? "hidden" : ""}`}
@@ -134,7 +180,6 @@ export default function ServicesTable({
                       <span className="font-mono text-xs text-gray-400">{s.id}</span>
                     </td>
 
-                    {/* Orden */}
                     <td
                       className={`p-4 align-middle text-center ${!isColumnVisible("order") ? "hidden" : ""}`}
                       style={{ width: columnWidths.order || "auto" }}
@@ -143,18 +188,14 @@ export default function ServicesTable({
                         <span className="text-gray-300">-</span>
                       ) : (
                         <div className="flex flex-col items-center justify-center gap-1">
-                          <input
-                            type="number"
-                            min="1"
-                            value={s.order || ""}
-                            onChange={(e) => {
-                              const val = parseInt(e.target.value, 10);
-                              if (!isNaN(val) && val > 0) {
-                                onOrderChange?.(s, val);
-                              }
-                            }}
-                            className="w-16 h-8 text-center border border-gray-200 rounded text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                          />
+                          {isDragEnabled ? (
+                            <div className="flex items-center gap-2">
+                              <DragHandle />
+                              <span className="text-gray-500 font-medium text-xs">{s.order}</span>
+                            </div>
+                          ) : (
+                            <span className="text-gray-500 font-medium text-xs">{s.order}</span>
+                          )}
                           {isTop3 && (
                             <span className="text-[10px] font-bold text-amber-600 tracking-wider">
                               ★ INICIO
@@ -243,11 +284,12 @@ export default function ServicesTable({
                         </Button>
                       </div>
                     </td>
-                  </tr>
+                  </SortableRowWrapper>
                 );
               });
             })()}
           </tbody>
+          </SortableContext>
         </table>
       </div>
 
@@ -267,6 +309,6 @@ export default function ServicesTable({
           )}
         </button>
       )}
-    </>
+    </DndContext>
   );
 }

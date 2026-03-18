@@ -15,6 +15,9 @@ export default function ServicesView() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [saving, setSaving] = useState(false);
 
+    // Order State
+    const [isOrderDirty, setIsOrderDirty] = useState(false);
+
     useEffect(() => {
         loadServices();
     }, []);
@@ -104,6 +107,22 @@ export default function ServicesView() {
     return (
         <div className="space-y-4">
             <div className="flex justify-end gap-2">
+                {isOrderDirty && (
+                    <button
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors text-sm shadow-sm"
+                        onClick={async () => {
+                            const ok = await persistRows(rows, "manual save order");
+                            if (ok) {
+                                setIsOrderDirty(false);
+                                loadServices();
+                            } else {
+                                alert("No se pudo guardar el nuevo orden.");
+                            }
+                        }}
+                    >
+                        Guardar nuevo orden
+                    </button>
+                )}
                 <button
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors"
                     onClick={newService}
@@ -124,30 +143,11 @@ export default function ServicesView() {
                     setConfirmRow(row);
                     setShowConfirm(true);
                 }}
-                onOrderChange={async (service, newOrder) => {
-                    const prev = rows;
-                    const others = prev.filter((r) => r.id !== service.id);
-                    const compact = normalizeOrder(others);
-                    const active = compact.filter((x) => !x.archived);
-                    const activeCount = active.length;
-                    const req = typeof newOrder === "number" ? newOrder : activeCount + 1;
-                    const target = Math.max(1, Math.min(req, activeCount + 1));
-                    const shifted = compact.map((r) => {
-                        if (!r.archived && Number(r.order) >= target) {
-                            return { ...r, order: Number(r.order) + 1 };
-                        }
-                        return r;
-                    });
-                    const next = [
-                        ...shifted,
-                        { ...service, order: target },
-                    ];
-                    const nextComputed = normalizeOrder(next);
-                    setRows(nextComputed);
-                    const ok = await persistRows(nextComputed);
-                    if (!ok) alert("No se pudo guardar el nuevo orden.");
-                    else loadServices();
+                onReorder={(newOrderedRows) => {
+                    setRows(newOrderedRows);
+                    setIsOrderDirty(true);
                 }}
+                isDragEnabled={true} // ServicesView doesn't have local search/filter states that restrict list
                 onDelete={async (service) => {
                     if (window.confirm(`¿Seguro que deseas eliminar permanentemente el servicio "${service.title?.es || service.id}"?\n\nEsta acción no se puede deshacer.`)) {
                         try {

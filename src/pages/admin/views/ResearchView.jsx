@@ -22,6 +22,9 @@ export default function ResearchView() {
     // Filtros
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    
+    // Ordering State
+    const [isOrderDirty, setIsOrderDirty] = useState(false);
 
     useEffect(() => {
         loadResearch();
@@ -173,27 +176,22 @@ export default function ResearchView() {
                         </select>
                     </div>
                     <div className="flex gap-2 min-w-max">
-                        <button
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
-                            title="Restaurar artículos desde respaldo"
-                            onClick={async () => {
-                                // ... same logic as ProductsView
-                                try {
-                                    const b = await fetchJson("/api/research/backups");
-                                    const files = Array.isArray(b?.files) ? b.files : [];
-                                    if (files.length) {
-                                        // Placeholder for backup logic, as it's not fully provided
-                                        alert("Backup functionality not fully implemented in this snippet.");
+                        {isOrderDirty && (
+                            <button
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors text-sm shadow-sm"
+                                onClick={async () => {
+                                    const ok = await persistRows(rows, "manual save order");
+                                    if (ok) {
+                                        setIsOrderDirty(false);
+                                        loadResearch();
+                                    } else {
+                                        alert("Error al guardar el nuevo orden.");
                                     }
-                                } catch (error) {
-                                    console.error("Error fetching backups:", error);
-                                    alert("Error al cargar los respaldos.");
-                                }
-                            }}
-                        >
-                            {/* Placeholder for backup button content */}
-                            Restaurar Respaldo
-                        </button>
+                                }}
+                            >
+                                Guardar nuevo orden
+                            </button>
+                        )}
                         <button onClick={handleAdd} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#e83d38] hover:bg-red-700 text-white text-sm">
                             <Plus className="w-4 h-4" /> Nuevo Artículo
                         </button>
@@ -202,6 +200,7 @@ export default function ResearchView() {
             </div>
 
             <ResearchTable
+                isDragEnabled={searchTerm === "" && statusFilter === "all"}
                 research={[...filteredArticles].sort((a, b) => {
                     if (!!a.archived && !b.archived) return 1;
                     if (!a.archived && !!b.archived) return -1;
@@ -209,6 +208,10 @@ export default function ResearchView() {
                     const bo = typeof b.order === "number" ? b.order : 999;
                     return ao - bo;
                 })}
+                onReorder={(newOrderedRows) => {
+                    setRows(newOrderedRows);
+                    setIsOrderDirty(true);
+                }}
                 onView={(row) => {
                     setEditing(row);
                     setModalMode("view");

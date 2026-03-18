@@ -83,6 +83,8 @@ export default function ProductsView() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [categoryFilter, setCategoryFilter] = useState("all");
     
+    const [isOrderDirty, setIsOrderDirty] = useState(false);
+    
     const { refreshProducts } = useProducts();
 
     useEffect(() => {
@@ -187,8 +189,24 @@ export default function ProductsView() {
                 </div>
 
                 <div className="flex gap-2">
+                    {isOrderDirty && (
+                        <button
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors text-sm shadow-sm"
+                            onClick={async () => {
+                                const ok = await persistRows(rows, "manual save order");
+                                if (ok) {
+                                    setIsOrderDirty(false);
+                                    loadProducts();
+                                } else {
+                                    alert("No se pudo guardar el nuevo orden.");
+                                }
+                            }}
+                        >
+                            Guardar nuevo orden
+                        </button>
+                    )}
                     <button
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#e83d38] hover:bg-red-700 text-white transition-colors text-sm font-medium"
                         onClick={() => {
                             const blank = {
                                 id: "product-" + Math.random().toString(36).slice(2, 8),
@@ -212,48 +230,11 @@ export default function ProductsView() {
                     >
                         <Plus className="w-4 h-4" /> Nuevo Producto
                     </button>
-                    <button
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 transition-colors text-sm"
-                        title="Restaurar productos desde respaldo"
-                        onClick={async () => {
-                            // Logic simplified for brevity, assume similar to AdminApp
-                            try {
-                                const b = await fetchJson("/api/products/backups");
-                                const files = Array.isArray(b?.files) ? b.files : [];
-                                if (files.length) {
-                                    const latest = files[0];
-                                    const r = await fetchJson(
-                                        `/api/products/restore?file=${encodeURIComponent(latest)}`,
-                                        { method: "POST" }
-                                    );
-                                    if (r?.ok) {
-                                        loadProducts();
-                                        alert("Productos restaurados desde respaldo: " + latest);
-                                        return;
-                                    }
-                                }
-                                const cached = localStorage.getItem("admin_products");
-                                if (cached) {
-                                    const data = JSON.parse(cached);
-                                    if (Array.isArray(data) && data.length) {
-                                        setRows(data);
-                                        await persistRows(data, "restore from local cache");
-                                        alert("Productos restaurados desde caché local");
-                                        return;
-                                    }
-                                }
-                                alert("No se encontraron respaldos disponibles");
-                            } catch (e) {
-                                alert("Error restaurando: " + (e?.message || e));
-                            }
-                        }}
-                    >
-                        Restaurar
-                    </button>
                 </div>
             </div>
 
             <ProductsTable
+                isDragEnabled={searchTerm === "" && statusFilter === "all" && categoryFilter === "all"}
                 products={[...filteredRows].sort((a, b) => {
                     if (a.archived === b.archived) return (a.order || 999) - (b.order || 999);
                     return a.archived ? 1 : -1;
@@ -272,29 +253,9 @@ export default function ProductsView() {
                     setConfirmRow(row);
                     setShowConfirm(true);
                 }}
-                onOrderChange={async (product, newOrder) => {
-                    const prev = rows;
-                    const others = prev.filter((r) => r.id !== product.id);
-                    const compact = normalizeOrder(others);
-                    const active = compact.filter((x) => !x.archived);
-                    const activeCount = active.length;
-                    const req = typeof newOrder === "number" ? newOrder : activeCount + 1;
-                    const target = Math.max(1, Math.min(req, activeCount + 1));
-                    const shifted = compact.map((r) => {
-                        if (!r.archived && Number(r.order) >= target) {
-                            return { ...r, order: Number(r.order) + 1 };
-                        }
-                        return r;
-                    });
-                    const next = [
-                        ...shifted,
-                        { ...product, order: target },
-                    ];
-                    const nextComputed = normalizeOrder(next);
-                    setRows(nextComputed);
-                    const ok = await persistRows(nextComputed, "auto-save: onOrderChange");
-                    if (!ok) alert("No se pudo guardar el nuevo orden.");
-                    else loadProducts();
+                onReorder={(newOrderedRows) => {
+                    setRows(newOrderedRows);
+                    setIsOrderDirty(true);
                 }}
                 onDelete={async (product) => {
                     if (window.confirm(`¿Seguro que deseas eliminar permanentemente el producto "${product.name_es || product.name?.es || product.id}"?\n\nEsta acción no se puede deshacer.`)) {
