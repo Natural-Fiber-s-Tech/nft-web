@@ -96,14 +96,6 @@ const ProductDetail = () => {
     );
   }
 
-  const handleWhatsAppContact = () => {
-    const message = encodeURIComponent(
-      `Hola, estoy interesado en obtener más información sobre el ${product.name}. ¿Podrían enviarme detalles sobre precios, disponibilidad y especificaciones técnicas?`
-    );
-    const phoneNumber = "51988496839";
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full max-w-[1110px] mx-auto px-4 pt-4 pb-12">

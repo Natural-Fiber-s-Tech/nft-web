@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 import { messages } from "../../config/i18n"; // ✅ Importar messages para admin preview
 import {
   Brain,
@@ -15,14 +16,13 @@ import { RenderIcon as AdminRenderIcon } from "../../pages/admin/components/comm
 
 // ================= ServiceCard =================
 // Tarjeta individual de servicio (altura fija para alineación de grid)
-export const ServiceCard = ({ service, buttonText, lang }) => {
+export const ServiceCard = ({ service, buttonText, lang, globalPhone = "51988496839" }) => {
   const { t } = useLanguage();
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
       `Buen día, estoy interesado en el servicio de ${service.title}`
     );
-    const phoneNumber = "51988496839";
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+    window.open(`https://wa.me/${globalPhone}?text=${message}`, "_blank");
   };
 
   // ✅ Si lang está provisto (admin preview), usar messages directamente
@@ -110,7 +110,10 @@ export const ServiceCard = ({ service, buttonText, lang }) => {
 // ================= Services (lista) =================
 const Services = ({ limit }) => {
   const { t, language } = useLanguage();
+  const { settings } = useSiteSettings();
   const serviceIcons = [Brain, Settings, BookOpen, Users, BarChart3, Lightbulb];
+
+  const globalPhone = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
 
   // Map icon string name to lucide icon component
   const iconMap = useMemo(
@@ -173,7 +176,6 @@ const Services = ({ limit }) => {
                 (s.features[language] || s.features.es || s.features.en)) ||
               [],
             order: typeof s.order === "number" ? s.order : 9999,
-            whatsapp: s.whatsapp || "51988496839",
             archived: !!s.archived,
           }))
           .sort((a, b) => a.order - b.order);
@@ -220,7 +222,7 @@ const Services = ({ limit }) => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {displayed.map((service, i) => (
-              <ServiceCard key={i} service={service} />
+              <ServiceCard key={i} service={service} globalPhone={globalPhone} />
             ))}
           </div>
           {!limit && (
@@ -247,9 +249,8 @@ const Services = ({ limit }) => {
                     const message = encodeURIComponent(
                       "Hola, me interesa solicitar una consulta sobre sus servicios."
                     );
-                    const phoneNumber = "51988496839";
                     window.open(
-                      `https://wa.me/${phoneNumber}?text=${message}`,
+                      `https://wa.me/${globalPhone}?text=${message}`,
                       "_blank"
                     );
                   }}

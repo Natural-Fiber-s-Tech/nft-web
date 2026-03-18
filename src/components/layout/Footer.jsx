@@ -1,12 +1,12 @@
 import React from "react";
 import { Phone, Mail } from "lucide-react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
-const socials = [
+const getSocials = (settings) => [
   {
     name: "YouTube",
-    // href: "https://www.youtube.com/@fiberstech",
-    href: "https://www.youtube.com/@naturalfiberstech953",
+    href: settings?.youtube,
     svg: (
       <svg
         className="w-5 h-5"
@@ -20,7 +20,7 @@ const socials = [
   },
   {
     name: "TikTok",
-    href: "https://www.tiktok.com/@nft_sac?lang=es-419",
+    href: settings?.tiktok,
     svg: (
       <svg
         className="w-5 h-5"
@@ -34,8 +34,7 @@ const socials = [
   },
   {
     name: "Facebook",
-    // href: "https://www.facebook.com/fiberstech",
-    href: "https://www.facebook.com/p/Natural-Fibers-Tech-SAC-100064291801913/",
+    href: settings?.facebook,
     svg: (
       <svg
         className="w-5 h-5"
@@ -49,8 +48,7 @@ const socials = [
   },
   {
     name: "LinkedIn",
-    // href: "https://www.linkedin.com/company/fiberstech",
-    href: "https://www.linkedin.com/company/fibers-tech/?originalSubdomain=pe",
+    href: settings?.linkedin,
 
     svg: (
       <svg
@@ -65,8 +63,7 @@ const socials = [
   },
   {
     name: "X",
-    // href: "https://x.com/fiberstech",
-    href: "https://x.com/fibers_tech",
+    href: settings?.x,
     svg: (
       <svg
         className="w-5 h-5"
@@ -80,8 +77,7 @@ const socials = [
   },
   {
     name: "Instagram",
-    // href: "https://www.instagram.com/fiberstech",
-    href: "https://instagram.com/nft_sac/",
+    href: settings?.instagram,
     svg: (
       <svg
         className="w-5 h-5"
@@ -97,8 +93,11 @@ const socials = [
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { settings } = useSiteSettings();
   const variant = "dark"; // change to "red" to try red background
   const bgClass = variant === "red" ? "bg-red-700/60" : "bg-black/70";
+  
+  const activeSocials = getSocials(settings).filter(s => s.href);
 
   return (
     <footer
@@ -137,22 +136,22 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-neutral-300">
               <li>
                 <a
-                  href="mailto:naturalfiberstech@gmail.com"
+                  href={`mailto:${settings?.email || "naturalfiberstech@gmail.com"}`}
                   className="hover:text-white flex items-center hover:underline"
                 >
                   <Mail className="w-4 h-4 mr-2" />
-                  naturalfiberstech@gmail.com
+                  {settings?.email || "naturalfiberstech@gmail.com"}
                 </a>
               </li>
               <li className="lg:whitespace-nowrap ">
                 <a
-                  href="https://wa.me/51988496839"
+                  href={`https://wa.me/${( (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp) || "+51988496839").replace(/\s|\+|-/g, '')}`}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-white hover:underline flex items-center"
                 >
                   <Phone className="w-4 h-4 mr-2" />
-                  +51 988 496 839
+                  {(settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp) || "+51 988 496 839"}
                 </a>
               </li>
               <li className="lg:whitespace-nowrap">
@@ -166,7 +165,7 @@ const Footer = () => {
       {/* Middle row: Social icons centered */}
       <div className="w-full max-w-[1110px] mx-auto px-4 p-6">
         <div className="flex justify-center gap-4 sm:gap-4">
-          {socials.map((s) => (
+          {activeSocials.map((s) => (
             <a
               key={s.name}
               href={s.href}

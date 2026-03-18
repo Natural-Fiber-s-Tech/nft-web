@@ -273,19 +273,6 @@ export default function ServiceFormComponent({
                                 onChange={(name) => updateField("icon", name)}
                             />
                         </div>
-
-                        {/* WhatsApp Global */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">Número de WhatsApp *</label>
-                            <input
-                                disabled={readOnly}
-                                value={local.whatsapp || ""}
-                                onChange={(e) => updateField("whatsapp", e.target.value)}
-                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#e83d38] focus:border-transparent transition-shadow ${invalid.whatsapp && isES ? "border-red-400 focus:ring-red-400" : "border-gray-300"
-                                    }`}
-                                placeholder="Ej. 51988496839"
-                            />
-                        </div>
                     </div>
                 </div>
             </div>

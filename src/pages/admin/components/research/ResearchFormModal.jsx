@@ -57,6 +57,7 @@ export default function ResearchFormModal({
     slug: "", // ⚠️ IMPORTANTE: Preservar slug generado automáticamente
     order: 0,
     localImage: "",
+    imageUrl: "",
     journal: "",
     date: new Date().toISOString().split("T")[0],
     title: { es: "", en: "" },
@@ -69,6 +70,7 @@ export default function ResearchFormModal({
     fullSummary: { es: "", en: "" },
     download_link_DOI: "",
     download_link_pdf: "",
+    documentUrl: "",
     archived: false,
   });
 
@@ -118,9 +120,9 @@ export default function ResearchFormModal({
       errors.abstract = "Abstract/Resumen completo es requerido";
     }
 
-    // Validar PDF requerido (porque de ahí sale la imagen)
-    if (!formData.download_link_pdf && !formData.localImage) {
-      errors.download_link_pdf = "Debe subir un documento PDF para extraer la portada.";
+    // Validar PDF requerido (porque de ahí sale la imagen) si no hay localImage o url
+    if (!formData.download_link_pdf && !formData.documentUrl && !formData.localImage && !formData.imageUrl) {
+      errors.download_link_pdf = "Debe subir un documento PDF, un enlace al documento o subir una imagen de portada.";
     }
 
     setDetailErrors(errors);
@@ -135,6 +137,7 @@ export default function ResearchFormModal({
         slug: article.slug || "",
         order: article.order || 0,
         localImage: article.localImage || "",
+        imageUrl: article.imageUrl || "",
         journal: article.journal || "",
         date: article.date || new Date().toISOString().split("T")[0],
         // Si title es string, convertir a objeto bilingüe
@@ -154,6 +157,7 @@ export default function ResearchFormModal({
         abstract: article.abstract || "",
         download_link_DOI: article.download_link_DOI || "",
         download_link_pdf: article.download_link_pdf || "",
+        documentUrl: article.documentUrl || "",
         archived: article.archived || false,
       });
     } else {

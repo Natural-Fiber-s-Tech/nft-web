@@ -42,9 +42,9 @@ const ArticleCard = ({ article, isPreview = false }) => {
     >
       {/* Imagen - relación 16:9, ring y bordes redondeados */}
       <div className="relative overflow-hidden flex-shrink-0 rounded-t-2xl bg-gray-50 ring-1 ring-gray-200 aspect-[16/9]">
-        {!imageError && article.localImage ? (
+        {!imageError && (article.localImage || article.imageUrl) ? (
           <img
-            src={article.localImage}
+            src={article.localImage || article.imageUrl}
             alt={
               typeof article.title === "string"
                 ? article.title

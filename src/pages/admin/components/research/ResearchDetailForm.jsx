@@ -447,6 +447,22 @@ export default function ResearchDetailForm({
                 📄 Opcional: Para lectura o descarga directa
               </p>
             </div>
+            
+            <div className="md:col-span-2 border-t border-gray-100 pt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <LinkIcon className="w-4 h-4 inline mr-1.5 text-gray-500" />
+                Enlace Externo al Documento (Opcional)
+              </label>
+              <input
+                type="url"
+                value={formData.documentUrl || ""}
+                onChange={(e) => setFormData(prev => ({ ...prev, documentUrl: e.target.value }))}
+                disabled={!!formData.download_link_pdf || readOnly}
+                placeholder="https://ejemplo.com/documento.pdf"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#e83d38] focus:border-transparent transition-shadow text-sm disabled:opacity-50 disabled:bg-gray-100"
+              />
+              <p className="text-xs text-gray-500 mt-1">Si proporcionas un enlace externo, la subida de PDF se deshabilitará.</p>
+            </div>
           </div>
         </div>
       </div>

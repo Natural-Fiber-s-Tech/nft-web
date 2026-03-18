@@ -1,7 +1,9 @@
 import React from "react";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
 const WhatsAppButton = () => {
-  const phoneNumber = "51988496839";
+  const { settings } = useSiteSettings();
+  const phoneNumber = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
   const whatsappUrl = `https://wa.me/${phoneNumber}`;
 
   return (

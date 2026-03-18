@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { icons, Zap, Download, SquarePlay, Camera, ChevronRight } from "lucide-react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 import { messages } from "../../config/i18n";
 
 // Lightweight presentational components copied/adapted from ProductDetail.jsx
@@ -358,9 +359,11 @@ export default function ProductDetailTemplate({
     if (!product) return null;
 
     const { language: lang } = useLanguage();
+    const { settings } = useSiteSettings();
 
     // Usar adminLang si está disponible (admin CMS), sino usar lang del contexto (web pública)
     const currentLang = adminLang || lang;
+    const globalPhone = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
 
     // Helper para obtener texto en idioma correcto
     const getText = (field) => {
@@ -535,7 +538,7 @@ export default function ProductDetailTemplate({
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row gap-3">
                             <a
-                                href={`https://wa.me/51988496839?text=${encodeURIComponent(
+                                href={`https://wa.me/${globalPhone}?text=${encodeURIComponent(
                                     `Hola, estoy interesado en el producto: ${getText("name")}`
                                 )}`}
                                 target="_blank"

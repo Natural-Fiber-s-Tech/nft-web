@@ -132,9 +132,22 @@ export default function ResearchCardForm({
                   </span>
                   <span className="text-xs text-gray-400 mt-1">JPG, PNG, WebP (16:9 recomendado)</span>
                 </div>
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleImageChange(e.target.files?.[0])} className="hidden" disabled={readOnly} />
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleImageChange(e.target.files?.[0])} className="hidden" disabled={readOnly || !!formData.imageUrl} />
               </>
             )}
+          </div>
+          
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Alternativa: URL de la Imagen</label>
+            <input
+              type="url"
+              value={formData.imageUrl || ""}
+              onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
+              disabled={!!formData.localImage || readOnly}
+              placeholder="https://ejemplo.com/imagen.jpg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e83d38] focus:border-transparent transition-shadow text-sm disabled:opacity-50 disabled:bg-gray-100"
+            />
+            <p className="text-xs text-gray-500 mt-1">Si proporcionas una URL, la subida de archivo se deshabilitará.</p>
           </div>
         </div>
       </div>

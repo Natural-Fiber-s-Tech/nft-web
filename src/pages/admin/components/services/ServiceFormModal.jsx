@@ -27,7 +27,6 @@ export default function ServiceFormModal({
         title: { es: "", en: "" },
         description: { es: "", en: "" },
         features: { es: [""], en: [""] },
-        whatsapp: "51988496839",
         order: "",
         archived: false,
       }
@@ -54,7 +53,6 @@ export default function ServiceFormModal({
           title: { es: "", en: "" },
           description: { es: "", en: "" },
           features: { es: [""], en: [""] },
-          whatsapp: "51988496839",
           order: "",
           archived: false,
         });
@@ -92,7 +90,6 @@ export default function ServiceFormModal({
     features: (s.features?.[lang] || []).filter(Boolean).length
       ? s.features?.[lang]
       : ["Característica de ejemplo"],
-    whatsapp: s.whatsapp || "51988496839",
     lang: lang, // ✅ Pasar lang para que ServiceCard use messages[lang] directamente
   });
 
@@ -290,13 +287,11 @@ export default function ServiceFormModal({
     const featuresEs = (data.features?.es || [])
       .map((x) => (x || "").trim())
       .filter(Boolean);
-    const whatsapp = (data.whatsapp || "").trim();
     const orderInvalid = data.order === "" || Number(data.order) < 1;
     const hasMissing =
       !titleEs ||
       !descEs ||
       featuresEs.length === 0 ||
-      !whatsapp ||
       orderInvalid;
     if (hasMissing) {
       setSubmitAttempted(true);
@@ -305,7 +300,6 @@ export default function ServiceFormModal({
       if (!titleEs) tooltips.title = true;
       if (!descEs) tooltips.description = true;
       if (featuresEs.length === 0) tooltips.features = true;
-      if (!whatsapp) tooltips.whatsapp = true;
       if (orderInvalid) tooltips.order = true;
       setVisibleTooltips(tooltips);
       setTimeout(() => setVisibleTooltips({}), 1000);
@@ -483,7 +477,6 @@ export default function ServiceFormModal({
                 invalid={submitAttempted ? {
                   title: (data.title?.[activeLang] || "").trim() === "",
                   description: (data.description?.[activeLang] || "").trim() === "",
-                  whatsapp: (data.whatsapp || "").trim() === "",
                 } : {}}
               />
             </div>

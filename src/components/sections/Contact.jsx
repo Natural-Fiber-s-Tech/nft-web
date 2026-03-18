@@ -10,12 +10,14 @@ import {
   Building,
 } from "lucide-react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
 // Contact form component
 // - Simple controlled form
 // - Submits using a mailto link (opens user's email client)
 // - Icons from lucide-react for better UX
 const ContactForm = () => {
+  const { settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,7 +39,8 @@ const ContactForm = () => {
     const body = encodeURIComponent(
       `Nombre: ${formData.name}\nEmail: ${formData.email}\nEmpresa: ${formData.company}\nMensaje:\n${formData.message}`
     );
-    const mailtoUrl = `mailto:naturalfiberstech@gmail.com?subject=${subject}&body=${body}`;
+    const targetEmail = settings?.email || "naturalfiberstech@gmail.com";
+    const mailtoUrl = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
     window.location.href = mailtoUrl;
   };
 
@@ -126,18 +129,30 @@ const ContactForm = () => {
 // - Map is omitted for security; we render a safe placeholder instead
 const Contact = () => {
   const { t } = useLanguage();
+  const { settings } = useSiteSettings();
+  
   const contactInfo = [
     {
       icon: Mail,
       title: t("contact.titles.email"),
-      details: ["naturalfiberstech@gmail.com"],
-      action: "mailto:naturalfiberstech@gmail.com",
+      details: [settings?.email || "naturalfiberstech@gmail.com"],
+      action: `mailto:${settings?.email || "naturalfiberstech@gmail.com"}`,
     },
     {
       icon: Phone,
       title: t("contact.titles.phone"),
-      details: ["+51 988 496 839"],
-      action: "tel:+51988496839",
+      details: settings?.useSamePhone !== false
+        ? [settings?.phone || "+51 988 496 839"] 
+        : [
+            `${settings?.phone || "+51 988 496 839"} (Llamadas)`,
+            `${settings?.whatsapp || "+51 988 496 839"} (WhatsApp)`
+          ],
+      actions: settings?.useSamePhone !== false
+        ? [`tel:${(settings?.phone || "+51988496839").replace(/\s/g, '')}`]
+        : [
+            `tel:${(settings?.phone || "+51988496839").replace(/\s/g, '')}`,
+            `https://wa.me/${(settings?.whatsapp || "+51988496839").replace(/\s|\+|-/g, '')}`
+          ],
     },
     {
       icon: Clock,
@@ -157,7 +172,7 @@ const Contact = () => {
   const socialLinks = [
     {
       label: "Facebook",
-      href: "https://www.facebook.com/profile.php?id=100064291801913#",
+      href: settings?.facebook,
       color: "hover:text-blue-600",
       svg: (
         <svg
@@ -172,7 +187,7 @@ const Contact = () => {
     },
     {
       label: "LinkedIn",
-      href: "https://www.linkedin.com/company/fibers-tech/",
+      href: settings?.linkedin,
       color: "hover:text-blue-700",
       svg: (
         <svg
@@ -187,8 +202,7 @@ const Contact = () => {
     },
     {
       label: "YouTube",
-      // href: "https://www.youtube.com/channel/UCm3n-3n546Q0fcVMylG7Kig",
-      href: "https://www.youtube.com/@naturalfiberstech953",
+      href: settings?.youtube,
       color: "hover:text-red-600",
       svg: (
         <svg
@@ -203,8 +217,7 @@ const Contact = () => {
     },
     {
       label: "X",
-      // href: "https://x.com/fiberstech",
-      href: "https://x.com/fibers_tech",
+      href: settings?.x,
       color: "hover:text-black",
       svg: (
         <svg
@@ -219,7 +232,7 @@ const Contact = () => {
     },
     {
       label: "Instagram",
-      href: "https://instagram.com/nft_sac/",
+      href: settings?.instagram,
       color: "hover:text-pink-600",
       svg: (
         <svg
@@ -234,7 +247,7 @@ const Contact = () => {
     },
     {
       label: "TikTok",
-      href: "https://www.tiktok.com/@nft_sac?lang=es-419",
+      href: settings?.tiktok,
       color: "hover:text-black",
       svg: (
         <svg
@@ -295,14 +308,16 @@ const Contact = () => {
                         </h4>
                       </div>
                       <div className="space-y-0.5 break-words break-all">
-                        {info.details.map((detail, idx) => (
+                        {info.details.map((detail, idx) => {
+                          const actionUrl = Array.isArray(info.actions) ? info.actions[idx] : info.action;
+                          return (
                           <p
                             key={idx}
                             className="text-gray-600 text-[13px] md:text-[12px] leading-relaxed"
                           >
-                            {info.action ? (
+                            {actionUrl ? (
                               <a
-                                href={info.action}
+                                href={actionUrl}
                                 className="hover:text-red-600 transition-colors break-words"
                               >
                                 {detail}
@@ -311,7 +326,7 @@ const Contact = () => {
                               detail
                             )}
                           </p>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   );
@@ -325,7 +340,7 @@ const Contact = () => {
                 {t("contact.followUs")}
               </h4>
               <div className="flex space-x-4 m-6">
-                {socialLinks.map((social, index) => (
+                {socialLinks.filter(s => s.href).map((social, index) => (
                   <a
                     key={index}
                     href={social.href}

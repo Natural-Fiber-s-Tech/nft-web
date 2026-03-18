@@ -1,8 +1,12 @@
 import React from 'react';
 import { MessageCircle, X, Send, Globe } from 'lucide-react';
 import { useChatbot } from './useChatbot';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 
 const FaqChatbot = () => {
+    const { settings } = useSiteSettings();
+    const globalPhone = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
+
     const {
         isOpen,
         toggleChat,
@@ -54,7 +58,7 @@ const FaqChatbot = () => {
                                 {msg.text}
                                 {msg.showContact && (
                                     <button
-                                        onClick={() => window.open('https://wa.me/51988496839', '_blank')}
+                                        onClick={() => window.open(`https://wa.me/${globalPhone}`, '_blank')}
                                         className="mt-3 w-full bg-red-600/10 dark:bg-[#f05252]/10 text-red-600 dark:text-[#f05252] font-medium py-2 rounded-lg hover:bg-red-600/20 dark:hover:bg-[#f05252]/20 transition-colors text-xs flex items-center justify-center gap-2 border border-red-600/20 dark:border-[#f05252]/20"
                                     >
                                         {language === 'es' ? 'Contáctanos' : 'Contact Us'}

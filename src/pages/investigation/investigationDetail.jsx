@@ -7,9 +7,9 @@ import {
   ExternalLink,
   FileText,
   CircleAlert,
+  Mail,
 } from "lucide-react";
-
-const PHONE_NUMBER = "51988496839"; // usado en otras partes del sitio
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
 const InvestigationDetail = ({
   article: articleProp = null,
@@ -17,11 +17,14 @@ const InvestigationDetail = ({
 }) => {
   const { slug } = useParams();
   const { t, language } = useLanguage();
+  const { settings } = useSiteSettings();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [doiUrl, setDoiUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [error, setError] = useState("");
+
+  const globalPhone = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
 
   useEffect(() => {
     // Si es preview, no cargar JSON (ya tenemos articleProp)
@@ -130,7 +133,7 @@ const InvestigationDetail = ({
         title: article?.title ?? "(sin título)",
       })
     );
-    window.open(`https://wa.me/${PHONE_NUMBER}?text=${text}`, "_blank");
+    window.open(`https://wa.me/${globalPhone}?text=${text}`, "_blank");
   };
 
   const formatDate = (dateString) => {
@@ -182,9 +185,9 @@ const InvestigationDetail = ({
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Imagen */}
         <div className="bg-gray-50 ring-1 ring-gray-200 aspect-[16/9] flex items-center justify-center">
-          {article.localImage ? (
+          {article.localImage || article.imageUrl ? (
             <img
-              src={article.localImage}
+              src={article.localImage || article.imageUrl}
               alt={
                 typeof article.title === "string"
                   ? article.title
@@ -263,13 +266,17 @@ const InvestigationDetail = ({
             {isPreview ? (
               // En preview: botones visualmente iguales pero sin funcionalidad
               <>
-                <div className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg">
+                <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg">
                   <ExternalLink className="h-4 w-4" />
                   {t("researchDetail.openPublication")}
                 </div>
-                {(article.download_link_pdf || pdfUrl) && (
-                  <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg">
+                {article.download_link_pdf || article.documentUrl ? (
+                  <div className="inline-flex items-center gap-2 bg-[#e83d38] text-white px-4 py-2 rounded-lg">
                     <FileText className="h-4 w-4" /> {t("researchDetail.pdf")}
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-2 bg-[#e83d38] text-white px-4 py-2 rounded-lg">
+                    <Mail className="h-4 w-4" /> Pedir acceso
                   </div>
                 )}
               </>
@@ -278,19 +285,26 @@ const InvestigationDetail = ({
               <>
                 <button
                   onClick={openPublication}
-                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                  className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors font-medium"
                 >
                   <ExternalLink className="h-4 w-4" />{" "}
                   {t("researchDetail.openPublication")}
                 </button>
-                {pdfUrl && (
+                {pdfUrl || article?.documentUrl ? (
                   <a
-                    href={pdfUrl}
+                    href={pdfUrl || article?.documentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
+                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors"
                   >
                     <FileText className="h-4 w-4" /> {t("researchDetail.pdf")}
+                  </a>
+                ) : (
+                  <a
+                    href={`mailto:naturalfiberstech@gmail.com?subject=${encodeURIComponent(`Solicitud de acceso a documento: ${typeof article.title === "string" ? article.title : article.title?.[language] || article.title?.es || article.title?.en || "Sin título"}`)}&body=${encodeURIComponent(`Estimados autores,\n\nSolicito amablemente acceso a una copia del documento de investigación titulado "${typeof article.title === "string" ? article.title : article.title?.[language] || article.title?.es || article.title?.en || "Sin título"}".\n\nQuedo a la espera de su respuesta.\n\nSaludos cordiales.`)}`}
+                    className="inline-flex items-center gap-2 bg-[#e83d38] hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm ring-2 ring-red-200 transition-colors"
+                  >
+                    <Mail className="h-4 w-4" /> Pedir acceso
                   </a>
                 )}
               </>

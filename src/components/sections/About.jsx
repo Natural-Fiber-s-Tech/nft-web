@@ -11,6 +11,7 @@ import {
   Globe,
 } from "lucide-react";
 import { useLanguage } from "../../context/hooks/useLanguage";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
 const StatCard = ({ icon, value, label }) => (
   <div className="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -216,6 +217,9 @@ const SectionPrinciples = ({ principles }) => {
 // Sección CTA (varía según resume)
 const SectionCTA = ({ resume }) => {
   const { t } = useLanguage();
+  const { settings } = useSiteSettings();
+  const globalPhone = (settings?.useSamePhone !== false ? settings?.phone : settings?.whatsapp)?.replace(/\s|\+|-/g, '') || "51988496839";
+
   return (
     <div className="grid-ctx">
       <div className="span-12 text-center">
@@ -236,7 +240,7 @@ const SectionCTA = ({ resume }) => {
                   {t("about.cta.moreAboutUs")}
                 </a>
                 <a
-                  href="https://wa.me/51988496839?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20la%20empresa%20y%20sus%20soluciones."
+                  href={`https://wa.me/${globalPhone}?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20la%20empresa%20y%20sus%20soluciones.`}
                   target="_blank"
                   rel="noreferrer"
                   className="bg-white hover:bg-red-600 text-red-600 hover:text-white border-2 border-red-600 font-semibold py-3 px-8 rounded-lg transition-all duration-300"
@@ -251,9 +255,8 @@ const SectionCTA = ({ resume }) => {
                 const message = encodeURIComponent(
                   "Hola, me interesa conocer más sobre la empresa y sus soluciones."
                 );
-                const phoneNumber = "51988496839";
                 window.open(
-                  `https://wa.me/${phoneNumber}?text=${message}`,
+                  `https://wa.me/${globalPhone}?text=${message}`,
                   "_blank"
                 );
               }}

@@ -6,6 +6,7 @@ import ServicesView from "./views/ServicesView";
 import ProductsView from "./views/ProductsView";
 import TeamView from "./views/TeamView";
 import ResearchView from "./views/ResearchView";
+import SettingsView from "./views/SettingsView";
 
 export default function AdminApp() {
   const auth = useAuth();
@@ -25,6 +26,7 @@ export default function AdminApp() {
       {section === "products" && <ProductsView />}
       {section === "team" && <TeamView />}
       {section === "research" && <ResearchView />}
+      {section === "settings" && <SettingsView />}
     </AdminLayout>
   );
 }
