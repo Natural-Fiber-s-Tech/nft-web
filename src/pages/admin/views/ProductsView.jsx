@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import ProductsTable from "../components/products/ProductsTable";
 import ProductFormModal from "../components/products/ProductFormModal";
 import ProductArchiveConfirmModal from "../components/products/ProductArchiveConfirmModal";
+import NotifyConfirmModal from "../components/common/NotifyConfirmModal";
 import { fetchJson } from "../../../lib/api";
 import { normalizeOrder } from "../../../lib/crud";
 import { useProducts } from "../../../context/hooks/useProducts";
@@ -77,6 +78,8 @@ export default function ProductsView() {
     const [modalMode, setModalMode] = useState("view");
     const [confirmRow, setConfirmRow] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [notifyRow, setNotifyRow] = useState(null);
+    const [showNotifyConfirm, setShowNotifyConfirm] = useState(false);
     
     // Filtros
     const [searchTerm, setSearchTerm] = useState("");
@@ -135,6 +138,35 @@ export default function ProductsView() {
             return false;
         }
     }
+
+    const handleNotifyLaunch = async (item, itemType) => {
+        try {
+            const { getAuth } = await import("firebase/auth");
+            const auth = getAuth();
+            const user = auth.currentUser;
+            if (!user) throw new Error("No estás autenticado como administrador.");
+            const token = await user.getIdToken();
+            
+            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+            const response = await fetch(`${supabaseUrl}/functions/v1/notify-launch`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ itemId: item.id, itemType })
+            });
+            
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || "Error HTTP al enviar los correos.");
+            }
+            alert("¡Notificación enviada con éxito a los suscriptores!");
+        } catch (error) {
+            console.error("Error al notificar:", error);
+            alert("Ocurrió un error: " + error.message);
+        }
+    };
 
     // Filtrar localmente
     const filteredRows = rows.filter(row => {
@@ -252,6 +284,10 @@ export default function ProductsView() {
                 onArchiveToggle={(row) => {
                     setConfirmRow(row);
                     setShowConfirm(true);
+                }}
+                onNotify={(row) => {
+                    setNotifyRow(row);
+                    setShowNotifyConfirm(true);
                 }}
                 onReorder={(newOrderedRows) => {
                     setRows(newOrderedRows);
@@ -402,6 +438,14 @@ export default function ProductsView() {
                     }
                     setShowConfirm(false);
                 }}
+            />
+
+            <NotifyConfirmModal
+                open={showNotifyConfirm}
+                item={notifyRow}
+                itemType="product"
+                onClose={() => setShowNotifyConfirm(false)}
+                onConfirm={handleNotifyLaunch}
             />
         </div>
     );

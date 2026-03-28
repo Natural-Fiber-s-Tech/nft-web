@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2 } from "lucide-react";
+import { Eye, Pencil, Archive, RotateCcw, Columns, Trash2, Send } from "lucide-react";
 import { useResponsiveColumns } from "../common/useResponsiveColumns";
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
@@ -27,6 +27,7 @@ export default function ResearchTable({
   onArchiveToggle,
   onDelete,
   onReorder,
+  onNotify,
   isDragEnabled = true,
 }) {
   const articles = Array.isArray(research) ? research : [];
@@ -253,6 +254,9 @@ export default function ResearchTable({
                   style={{ width: columnWidths.actions || "auto", ...getStickyStyle("actions") }}
                 >
                   <div className="flex items-center justify-center gap-2">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={() => onNotify?.(article)} title="Notificar Publicación">
+                      <Send className="w-4 h-4" />
+                    </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(article)}>
                       <Eye className="w-4 h-4" />
                     </Button>

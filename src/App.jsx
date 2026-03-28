@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { AppProviders } from "./context/AppProviders";
 import Navbar from "./components/layout/Navbar";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
@@ -22,6 +22,8 @@ import GridOverlay from "./components/GridOverlay";
 import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import FAQChatbot from "./components/faqChatbot/index.jsx";
+import LeadCapturePopup from "./components/leads/LeadCapturePopup";
+import Unsubscribe from "./pages/verify/Unsubscribe";
 
 
 // ========================================
@@ -43,6 +45,20 @@ const App = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.includes('adminx');
 
+  // Lógica del Pop-up: Se muestra después de 8 segundos si no lo ha visto.
+  const [isLeadPopupOpen, setIsLeadPopupOpen] = useState(false);
+  useEffect(() => {
+    if (isAdminRoute) return;
+    const hasSeenPopup = sessionStorage.getItem('hasSeenLeadPopup');
+    if (!hasSeenPopup) {
+      const timer = setTimeout(() => {
+        setIsLeadPopupOpen(true);
+        sessionStorage.setItem('hasSeenLeadPopup', 'true');
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAdminRoute]);
+
   return (
     <ErrorBoundary>
       <AppProviders>
@@ -50,6 +66,7 @@ const App = () => {
           <Navbar />
           <ScrollToTop />
           <GridOverlay />
+          <LeadCapturePopup isOpen={isLeadPopupOpen} onClose={() => setIsLeadPopupOpen(false)} />
           <Routes >
             <Route
               path="/"
@@ -132,6 +149,17 @@ const App = () => {
                 <>
                   <main className="pt-16">
                     <InvestigationDetail />
+                  </main>
+                </>
+              }
+            />
+
+            <Route
+              path="/desuscribirse"
+              element={
+                <>
+                  <main className="w-full max-w-[1110px] mx-auto px-4 pt-20">
+                    <Unsubscribe />
                   </main>
                 </>
               }

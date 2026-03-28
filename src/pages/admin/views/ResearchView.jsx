@@ -6,7 +6,7 @@ import { deleteFileFromSupabase, uploadFileToSupabase, compressImageToWebP } fro
 import ResearchTable from "../components/research/ResearchTable";
 import ResearchFormModal from "../components/research/ResearchFormModal";
 import ResearchArchiveConfirmModal from "../components/research/ResearchArchiveConfirmModal";
-import ConfirmModal from "../components/common/ConfirmModal";
+import NotifyConfirmModal from "../components/common/NotifyConfirmModal";
 
 export default function ResearchView() {
     const [rows, setRows] = useState([]);
@@ -15,9 +15,9 @@ export default function ResearchView() {
     const [modalMode, setModalMode] = useState("view");
     const [confirmRow, setConfirmRow] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
-    const [deleteRow, setDeleteRow] = useState(null);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [notifyRow, setNotifyRow] = useState(null);
+    const [showNotifyConfirm, setShowNotifyConfirm] = useState(false);
 
     // Filtros
     const [searchTerm, setSearchTerm] = useState("");
@@ -103,6 +103,35 @@ export default function ResearchView() {
             return false;
         }
     }
+
+    const handleNotifyLaunch = async (item, itemType) => {
+        try {
+            const { getAuth } = await import("firebase/auth");
+            const auth = getAuth();
+            const user = auth.currentUser;
+            if (!user) throw new Error("No estás autenticado como administrador.");
+            const token = await user.getIdToken();
+            
+            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+            const response = await fetch(`${supabaseUrl}/functions/v1/notify-launch`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ itemId: item.id, itemType })
+            });
+            
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || "Error HTTP al enviar los correos.");
+            }
+            alert("¡Notificación enviada con éxito a los suscriptores!");
+        } catch (error) {
+            console.error("Error al notificar:", error);
+            alert("Ocurrió un error: " + error.message);
+        }
+    };
 
     // Filtrar localmente
     const filteredArticles = rows.filter(article => {
@@ -232,9 +261,40 @@ export default function ResearchView() {
                         setShowConfirm(true);
                     }
                 }}
-                onDelete={(row) => {
-                    setDeleteRow(row);
-                    setShowDeleteConfirm(true);
+                onNotify={(row) => {
+                    setNotifyRow(row);
+                    setShowNotifyConfirm(true);
+                }}
+                onDelete={async (article) => {
+                    if (window.confirm(`¿Seguro que deseas eliminar permanentemente el artículo "${article.title?.es || article.title?.en || article.title || article.id}"?\n\nEsta acción no se puede deshacer y el artículo dejará de aparecer en la web.`)) {
+                        try {
+                            // 1. Borrar documento de Firestore
+                            const { doc, deleteDoc } = await import("firebase/firestore");
+                            const { db } = await import("../../../config/firebase");
+
+                            await deleteDoc(doc(db, "research", article.id));
+
+                            // 2. Borrar archivos de Supabase (silencioso sin bloquear UI)
+                            const filesToDelete = [];
+                            if (article.localImage) filesToDelete.push(article.localImage);
+                            if (article.download_link_pdf) filesToDelete.push(article.download_link_pdf);
+
+                            Promise.allSettled(
+                                filesToDelete.map(url => deleteFileFromSupabase(url))
+                            ).catch(e => console.error("Error eliminando archivos de investigación en Supabase:", e));
+
+                            // 3. Actualizar estado y auto-persist
+                            const nextRows = rows.filter(r => r.id !== article.id);
+                            const normalized = normalizeOrder(nextRows);
+                            setRows(normalized);
+                            await persistRows(normalized, "auto-save: after delete research");
+
+                            loadResearch();
+                        } catch (error) {
+                            console.error("Error deleting research item:", error);
+                            alert("Hubo un error al eliminar el artículo.");
+                        }
+                    }
                 }}
             />
 
@@ -294,41 +354,14 @@ export default function ResearchView() {
                 }}
             />
 
-            <ConfirmModal
-                open={showDeleteConfirm}
-                onClose={() => {
-                    setShowDeleteConfirm(false);
-                    setDeleteRow(null);
-                }}
-                onConfirm={async () => {
-                    if (!deleteRow) return;
-                    try {
-                        // 1. Borrar archivos de Supabase (silencioso si fallan)
-                        await Promise.allSettled([
-                            deleteFileFromSupabase(deleteRow.localImage),
-                            deleteFileFromSupabase(deleteRow.download_link_pdf),
-                        ]);
 
-                        // 2. Borrar documento de Firestore
-                        const { doc, deleteDoc } = await import("firebase/firestore");
-                        const { db } = await import("../../../config/firebase");
-                        await deleteDoc(doc(db, "research", deleteRow.id));
 
-                        setRows(prev => prev.filter(r => r.id !== deleteRow.id));
-                        loadResearch();
-                    } catch (error) {
-                        console.error("Error deleting research item:", error);
-                        alert("Hubo un error al eliminar el artículo.");
-                    } finally {
-                        setShowDeleteConfirm(false);
-                        setDeleteRow(null);
-                    }
-                }}
-                title="Eliminar Artículo Permanentemente"
-                message={`¿Estás seguro que deseas eliminar el artículo "${deleteRow?.title?.es || deleteRow?.title?.en}"?\n\nEsta acción no se puede deshacer y el artículo dejará de aparecer en la web.`}
-                type="error"
-                confirmText="Eliminar"
-                cancelText="Cancelar"
+            <NotifyConfirmModal
+                open={showNotifyConfirm}
+                item={notifyRow}
+                itemType="research"
+                onClose={() => setShowNotifyConfirm(false)}
+                onConfirm={handleNotifyLaunch}
             />
         </div>
     );
